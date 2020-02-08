@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Add dataset" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.metastringfoundation.healthheatmap.Main" />
+    <module name="data-reader" />
+    <option name="PROGRAM_PARAMETERS" value="-n $FileNameWithoutExtension$ -p $FilePath$ -x &quot;A1:A,B0:0,B1: &quot;" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

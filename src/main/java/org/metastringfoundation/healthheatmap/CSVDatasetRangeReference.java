@@ -41,9 +41,9 @@ public class CSVDatasetRangeReference {
         } else if (endColumn > startColumn && endRow > startRow) {
             this.rangeType = RangeType.ROW_AND_COLUMN;
         } else if (endColumn == startColumn && endRow > startRow) {
-            this.rangeType = RangeType.ROW_ONLY;
-        } else if (endColumn > startColumn && endRow == startRow) {
             this.rangeType = RangeType.COLUMN_ONLY;
+        } else if (endColumn > startColumn && endRow == startRow) {
+            this.rangeType = RangeType.ROW_ONLY;
         } else // (endRow < startRow || endColumn < startColumn)
         {
             throw new IllegalArgumentException("The starting cell should come before ending cell");

@@ -13,6 +13,7 @@ public class Main {
 
             String path = commandLine.getOptionValue("path");
             String datasetName = commandLine.getOptionValue("name");
+            String rangeReference = commandLine.getOptionValue("ranges");
             boolean random = commandLine.hasOption("random");
             boolean profiler = commandLine.hasOption("profiler");
             String profilerAction = commandLine.getOptionValue("profiler");
@@ -35,11 +36,11 @@ public class Main {
                 new DatabaseProfiler(profilerAction).run();
                 System.out.println("Ended profiling.");
             } else {
-
                 Dataset dataset = new CSVDataset
                         .builder()
                         .metadata(new DatasetMetadata(datasetName))
                         .path(path)
+                        .ranges(rangeReference)
                         .build();
 
                 dataStorer.addDataset(dataset);

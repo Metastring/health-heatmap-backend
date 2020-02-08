@@ -56,6 +56,13 @@ public class CSVDataset implements Dataset {
             return this;
         }
 
+        public builder ranges(String singleRangeReference) throws DatasetIntegrityError {
+            String[] ranges = singleRangeReference.split(",");
+            return this.indicator(ranges[0])
+                    .entity(ranges[1])
+                    .data(ranges[2]);
+        }
+
         public builder metadata(DatasetMetadata metadata) {
             this.metadata = metadata;
             return this;
@@ -128,17 +135,18 @@ public class CSVDataset implements Dataset {
 
         List<List<String>> stringDataGroupedByEntities = CSVDatasetRangeReference.dereferenceTable(this.dataInfo, this.records);
         //TODO transpose this data if required
+         if (needsTransposition) {
+             stringDataGroupedByEntities = ListUtils.transpose(stringDataGroupedByEntities);
+         }
 
         List<List<DataPoint>> dataGroupedByEntities = new ArrayList<>();
 
         for (List<String> rowBeingRead: stringDataGroupedByEntities) {
             List<DataPoint> dataOfThisRow = new ArrayList<>();
             for (int column = 0; column < rowBeingRead.size(); column++) {
-                try {
-                    dataOfThisRow.add(new StringDataPoint(rowBeingRead.get(column)));
-                } catch (IndexOutOfBoundsException e) {
-                    dataOfThisRow.add(new StringDataPoint("NA"));
-                }
+                String unparsedDataPoint = rowBeingRead.get(column);
+                DataPoint parsedDataPoint = getDataPointFromString(unparsedDataPoint);
+                dataOfThisRow.add(parsedDataPoint);
             }
             dataGroupedByEntities.add(dataOfThisRow);
         }
@@ -158,5 +166,22 @@ public class CSVDataset implements Dataset {
     @Override
     public DatasetMetadata getMetadata() {
         return this.metadata;
+    }
+
+    private DataPoint getDataPointFromString(String unparsedDataPoint) {
+        return getStringDataPoint(unparsedDataPoint);
+    }
+
+    private DataPoint intelligentDataPoint(String unparsedDataPoint) {
+        try {
+            Float floatDataPoint = Float.parseFloat(unparsedDataPoint);
+            return new FloatDataPoint(floatDataPoint);
+        } catch (NumberFormatException e) {
+            return new StringDataPoint(unparsedDataPoint);
+        }
+    }
+
+    private StringDataPoint getStringDataPoint(String unparsedDataPoint) {
+        return new StringDataPoint(unparsedDataPoint);
     }
 }
