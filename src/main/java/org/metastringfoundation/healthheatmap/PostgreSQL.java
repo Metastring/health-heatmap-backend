@@ -120,11 +120,13 @@ public class PostgreSQL implements Database {
                     .from(ENTITIES)
                     .where(ENTITIES.NAME.eq(entityName))
                     .execute();
+
             if (id == 0) {
                 id = dslContext.insertInto(ENTITIES, ENTITIES.NAME)
                         .values(entityName)
                         .returning(ENTITIES.ID)
-                        .execute();
+                        .fetchOne()
+                        .getValue(ENTITIES.ID);
             }
             return id;
         }).collect(Collectors.toList());
