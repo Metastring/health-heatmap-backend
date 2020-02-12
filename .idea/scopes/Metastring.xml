@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Metastring" pattern="file[data-reader]:scripts//*||file[data-reader]:src/main/java//*||file[data-reader]:src/test/java//*" />
+</component>
