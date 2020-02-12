@@ -19,9 +19,7 @@ package org.metastringfoundation.healthheatmap;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class CSVDataset implements Dataset {
     private String path;

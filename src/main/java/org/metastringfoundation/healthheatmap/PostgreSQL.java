@@ -19,26 +19,20 @@ package org.metastringfoundation.healthheatmap;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.jooq.tools.json.JSONArray;
 import org.jooq.tools.json.JSONObject;
 import org.jooq.tools.json.JSONParser;
 import org.jooq.tools.json.ParseException;
-import org.metastringfoundation.healthheatmap.codegen.*;
-import org.metastringfoundation.healthheatmap.codegen.tables.DatasetMetadata;
-import org.metastringfoundation.healthheatmap.codegen.tables.Entities;
-import org.metastringfoundation.healthheatmap.codegen.tables.Indicators;
 
-import static org.jooq.impl.DSL.constraint;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.metastringfoundation.healthheatmap.codegen.tables.DatasetMetadata.DATASET_METADATA;
 import static org.metastringfoundation.healthheatmap.codegen.tables.Entities.ENTITIES;
-import static org.metastringfoundation.healthheatmap.codegen.tables.Indicators.*;
+import static org.metastringfoundation.healthheatmap.codegen.tables.Indicators.INDICATORS;
 
 public class PostgreSQL implements Database {
 
