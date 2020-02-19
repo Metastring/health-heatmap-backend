@@ -36,7 +36,6 @@ public class Main {
             String path = commandLine.getOptionValue("path");
             String datasetName = commandLine.getOptionValue("name");
             String rangeReference = commandLine.getOptionValue("ranges");
-            String additionalOptions = commandLine.getOptionValue("options");
             boolean random = commandLine.hasOption("random");
             boolean profiler = commandLine.hasOption("profiler");
             boolean serverShouldStart = commandLine.hasOption("server");
@@ -49,7 +48,7 @@ public class Main {
                     dataset = new RandomDataset.builder()
                             .entities(500)
                             .indicators(500)
-                            .name("Random Dataset " + Integer.toString(datasetNumber))
+                            .name("Random Dataset " + datasetNumber)
                             .build();
 
                     System.out.println("adding dataset " + datasetNumber);
