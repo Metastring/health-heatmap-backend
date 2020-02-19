@@ -16,17 +16,17 @@
 
 package org.metastringfoundation.healthheatmap.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.metastringfoundation.healthheatmap.Main;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Server {
+    private static final Logger LOG = LogManager.getLogger(Server.class);
     public static final String BASE_URI = "http://localhost:8080/myapp/";
 
     public static HttpServer server;
@@ -42,12 +42,11 @@ public class Server {
             }));
             server.start();
 
-            System.out.println(
-                    String.format("Application started.%nTry out %s%nStop the application using CTRL+C", BASE_URI));
+            LOG.info("Application started.\nTry out {}\nStop the application using CTRL+C", BASE_URI);
 
             Thread.currentThread().join();
         } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.fatal(ex);
         }
 
     }
