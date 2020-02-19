@@ -36,14 +36,23 @@ public class CLI {
             .desc("Specially formatted string that shows range to the data (B0:0,A1:A,B1: )")
             .build();
 
+    final static Option additionalOptions = Option.builder("o")
+            .hasArg()
+            .longOpt("options")
+            .desc("Additional options")
+            .build();
+
     final static Option random = new Option("r", "random", false, "Generate random data");
     final static Option profiler = new Option("s", "profiler", true, "Profiler");
+    final static Option server = new Option("h", "server", false, "Run server");
 
     public final static Options options = new Options()
             .addOption(path)
             .addOption(datasetName)
             .addOption(rangeReference)
+            .addOption(additionalOptions)
             .addOption(random)
+            .addOption(server)
             .addOption(profiler)
             ;
 
