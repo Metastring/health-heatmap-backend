@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.housekeeping;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -24,6 +24,7 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.InsertOneModel;
 import com.mongodb.client.model.WriteModel;
 import org.bson.Document;
+import org.metastringfoundation.healthheatmap.helpers.Timer;
 
 import java.sql.*;
 import java.util.ArrayList;

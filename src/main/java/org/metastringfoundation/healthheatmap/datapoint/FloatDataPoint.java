@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.datapoint;
 
-public class IntegerDataPoint extends DataPoint<Integer> {
-    public IntegerDataPoint(Integer value) {
+public class FloatDataPoint extends DataPoint<Float> {
+    public FloatDataPoint(Float value) {
         super(value);
     }
 }

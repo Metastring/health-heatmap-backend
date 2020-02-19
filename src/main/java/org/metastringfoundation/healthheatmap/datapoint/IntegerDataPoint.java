@@ -14,20 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.datapoint;
 
-import java.util.Date;
-
-public class Timer {
-    private Date time = new Date();
-
-    public void reset() {
-        time = new Date();
-    }
-
-    public void result(String taskDescription) {
-        Date newTime = new Date();
-        System.out.println(taskDescription + " +" + (newTime.getTime() - time.getTime()));
-        time = newTime;
+public class IntegerDataPoint extends DataPoint<Integer> {
+    public IntegerDataPoint(Integer value) {
+        super(value);
     }
 }

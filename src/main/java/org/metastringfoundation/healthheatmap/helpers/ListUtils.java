@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.helpers;
 
 import java.util.ArrayList;
 import java.util.List;

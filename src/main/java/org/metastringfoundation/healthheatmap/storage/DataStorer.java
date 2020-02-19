@@ -14,7 +14,9 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.storage;
+
+import org.metastringfoundation.healthheatmap.dataset.Dataset;
 
 public interface DataStorer {
     public void addDataset(Dataset dataset);

@@ -14,8 +14,16 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
-public interface Database {
-    public void addDataset(Dataset dataset);
+public class DataHeader {
+    public String dataHeader;
+
+    public DataHeader(String dataHeader) {
+        this.dataHeader = dataHeader;
+    }
+
+    public static DataHeader dataHeader(String dataHeader) {
+        return new DataHeader(dataHeader);
+    }
 }

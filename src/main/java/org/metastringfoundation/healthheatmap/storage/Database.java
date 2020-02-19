@@ -14,13 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.storage;
 
-public class DatasetIntegrityError extends Exception {
-    DatasetIntegrityError(Exception e) {
-        super("DatasetIntegrityError", e);
-    }
-    DatasetIntegrityError(String msg) {
-        super(msg);
-    }
+import org.metastringfoundation.healthheatmap.dataset.Dataset;
+
+public interface Database {
+    public void addDataset(Dataset dataset);
 }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.datapoint;
 
 public class StringDataPoint extends DataPoint<String> {
     public StringDataPoint(String value) {

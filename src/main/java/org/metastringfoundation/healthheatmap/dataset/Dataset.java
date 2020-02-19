@@ -14,17 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
-public class MultiplexDataStorer implements DataStorer {
-    private Database postgres;
+import org.metastringfoundation.healthheatmap.datapoint.DataPoint;
 
-    public MultiplexDataStorer() {
-        this.postgres = new PostgreSQL();
-    }
+import java.util.List;
 
-    @Override
-    public void addDataset(Dataset dataset) {
-        this.postgres.addDataset(dataset);
-    }
+public interface Dataset {
+    public List<String> getIndicators();
+    public List<String> getEntities();
+    public List<List<DataPoint>> getDataGroupedByEntities();
+    public DatasetMetadata getMetadata();
 }

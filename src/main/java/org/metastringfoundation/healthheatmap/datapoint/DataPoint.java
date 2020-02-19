@@ -14,13 +14,16 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.datapoint;
 
-import java.util.List;
+public abstract class DataPoint<T> {
+    private T value;
 
-public interface Dataset {
-    public List<String> getIndicators();
-    public List<String> getEntities();
-    public List<List<DataPoint>> getDataGroupedByEntities();
-    public DatasetMetadata getMetadata();
+    public DataPoint(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
 }

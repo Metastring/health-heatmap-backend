@@ -14,9 +14,13 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
 import org.apache.commons.csv.CSVRecord;
+import org.metastringfoundation.healthheatmap.datapoint.DataPoint;
+import org.metastringfoundation.healthheatmap.datapoint.FloatDataPoint;
+import org.metastringfoundation.healthheatmap.datapoint.StringDataPoint;
+import org.metastringfoundation.healthheatmap.helpers.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;

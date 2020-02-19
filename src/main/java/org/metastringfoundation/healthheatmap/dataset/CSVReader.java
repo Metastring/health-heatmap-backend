@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -29,7 +29,7 @@ import java.util.List;
 public class CSVReader {
     private String path;
 
-    CSVReader(String path) {
+    public CSVReader(String path) {
         this.path = path;
     }
 

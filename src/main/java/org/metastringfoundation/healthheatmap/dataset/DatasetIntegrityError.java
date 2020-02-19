@@ -14,16 +14,13 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
-public class DataHeader {
-    public String dataHeader;
-
-    public DataHeader(String dataHeader) {
-        this.dataHeader = dataHeader;
+public class DatasetIntegrityError extends Exception {
+    public DatasetIntegrityError(Exception e) {
+        super("DatasetIntegrityError", e);
     }
-
-    public static DataHeader dataHeader(String dataHeader) {
-        return new DataHeader(dataHeader);
+    public DatasetIntegrityError(String msg) {
+        super(msg);
     }
 }

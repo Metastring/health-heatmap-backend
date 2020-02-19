@@ -14,16 +14,22 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.helpers;
 
-public abstract class DataPoint<T> {
-    private T value;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-    public DataPoint(T value) {
-        this.value = value;
+public class PathManager {
+    private String inputPath;
+
+    public PathManager(String inputPath) {
+        this.inputPath = inputPath;
     }
 
-    public T getValue() {
-        return value;
+    public String getAbsolutePath() {
+        String userDir = System.getProperty("user.dir");
+        Path absolutePath = Paths.get(userDir, inputPath);
+        String canonicalPath = absolutePath.normalize().toString();
+        return canonicalPath;
     }
 }

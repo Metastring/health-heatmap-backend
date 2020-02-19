@@ -14,22 +14,19 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.storage;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.metastringfoundation.healthheatmap.dataset.Dataset;
 
-public class PathManager {
-    private String inputPath;
+public class MultiplexDataStorer implements DataStorer {
+    private Database postgres;
 
-    public PathManager(String inputPath) {
-        this.inputPath = inputPath;
+    public MultiplexDataStorer() {
+        this.postgres = new PostgreSQL();
     }
 
-    public String getAbsolutePath() {
-        String userDir = System.getProperty("user.dir");
-        Path absolutePath = Paths.get(userDir, inputPath);
-        String canonicalPath = absolutePath.normalize().toString();
-        return canonicalPath;
+    @Override
+    public void addDataset(Dataset dataset) {
+        this.postgres.addDataset(dataset);
     }
 }
