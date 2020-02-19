@@ -18,23 +18,14 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.housekeeping.DatabaseProfiler;
 import org.metastringfoundation.healthheatmap.storage.DataStorer;
 import org.metastringfoundation.healthheatmap.storage.MultiplexDataStorer;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.metastringfoundation.healthheatmap.web.Server;
 
 public class Main {
 
-    // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8080/myapp/";
 
     public static void main(String[] args) throws IllegalArgumentException {
         try {
@@ -69,25 +60,7 @@ public class Main {
                 new DatabaseProfiler(profilerAction).run();
                 System.out.println("Ended profiling.");
             } else if (serverShouldStart) {
-                try {
-                    System.out.println("JAXB Jersey Example App");
-
-                    final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), createApp(), false);
-                    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            server.shutdownNow();
-                        }
-                    }));
-                    server.start();
-
-                    System.out.println(
-                            String.format("Application started.%nTry out %s%nStop the application using CTRL+C", BASE_URI));
-
-                    Thread.currentThread().join();
-                } catch (IOException | InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Server.startServer();
             } else {
                 Dataset dataset = new CSVDataset
                         .builder()
@@ -108,8 +81,4 @@ public class Main {
         }
     }
 
-    public static ResourceConfig createApp() {
-        final ResourceConfig rc = new ResourceConfig().packages("org.metastring.healthheatmap");
-        return rc;
-    }
 }
