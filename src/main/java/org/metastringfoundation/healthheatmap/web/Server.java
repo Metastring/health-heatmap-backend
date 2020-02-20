@@ -52,7 +52,7 @@ public class Server {
     }
 
     public static ResourceConfig createApp() {
-        final ResourceConfig rc = new ResourceConfig().packages("org.metastring.healthheatmap");
+        final ResourceConfig rc = new ResourceConfig().packages("org.metastringfoundation.healthheatmap");
         return rc;
     }
 }
