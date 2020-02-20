@@ -14,14 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.pojo;
 
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
-    String saveIndicator(String indicatorJSON);
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
-
-    String getHealth();
+public class Entity {
 }

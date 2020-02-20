@@ -16,7 +16,10 @@
 
 package org.metastringfoundation.healthheatmap.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -28,6 +31,8 @@ import javax.ws.rs.core.Response;
 
 @Path("{dimension: indicator|entity}")
 public class DimensionResource {
+    private static final Logger LOG = LogManager.getLogger(DimensionResource.class);
+
     @Inject
     Application app;
 
@@ -36,13 +41,18 @@ public class DimensionResource {
     public Response getDimension(
             @PathParam("dimension") String dimension
     ) {
-        switch (dimension) {
-            case "indicator":
-                return Response.status(200).entity(app.getIndicators()).build();
-            case "entity":
-                return Response.status(200).entity(app.getEntities()).build();
-            default:
-                return Response.status(200).entity(dimension).build();
+        try {
+            switch (dimension) {
+                case "indicator":
+                    return Response.status(200).entity(app.getIndicators()).build();
+                case "entity":
+                    return Response.status(200).entity(app.getEntities()).build();
+                default:
+                    return Response.status(200).entity(dimension).build();
+            }
+        } catch (ApplicationError applicationError) {
+            LOG.error(applicationError);
+            return Response.status(503).entity(applicationError.toString()).build();
         }
     }
 }

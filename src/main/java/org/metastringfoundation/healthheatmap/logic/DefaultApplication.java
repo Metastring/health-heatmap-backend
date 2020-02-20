@@ -16,24 +16,35 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.pojo.Indicator;
 import org.metastringfoundation.healthheatmap.storage.Database;
 
-import javax.inject.Inject;
+import java.util.List;
 
 public class DefaultApplication implements Application {
     private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
 
-    private static Database psql;
+    private Database psql;
 
-    public static void setPsql(Database psql) {
-        DefaultApplication.psql = psql;
+    public void setPsql(Database psql) {
+        this.psql = psql;
     }
 
+    private static final IndicatorManager indicatorManager = new IndicatorManager();
+
     @Override
-    public String getIndicators() {
-        return "someindicators";
+    public String getIndicators() throws ApplicationError {
+        List<Indicator> indicatorList = indicatorManager.getIndicators();
+        try {
+            return Jsonizer.getJSONString(indicatorList);
+        } catch (JsonProcessingException e) {
+            LOG.error(e);
+            throw new ApplicationError(e);
+        }
     }
 
     @Override

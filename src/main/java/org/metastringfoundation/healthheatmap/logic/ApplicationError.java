@@ -16,12 +16,12 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
-    String saveIndicator(String indicatorJSON);
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
+public class ApplicationError extends Exception {
 
-    String getHealth();
+    public ApplicationError(Exception e) {
+        super("ApplicationError", e);
+    }
+    public ApplicationError(String msg) {
+        super(msg);
+    }
 }

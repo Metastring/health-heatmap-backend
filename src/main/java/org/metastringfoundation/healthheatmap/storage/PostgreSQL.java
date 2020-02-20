@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 
 import javax.json.Json;
-import javax.ws.rs.core.Response;
 import java.sql.*;
 
 public class PostgreSQL implements Database {

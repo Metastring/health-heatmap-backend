@@ -14,14 +14,17 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.helpers;
 
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
-    String saveIndicator(String indicatorJSON);
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    String getHealth();
+import java.util.List;
+
+public class Jsonizer {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    public static <E> String getJSONString(List<E> someList) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(someList);
+    }
 }
