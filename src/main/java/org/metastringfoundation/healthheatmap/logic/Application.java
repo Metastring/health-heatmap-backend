@@ -14,11 +14,14 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
+public interface Application {
+    String getIndicators();
+    String getEntities();
+    String saveIndicator(String indicatorJSON);
+    String saveEntity(String entityJSON);
+    String getDimension(String dimension);
 
-public interface Database {
-    public void addDataset(Dataset dataset);
-    public String getHealth();
+    String getHealth();
 }

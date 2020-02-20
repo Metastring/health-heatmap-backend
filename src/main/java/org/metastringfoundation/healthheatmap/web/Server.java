@@ -22,6 +22,10 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
+import org.metastringfoundation.healthheatmap.storage.Database;
+import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,21 +36,35 @@ public class Server {
 
     public static HttpServer server;
 
-    public static void startServer() {
+    private static void configureProductionServer() {
+        ResourceConfig rc = createApp();
+        rc = injectProductionDependencies(rc);
+        server = getServer(rc);
+    }
+
+    private static void startServer() {
         try {
-            ResourceConfig rc = createApp();
-            rc = injectProductionDependencies(rc);
-            server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> server.shutdown()));
             server.start();
-
-            LOG.info("Application started.\nTry out {}", BASE_URI);
-
-            Thread.currentThread().join();
-        } catch (IOException | InterruptedException ex) {
+        } catch (IOException ex) {
             LOG.fatal(ex);
         }
+        LOG.info("Application started.\nTry out {}", BASE_URI);
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException ex) {
+            LOG.fatal(ex);
+        }
+    }
 
+    public static void startProductionServer() {
+        configureProductionServer();
+        startServer();
+    }
+
+    public static HttpServer getServer(ResourceConfig rc) {
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
+        Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
+        return server;
     }
 
     public static ResourceConfig createApp() {
@@ -55,9 +73,14 @@ public class Server {
     }
 
     public static ResourceConfig injectProductionDependencies(ResourceConfig rc) {
+        Database psql = new PostgreSQL();
+        DefaultApplication app = new DefaultApplication();
+        app.setPsql(psql);
         rc.registerInstances(new AbstractBinder() {
             @Override
             protected void configure() {
+                bind(app).to(Application.class);
+                bind(psql).to(Database.class);
             }
         });
         return rc;

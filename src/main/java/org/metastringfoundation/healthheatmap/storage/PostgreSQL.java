@@ -16,17 +16,20 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import javax.json.Json;
+import javax.ws.rs.core.Response;
+import java.sql.*;
 
 public class PostgreSQL implements Database {
+    private static final Logger LOG = LogManager.getLogger(PostgreSQL.class);
 
     private Connection psqlConnection;
 
-    PostgreSQL() {
+    public PostgreSQL() {
         //TODO: Make this loaded from configuration/environment
         String username = "metastring";
         String password = "metastring";
@@ -77,6 +80,42 @@ public class PostgreSQL implements Database {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Cannot run program without meta tables");
+        }
+    }
+
+    private String returnQueryResult(String query) throws SQLException {
+        String result;
+        try (
+                PreparedStatement statement = psqlConnection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                ) {
+            if (resultSet.next()) {
+                result = resultSet.getString(1);
+            } else {
+                result = Json.createObjectBuilder()
+                        .add("status", "error")
+                        .add("message", "No data returned")
+                        .build()
+                        .toString();
+            }
+        }
+        return result;
+    }
+
+    private static String genericInternalServerError(Exception ex) {
+        return Json.createObjectBuilder()
+                .add("status", "error")
+                .add("message", "Internal server error\n" + ex.toString())
+                .build()
+                .toString();
+    }
+
+    public String getHealth() {
+        String healthQuery = "SELECT json_build_object('tables', json_agg(schemaname)) AS names from pg_statio_all_tables;";
+        try {
+            return returnQueryResult(healthQuery);
+        } catch (SQLException ex) {
+            return genericInternalServerError(ex);
         }
     }
 }

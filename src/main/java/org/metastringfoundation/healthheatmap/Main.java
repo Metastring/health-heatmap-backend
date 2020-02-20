@@ -59,7 +59,7 @@ public class Main {
                 new DatabaseProfiler(profilerAction).run();
                 System.out.println("Ended profiling.");
             } else if (serverShouldStart) {
-                Server.startServer();
+                Server.startProductionServer();
             } else {
                 Dataset dataset = new CSVDataset
                         .builder()

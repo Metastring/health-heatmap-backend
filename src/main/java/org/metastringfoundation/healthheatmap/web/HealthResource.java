@@ -14,11 +14,26 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.web;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.logic.Application;
 
-public interface Database {
-    public void addDataset(Dataset dataset);
-    public String getHealth();
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("health")
+public class HealthResource {
+    @Inject
+    Application app;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getHealth() {
+        return Response.status(200).entity(app.getHealth()).build();
+    }
 }

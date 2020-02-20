@@ -16,6 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.web;
 
+import org.metastringfoundation.healthheatmap.logic.Application;
+
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,11 +28,21 @@ import javax.ws.rs.core.Response;
 
 @Path("{dimension: indicator|entity}")
 public class DimensionResource {
+    @Inject
+    Application app;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDimension(
             @PathParam("dimension") String dimension
     ) {
-        return Response.status(200).entity(dimension).build();
+        switch (dimension) {
+            case "indicator":
+                return Response.status(200).entity(app.getIndicators()).build();
+            case "entity":
+                return Response.status(200).entity(app.getEntities()).build();
+            default:
+                return Response.status(200).entity(dimension).build();
+        }
     }
 }
