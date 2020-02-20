@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.web;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -33,16 +34,13 @@ public class Server {
 
     public static void startServer() {
         try {
-            server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), createApp(), false);
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    server.shutdownNow();
-                }
-            }));
+            ResourceConfig rc = createApp();
+            rc = injectProductionDependencies(rc);
+            server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> server.shutdown()));
             server.start();
 
-            LOG.info("Application started.\nTry out {}\nStop the application using CTRL+C", BASE_URI);
+            LOG.info("Application started.\nTry out {}", BASE_URI);
 
             Thread.currentThread().join();
         } catch (IOException | InterruptedException ex) {
@@ -53,6 +51,15 @@ public class Server {
 
     public static ResourceConfig createApp() {
         final ResourceConfig rc = new ResourceConfig().packages("org.metastringfoundation.healthheatmap");
+        return rc;
+    }
+
+    public static ResourceConfig injectProductionDependencies(ResourceConfig rc) {
+        rc.registerInstances(new AbstractBinder() {
+            @Override
+            protected void configure() {
+            }
+        });
         return rc;
     }
 }
