@@ -30,7 +30,7 @@ import org.metastringfoundation.healthheatmap.web.Server;
 
 import static org.junit.Assert.assertEquals;
 
-public class DimensionResourceTest {
+public class IndicatorResourceTest {
 
     private HttpServer server;
     private WebTarget target;

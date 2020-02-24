@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.pojo.Entity;
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
 import org.metastringfoundation.healthheatmap.storage.Database;
 
@@ -35,12 +36,11 @@ public class DefaultApplication implements Application {
     }
 
     private static final IndicatorManager indicatorManager = new IndicatorManager();
+    private static final EntityManager entityManager = new EntityManager();
 
-    @Override
-    public String getIndicators() throws ApplicationError {
-        List<Indicator> indicatorList = indicatorManager.getIndicators();
+    private String jsonize(List<> objectList) throws ApplicationError{
         try {
-            return Jsonizer.getJSONString(indicatorList);
+            return Jsonizer.getJSONString(objectList);
         } catch (JsonProcessingException e) {
             LOG.error(e);
             throw new ApplicationError(e);
@@ -48,8 +48,15 @@ public class DefaultApplication implements Application {
     }
 
     @Override
-    public String getEntities() {
-        return "someentities";
+    public String getIndicators() throws ApplicationError {
+        List<Indicator> indicatorList = indicatorManager.getIndicators();
+        return jsonize(indicatorList);
+    }
+
+    @Override
+    public String getEntities() throws ApplicationError {
+        List <Entity> entityList = entityManager.getEntities();
+        return jsonize(entityList);
     }
 
     @Override

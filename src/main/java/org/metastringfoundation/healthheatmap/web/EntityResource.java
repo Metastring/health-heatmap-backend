@@ -24,32 +24,31 @@ import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("{dimension: indicator|entity}")
-public class DimensionResource {
-    private static final Logger LOG = LogManager.getLogger(DimensionResource.class);
+@Path("entities")
+public class EntityResource {
+    private static final Logger LOG = LogManager.getLogger(EntityResource.class);
+
+    private static final String ZOOM_LEVEL = "zoom";
+    private static final String LOAD_ENTITY_TYPE = "type";
+
+    private static final String DEFAULT_ZOOM_LEVEL = "0";
+    private static final String DEFAULT_LOAD_ENTITY_TYPE = "DISTRICT";
+
 
     @Inject
     Application app;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDimension(
-            @PathParam("dimension") String dimension
+    public Response getIndicator(
     ) {
         try {
-            switch (dimension) {
-                case "indicator":
-                    return Response.status(200).entity(app.getIndicators()).build();
-                case "entity":
-                    return Response.status(200).entity(app.getEntities()).build();
-                default:
-                    return Response.status(200).entity(dimension).build();
-            }
+            return Response.status(200).entity(app.getIndicators()).build();
         } catch (ApplicationError applicationError) {
             LOG.error(applicationError);
             return Response.status(503).entity(applicationError.toString()).build();
