@@ -16,13 +16,11 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import org.metastringfoundation.healthheatmap.datapoint.DataPoint;
+import org.metastringfoundation.healthheatmap.pojo.DataElement;
 
 import java.util.List;
 
 public interface Dataset {
-    public List<String> getIndicators();
-    public List<String> getEntities();
-    public List<List<DataPoint>> getDataGroupedByEntities();
+    public List<DataElement> getData();
     public DatasetMetadata getMetadata();
 }

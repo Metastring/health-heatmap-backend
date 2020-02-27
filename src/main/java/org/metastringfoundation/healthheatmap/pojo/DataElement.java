@@ -14,27 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.pojo;
 
-import org.metastringfoundation.healthheatmap.pojo.Entity;
+import org.metastringfoundation.healthheatmap.datapoint.DataPoint;
 
-import java.util.List;
+import java.util.Optional;
 
-public class EntityManager {
-
-    private List<Entity> entityList;
-
-    public List<Entity> getEntities() {
-        return entityList;
-    }
-
-    public void setEntities(List<Entity> entityList) {
-        this.entityList = entityList;
-    }
-
-    public List<Entity> queryEntities(
-
-    ) {
-        return null;
-    }
+public class DataElement {
+    private Indicator indicator;
+    private Entity entity;
+    private TimePeriod timePeriod;
+    private Optional<DataPoint> datapoint;
 }

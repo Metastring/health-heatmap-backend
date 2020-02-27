@@ -24,8 +24,6 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
-import org.metastringfoundation.healthheatmap.storage.Database;
-import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
 import java.io.IOException;
 import java.net.URI;
@@ -73,14 +71,12 @@ public class Server {
     }
 
     public static ResourceConfig injectProductionDependencies(ResourceConfig rc) {
-        Database psql = new PostgreSQL();
         DefaultApplication app = new DefaultApplication();
-        app.setPsql(psql);
+
         rc.registerInstances(new AbstractBinder() {
             @Override
             protected void configure() {
                 bind(app).to(Application.class);
-                bind(psql).to(Database.class);
             }
         });
         return rc;

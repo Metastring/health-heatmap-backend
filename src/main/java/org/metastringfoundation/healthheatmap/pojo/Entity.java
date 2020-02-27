@@ -16,5 +16,69 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 public class Entity {
+    public enum EntityType {
+        DISTRICT,
+        STATE
+    }
+
+    private String canonicalName;
+    private Map<Locale, String> translations;
+    private List<Entity> belongsTo;
+    private EntityType type;
+    private Date established;
+    private Date ceased;
+
+    public Date getEstablished() {
+        return established;
+    }
+
+    public void setEstablished(Date established) {
+        this.established = established;
+    }
+
+    public Date getCeased() {
+        return ceased;
+    }
+
+    public void setCeased(Date ceased) {
+        this.ceased = ceased;
+    }
+
+    public String getCanonicalName() {
+        return canonicalName;
+    }
+
+    public void setCanonicalName(String canonicalName) {
+        this.canonicalName = canonicalName;
+    }
+
+    public Map<Locale, String> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(Map<Locale, String> translations) {
+        this.translations = translations;
+    }
+
+    public List<Entity> getBelongsTo() {
+        return belongsTo;
+    }
+
+    public void setBelongsTo(List<Entity> belongsTo) {
+        this.belongsTo = belongsTo;
+    }
+
+    public EntityType getType() {
+        return type;
+    }
+
+    public void setType(EntityType type) {
+        this.type = type;
+    }
 }

@@ -14,27 +14,18 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
-
-import org.metastringfoundation.healthheatmap.pojo.Entity;
+package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.List;
 
-public class EntityManager {
+public interface Table {
+    List<List<String>> getTable();
 
-    private List<Entity> entityList;
+    List<String> getRow(int rowNumber);
 
-    public List<Entity> getEntities() {
-        return entityList;
-    }
+    List<String> getColumn(int columnNumber);
 
-    public void setEntities(List<Entity> entityList) {
-        this.entityList = entityList;
-    }
-
-    public List<Entity> queryEntities(
-
-    ) {
-        return null;
+    default String getCell(int rowNumber, int columnNumber) {
+        return getRow(rowNumber).get(columnNumber);
     }
 }

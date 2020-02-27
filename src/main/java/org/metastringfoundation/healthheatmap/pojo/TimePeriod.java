@@ -14,27 +14,32 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.pojo;
 
-import org.metastringfoundation.healthheatmap.pojo.Entity;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.util.Date;
 
-import java.util.List;
+@Embeddable
+public class TimePeriod {
+    private Date startTime;
+    private Date endTime;
 
-public class EntityManager {
-
-    private List<Entity> entityList;
-
-    public List<Entity> getEntities() {
-        return entityList;
+    @Column(name="START_TIME")
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setEntities(List<Entity> entityList) {
-        this.entityList = entityList;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public List<Entity> queryEntities(
+    @Column(name="END_TIME")
+    public Date getEndTime() {
+        return endTime;
+    }
 
-    ) {
-        return null;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }

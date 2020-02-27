@@ -45,7 +45,7 @@ public class EntityResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getIndicator(
+    public Response getEntities(
     ) {
         try {
             return Response.status(200).entity(app.getIndicators()).build();
