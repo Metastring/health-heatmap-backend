@@ -20,7 +20,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 
 @Entity
-@Table(name = "indicator")
+@Table(name = "indicators")
 public class Indicator {
     private long id;
     private String shortCode;
