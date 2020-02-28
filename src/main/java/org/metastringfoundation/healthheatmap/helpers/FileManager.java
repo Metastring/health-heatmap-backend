@@ -14,21 +14,17 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.helpers;
 
-import java.util.List;
+import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 
-public interface Table {
-    List<List<String>> getTable();
+import java.io.FileReader;
+import java.io.Reader;
+import java.nio.file.Path;
 
-    List<String> getRow(int rowNumber);
-
-    List<String> getColumn(int columnNumber);
-
-    default String getCell(int rowNumber, int columnNumber) {
-        return getRow(rowNumber).get(columnNumber);
+public class FileManager {
+    public static Reader getFileReader(Path nioPath) throws Exception {
+        String path = nioPath.toString();
+        return new FileReader(path);
     }
-
-    int getNumberOfRows();
-    int getNumberOfColumns();
 }
