@@ -20,7 +20,20 @@ import org.metastringfoundation.healthheatmap.pojo.DataElement;
 
 import java.util.Collection;
 
-public interface Dataset {
-    public DatasetMetadata getMetadata();
-    public Collection<DataElement> getData();
+public class CSVTableToDatasetAdapter implements Dataset {
+    private CSVTable table;
+
+    public CSVTableToDatasetAdapter(CSVTable csvTable) {
+        table = csvTable;
+    }
+
+    @Override
+    public DatasetMetadata getMetadata() {
+        return null;
+    }
+
+    @Override
+    public Collection<DataElement> getData() {
+        return null;
+    }
 }

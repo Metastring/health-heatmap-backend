@@ -22,17 +22,19 @@ import org.metastringfoundation.healthheatmap.datapoint.FloatDataPoint;
 import org.metastringfoundation.healthheatmap.datapoint.StringDataPoint;
 import org.metastringfoundation.healthheatmap.helpers.ListUtils;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVDataset implements Dataset {
-    private String path;
-    private CSVDatasetRangeReference indicatorInfo;
-    private CSVDatasetRangeReference entityInfo;
-    private CSVDatasetRangeReference dataInfo;
+public class CSVDataset {
+    private Path path;
+    private TableRangeReference indicatorInfo;
+    private TableRangeReference entityInfo;
+    private TableRangeReference dataInfo;
     private DatasetMetadata metadata;
 
-    private CSVReader csvReader;
+    private CSVTable csvReader;
     private List<CSVRecord> records;
 
     private List<String> indicators;
@@ -40,20 +42,20 @@ public class CSVDataset implements Dataset {
     private List<List<DataPoint>> dataGroupedByEntities;
 
     public static class builder {
-        private String path;
-        private CSVDatasetRangeReference indicatorInfo = new CSVDatasetRangeReference("B0:0");
-        private CSVDatasetRangeReference entityInfo = new CSVDatasetRangeReference("A1:A");
-        private CSVDatasetRangeReference dataInfo = new CSVDatasetRangeReference("B1: "); //TODO avoid the space hack on part two of the reference
+        private Path path;
+        private TableRangeReference indicatorInfo = new TableRangeReference("B0:0");
+        private TableRangeReference entityInfo = new TableRangeReference("A1:A");
+        private TableRangeReference dataInfo = new TableRangeReference("B1: "); //TODO avoid the space hack on part two of the reference
         private DatasetMetadata metadata = new DatasetMetadata("Untitled");
 
         public builder path(String path) {
-            this.path = path;
+            this.path = Paths.get(path);
             return this;
         }
 
         public builder indicator(String rangeReference) throws DatasetIntegrityError {
-            CSVDatasetRangeReference indicatorInfo = new CSVDatasetRangeReference(rangeReference);
-            if (indicatorInfo.getRangeType() == CSVDatasetRangeReference.RangeType.ROW_AND_COLUMN) {
+            TableRangeReference indicatorInfo = new TableRangeReference(rangeReference);
+            if (indicatorInfo.getRangeType() == TableRangeReference.RangeType.ROW_AND_COLUMN) {
                 throw new DatasetIntegrityError("Multi-dimensional indicator array is not yet supported");
             }
             this.indicatorInfo = indicatorInfo;
@@ -61,8 +63,8 @@ public class CSVDataset implements Dataset {
         }
 
         public builder entity(String rangeReference) throws  DatasetIntegrityError {
-            CSVDatasetRangeReference entityInfo = new CSVDatasetRangeReference(rangeReference);
-            if (entityInfo.getRangeType() == CSVDatasetRangeReference.RangeType.ROW_AND_COLUMN) {
+            TableRangeReference entityInfo = new TableRangeReference(rangeReference);
+            if (entityInfo.getRangeType() == TableRangeReference.RangeType.ROW_AND_COLUMN) {
                 throw new DatasetIntegrityError("Multi-dimensional entity array is not yet supported");
             }
             this.entityInfo = entityInfo;
@@ -70,7 +72,7 @@ public class CSVDataset implements Dataset {
         }
 
         public builder data(String rangeReference) {
-            this.dataInfo = new CSVDatasetRangeReference(rangeReference);
+            this.dataInfo = new TableRangeReference(rangeReference);
             return this;
         }
 
@@ -108,18 +110,12 @@ public class CSVDataset implements Dataset {
     }
 
     public void parseData() throws DatasetIntegrityError {
-        this.csvReader = new CSVReader(path);
-        this.records = csvReader.getCSVRecords();
-        calculateIndicators();
-        System.out.println("Found these indicators " + this.indicators.toString());
-        calculateEntities();
-        System.out.println("Found these entities " + this.entities.toString());
-        calculateDataGroupedByEntities();
+        this.csvReader = new CSVTable(path);
     }
 
     private void calculateIndicators() throws DatasetIntegrityError {
         try {
-            this.indicators = CSVDatasetRangeReference.dereferenceOneDimension(this.indicatorInfo, this.records);
+            this.indicators = CSVTableUtils.dereferenceOneDimension(this.indicatorInfo, this.records);
         } catch (IndexOutOfBoundsException e) {
             throw new DatasetIntegrityError("No indicators found in file");
         }
@@ -132,7 +128,7 @@ public class CSVDataset implements Dataset {
 
     private void calculateEntities() throws DatasetIntegrityError {
         try {
-            this.entities = CSVDatasetRangeReference.dereferenceOneDimension(this.entityInfo, this.records);
+            this.entities = CSVTableUtils.dereferenceOneDimension(this.entityInfo, this.records);
         } catch (IndexOutOfBoundsException e) {
             throw new DatasetIntegrityError("No entities found in file");
         }
@@ -144,12 +140,12 @@ public class CSVDataset implements Dataset {
 
      private void calculateDataGroupedByEntities() throws DatasetIntegrityError {
         boolean needsTransposition = false;
-        if (this.entityInfo.getRangeType() == CSVDatasetRangeReference.RangeType.ROW_ONLY) {
+        if (this.entityInfo.getRangeType() == TableRangeReference.RangeType.ROW_ONLY) {
             // entity info is written in a row. Which means entities are in the X-dimension. We need to transpose data.
             needsTransposition = true;
         }
 
-        List<List<String>> stringDataGroupedByEntities = CSVDatasetRangeReference.dereferenceTable(this.dataInfo, this.records);
+        List<List<String>> stringDataGroupedByEntities = CSVTableUtils.dereferenceTable(this.dataInfo, this.records);
         //TODO transpose this data if required
          if (needsTransposition) {
              stringDataGroupedByEntities = ListUtils.transpose(stringDataGroupedByEntities);
@@ -178,7 +174,6 @@ public class CSVDataset implements Dataset {
         return this.dataGroupedByEntities;
     }
 
-    @Override
     public DatasetMetadata getMetadata() {
         return this.metadata;
     }

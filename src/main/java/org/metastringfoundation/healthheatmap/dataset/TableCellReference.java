@@ -18,12 +18,17 @@ package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.Locale;
 
-public class CSVDatasetCellReference {
+public class TableCellReference {
     private int row = 0;
     private int column = 0;
 
-    CSVDatasetCellReference(String reference) {
+    TableCellReference(String reference) {
          parseReference(reference);
+    }
+
+    TableCellReference(int row, int column) {
+        this.row = row;
+        this.column = column;
     }
 
     public int getRow() {
