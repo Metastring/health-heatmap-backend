@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-public class RandomDataset implements Dataset {
+public class RandomDataset {
     private DatasetMetadata metadata;
     private List<String> indicators;
     private List<String> entities;
@@ -82,7 +82,6 @@ public class RandomDataset implements Dataset {
         return this.dataGroupedByEntities;
     }
 
-    @Override
     public DatasetMetadata getMetadata() {
         return this.metadata;
     }
