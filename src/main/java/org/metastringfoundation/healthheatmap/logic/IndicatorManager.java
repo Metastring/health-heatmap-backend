@@ -18,28 +18,42 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
 public class IndicatorManager {
+    private static IndicatorManager indicatorManager;
+
+    public static IndicatorManager getInstance() {
+        if (indicatorManager != null) {
+            return indicatorManager;
+        }
+        indicatorManager = new IndicatorManager();
+        return indicatorManager;
+    }
+
+    private EntityManager persistenceManager;
+
+    public void setPersistenceManager(EntityManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
     private List<Indicator> indicatorList;
 
-    public IndicatorManager() {
-        loadIndicators();
+    private IndicatorManager() {
     }
 
     public void loadIndicators() {
-        indicatorList = new ArrayList<>();
+    }
 
-        Indicator a = new Indicator();
-        a.setId("TEST");
-        a.setCanonicalName("Test Indicator");
-        indicatorList.add(a);
-
-        Indicator b = new Indicator();
-        b.setId("MMR");
-        b.setCanonicalName("Maternal Mortality Rate");
-        indicatorList.add(b);
+    public Indicator addIndicator(String name) {
+        Indicator indicator = new Indicator();
+        indicator.setCanonicalName(name);
+        persistenceManager.getTransaction().begin();
+        persistenceManager.persist(indicator);
+        persistenceManager.getTransaction().commit();
+        return indicator;
     }
 
     public List<Indicator> getIndicators () {

@@ -16,22 +16,38 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import java.util.Map;
+import javax.persistence.*;
+import javax.persistence.Entity;
 
+@Entity
+@Table(name = "indicator")
 public class Indicator {
-    private String id;
+    private long id;
+    private String shortCode;
     private String canonicalName;
-    private Map<String, String> translations;
     private String derivation;
 
-    public String getId() {
+    @Id
+    @GeneratedValue(strategy =  GenerationType.SEQUENCE)
+    @Column(name = "id")
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
+    @Column(name = "short_code")
+    public String getShortCode() {
+        return shortCode;
+    }
+
+    public void setShortCode(String shortCode) {
+        this.shortCode = shortCode;
+    }
+
+    @Column(name = "name")
     public String getCanonicalName() {
         return canonicalName;
     }
@@ -40,14 +56,7 @@ public class Indicator {
         this.canonicalName = canonicalName;
     }
 
-    public Map<String, String> getTranslations() {
-        return translations;
-    }
-
-    public void setTranslations(Map<String, String> translations) {
-        this.translations = translations;
-    }
-
+    @Column(name = "derivation")
     public String getDerivation() {
         return derivation;
     }

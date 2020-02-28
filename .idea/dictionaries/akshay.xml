@@ -3,7 +3,9 @@
     <words>
       <w>dataset</w>
       <w>healthdata</w>
+      <w>healthheatmap</w>
       <w>metastring</w>
+      <w>metastringfoundation</w>
       <w>mongo</w>
       <w>storer</w>
     </words>

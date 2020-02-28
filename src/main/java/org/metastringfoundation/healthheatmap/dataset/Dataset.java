@@ -16,11 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import org.metastringfoundation.healthheatmap.pojo.DataElement;
-
-import java.util.List;
-
 public interface Dataset {
-    public List<DataElement> getData();
     public DatasetMetadata getMetadata();
 }

@@ -14,21 +14,20 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.helpers;
+package org.metastringfoundation.healthheatmap.storage;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-import java.util.List;
+public class HibernateManager {
 
-public class Jsonizer {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static EntityManagerFactory entityManagerFactory = null;
 
-    public static <E> String getJSONString(List<E> someList) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(someList);
-    }
-
-    public static String asJSON(Object object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+    public static EntityManager openEntityManager() {
+        if (entityManagerFactory == null) {
+            entityManagerFactory = Persistence.createEntityManagerFactory( "org.metastringfoundation.healthheatmap.persistence.truth" );
+        }
+        return entityManagerFactory.createEntityManager();
     }
 }

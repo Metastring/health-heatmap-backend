@@ -26,6 +26,7 @@ import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.pojo.Entity;
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
 import org.metastringfoundation.healthheatmap.storage.Database;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class DefaultApplication implements Application {
 
     private static Database psql;
     private static RestHighLevelClient elastic;
+    private static javax.persistence.EntityManager persistenceManager;
 
     private static void setElastic(RestHighLevelClient restHighLevelClient) {
         elastic = restHighLevelClient;
@@ -45,8 +47,13 @@ public class DefaultApplication implements Application {
         psql = database;
     }
 
-    private static final IndicatorManager indicatorManager = new IndicatorManager();
-    private static final EntityManager entityManager = new EntityManager();
+    public static void setPersistenceManager(javax.persistence.EntityManager persistenceManager) {
+        DefaultApplication.persistenceManager = persistenceManager;
+        indicatorManager.setPersistenceManager(persistenceManager);
+    }
+
+    private static final IndicatorManager indicatorManager = IndicatorManager.getInstance();
+    private static final EntityManager entityManager = EntityManager.getInstance();
 
     public DefaultApplication() {
         RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(
@@ -54,8 +61,12 @@ public class DefaultApplication implements Application {
                 new HttpHost("localhost", 9201, "http")
         ));
         setElastic(client);
+
         Database psql = new PostgreSQL();
         setPsql(psql);
+
+        javax.persistence.EntityManager persistenceManager = HibernateManager.openEntityManager();
+        setPersistenceManager(persistenceManager);
     }
 
     public DefaultApplication(RestHighLevelClient restHighLevelClient, Database psql) {
@@ -63,9 +74,18 @@ public class DefaultApplication implements Application {
         setPsql(psql);
     }
 
-    private String jsonize(List<?> objectList) throws ApplicationError{
+    private String jsonizeList(List<?> objectList) throws ApplicationError{
         try {
             return Jsonizer.getJSONString(objectList);
+        } catch (JsonProcessingException e) {
+            LOG.error(e);
+            throw new ApplicationError(e);
+        }
+    }
+
+    private String jsonizeObject(Object object) throws ApplicationError {
+        try {
+            return Jsonizer.asJSON(object);
         } catch (JsonProcessingException e) {
             LOG.error(e);
             throw new ApplicationError(e);
@@ -75,18 +95,19 @@ public class DefaultApplication implements Application {
     @Override
     public String getIndicators() throws ApplicationError {
         List<Indicator> indicatorList = indicatorManager.getIndicators();
-        return jsonize(indicatorList);
+        return jsonizeList(indicatorList);
     }
 
     @Override
     public String getEntities() throws ApplicationError {
-        List <Entity> entityList = entityManager.getEntities();
-        return jsonize(entityList);
+        List<Entity> entityList = entityManager.getEntities();
+        return jsonizeList(entityList);
     }
 
     @Override
-    public String saveIndicator(String indicatorJSON) {
-        return "saved the indicator " + indicatorJSON;
+    public String addIndicator(String indicatorName) throws ApplicationError {
+        Indicator indicator = indicatorManager.addIndicator(indicatorName);
+        return jsonizeObject(indicator);
     }
 
     @Override

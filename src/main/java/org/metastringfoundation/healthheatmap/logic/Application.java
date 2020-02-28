@@ -19,7 +19,9 @@ package org.metastringfoundation.healthheatmap.logic;
 public interface Application {
     String getIndicators() throws ApplicationError;
     String getEntities() throws ApplicationError;
-    String saveIndicator(String indicatorJSON);
+
+    String addIndicator(String indicatorName) throws ApplicationError;
+
     String saveEntity(String entityJSON);
     String getDimension(String dimension);
 

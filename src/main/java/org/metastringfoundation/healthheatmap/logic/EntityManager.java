@@ -21,6 +21,19 @@ import org.metastringfoundation.healthheatmap.pojo.Entity;
 import java.util.List;
 
 public class EntityManager {
+    public static EntityManager entityManager;
+
+    public static EntityManager getInstance() {
+        if (entityManager != null) {
+            return entityManager;
+        }
+        entityManager = new EntityManager();
+        return entityManager;
+    }
+
+    private EntityManager() {
+
+    }
 
     private List<Entity> entityList;
 

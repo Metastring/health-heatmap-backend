@@ -45,4 +45,17 @@ public class IndicatorResource {
             return Response.status(503).entity(applicationError.toString()).build();
         }
     }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addIndicator(
+            @QueryParam("name") String name
+    ) {
+        try {
+            return Response.status(200).entity(app.addIndicator(name)).build();
+        } catch (ApplicationError applicationError) {
+            LOG.error(applicationError);
+            return Response.status(503).entity(applicationError.toString()).build();
+        }
+    }
 }
