@@ -21,7 +21,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
-import org.metastringfoundation.healthheatmap.pojo.DataElement;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
