@@ -67,7 +67,7 @@ public class TableCellReference {
     }
 
     private int getRowFromReference(String rowReference) {
-        return Integer.parseInt(rowReference);
+        return Integer.parseInt(rowReference) - 1;
     }
 
     private int getColumnFromReference(String columnReference) {
