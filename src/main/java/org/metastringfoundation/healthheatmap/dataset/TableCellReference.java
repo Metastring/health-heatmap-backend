@@ -104,4 +104,15 @@ public class TableCellReference {
         }
         return retval-1;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TableCellReference other = (TableCellReference) obj;
+        return (other.getRow() == (this.getRow())
+                && other.getColumn() == this.getColumn()
+        );
+    }
 }

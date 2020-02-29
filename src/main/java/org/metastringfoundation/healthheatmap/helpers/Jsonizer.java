@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.helpers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Jsonizer {
@@ -30,5 +31,9 @@ public class Jsonizer {
 
     public static String asJSON(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
+    }
+
+    public static Object fromJSON(String json, Class classType) throws IOException {
+        return objectMapper.readValue(json, classType);
     }
 }

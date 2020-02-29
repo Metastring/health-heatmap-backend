@@ -24,8 +24,6 @@ public class CSVTableToDatasetAdapter implements Dataset {
     private CSVTable table;
     private CSVTableDescription tableDescription;
 
-
-
     private static final Map<String, String> regexMapOfDimensions = new HashMap<>();
     static {
         regexMapOfDimensions.put(quotedDimension("entity.district"), ".+");

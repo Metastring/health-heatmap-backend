@@ -16,15 +16,24 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
+import org.apache.commons.io.IOUtils;
 
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileManager {
     public static Reader getFileReader(Path nioPath) throws Exception {
         String path = nioPath.toString();
         return new FileReader(path);
+    }
+
+    public static Path getPathFromString(String path) {
+        return Paths.get(path);
+    }
+
+    public static String getFileContentsAsString(String path) throws IOException {
+        return IOUtils.toString(new FileInputStream(path), StandardCharsets.UTF_8);
     }
 }

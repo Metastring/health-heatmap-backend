@@ -16,9 +16,22 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import org.metastringfoundation.healthheatmap.helpers.FileManager;
+import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+
+import java.io.IOException;
 import java.util.List;
 
 public class CSVTableDescription {
+
+    public static CSVTableDescription fromPath(String path) throws IOException {
+        String description = FileManager.getFileContentsAsString(path);
+        return fromString(description);
+    }
+
+    public static CSVTableDescription fromString(String jsonString) throws IOException {
+        return (CSVTableDescription) Jsonizer.fromJSON(jsonString, CSVTableDescription.class);
+    }
 
     private List<CSVRangeDescription> rangeDescriptionList;
 
@@ -28,5 +41,14 @@ public class CSVTableDescription {
 
     public void setRangeDescriptionList(List<CSVRangeDescription> rangeDescriptionList) {
         this.rangeDescriptionList = rangeDescriptionList;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        CSVTableDescription other = (CSVTableDescription) obj;
+        return other.getRangeDescriptionList().equals(this.getRangeDescriptionList());
     }
 }

@@ -17,12 +17,12 @@
 package org.metastringfoundation.healthheatmap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.dataset.CSVRangeDescription;
 import org.metastringfoundation.healthheatmap.dataset.CSVTableDescription;
 import org.metastringfoundation.healthheatmap.dataset.TableRangeReference;
+import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,37 +34,49 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CSVReadingTest {
 
     @Test
-    void correctlyDeserializes() throws JsonProcessingException {
+    void correctlySerializesDescription() throws JsonProcessingException {
         CSVTableDescription tableDescription = new CSVTableDescription();
 
         List<CSVRangeDescription> rangeDescriptionList = new ArrayList<>();
         CSVRangeDescription range1 = new CSVRangeDescription();
-        range1.setPattern("something");
+        range1.setPattern("#{indicator}");
         range1.setRange(new TableRangeReference("A1:B2"));
         rangeDescriptionList.add(range1);
 
         tableDescription.setRangeDescriptionList(rangeDescriptionList);
 
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(tableDescription);
+        String json = Jsonizer.asJSON(tableDescription);
 
-        String expectedJson = "{\"rangeDescriptionList\":[{\"range\":{\"startingCell\":{\"row\":1,\"column\":0},\"endingCell\":{\"row\":2,\"column\":1}},\"pattern\":\"something\"}]}";
+        String expectedJson = "{\"rangeDescriptionList\":[{\"range\":{\"startingCell\":{\"row\":0,\"column\":0},\"endingCell\":{\"row\":1,\"column\":1}},\"pattern\":\"#{indicator}\"}]}";
         assertEquals(expectedJson, json);
     }
 
     @Test()
     void correctlyReadsJSON() throws IOException {
         String jsonFileName = "ahs.test.json";
-        String json = IOUtils.toString(
-                this.getClass().getResourceAsStream(jsonFileName),
+        String path = this.getClass().getResource(jsonFileName).getPath();
+        CSVTableDescription description = CSVTableDescription.fromPath(path);
+
+        CSVRangeDescription range = new CSVRangeDescription();
+        range.setRange(new TableRangeReference("A1:B2"));
+        range.setPattern("#{indicator}");
+        List<CSVRangeDescription> rangeDescriptionList = new ArrayList<>();
+        rangeDescriptionList.add(range);
+
+        CSVTableDescription expectedDescription = new CSVTableDescription();
+        expectedDescription.setRangeDescriptionList(rangeDescriptionList);
+
+        assertEquals(expectedDescription, description);
+    }
+
+    @Test
+    void endToEndTest() throws IOException {
+        String csv = IOUtils.toString(
+                this.getClass().getResourceAsStream("sampleData.csv"),
                 StandardCharsets.UTF_8
         );
-        ObjectMapper mapper = new ObjectMapper();
-        CSVTableDescription description = (CSVTableDescription) mapper.readValue(json, CSVTableDescription.class);
+        String csvPath = this.getClass().getResource("sampleData.csv").getPath();
 
-        System.out.println(json);
-
-        assertEquals(1, 1);
     }
 
 }

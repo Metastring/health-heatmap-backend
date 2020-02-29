@@ -35,4 +35,15 @@ public class CSVRangeDescription {
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        CSVRangeDescription other = (CSVRangeDescription) obj;
+        return (other.getRange().equals(this.getRange())
+                && other.getPattern().equals(this.getPattern())
+        );
+    }
 }

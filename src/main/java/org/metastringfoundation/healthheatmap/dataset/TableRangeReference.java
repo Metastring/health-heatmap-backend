@@ -22,9 +22,6 @@ public class TableRangeReference {
     private TableCellReference startingCell;
     private TableCellReference endingCell;
 
-    @JsonIgnore
-    private RangeType rangeType;
-
     public enum RangeType {
         SINGLE_CELL,
         ROW_ONLY,
@@ -33,11 +30,15 @@ public class TableRangeReference {
     }
 
     public TableRangeReference(String reference) {
-        convertReferenceToCellReferences(reference);
+        setReferencesFromString(reference);
     }
 
     public TableRangeReference() {
+    }
 
+    public TableRangeReference(TableCellReference startingCell, TableCellReference endingCell) {
+        this.startingCell = startingCell;
+        this.endingCell = endingCell;
     }
 
     public void setStartingCell(TableCellReference startingCell) {
@@ -48,32 +49,37 @@ public class TableRangeReference {
         this.endingCell = endingCell;
     }
 
-    private void convertReferenceToCellReferences(String reference) {
+    private void setReferencesFromString(String reference) {
         String[] referenceSplit = reference.split(":");
         if (referenceSplit.length != 2) {
             throw new IllegalArgumentException("Reference should be of format CELL:CELL");
         }
         this.startingCell = new TableCellReference(referenceSplit[0]);
         this.endingCell = new TableCellReference(referenceSplit[1]);
+    }
 
-        int startRow = this.startingCell.getRow();
-        int startColumn = this.startingCell.getColumn();
-        int endRow = this.endingCell.getRow();
-        int endColumn = this.endingCell.getColumn();
+    public static RangeType getRangeType(TableCellReference rangeStartCell, TableCellReference rangeEndCell) {
+        int startRow = rangeStartCell.getRow();
+        int startColumn = rangeStartCell.getColumn();
+        int endRow = rangeEndCell.getRow();
+        int endColumn = rangeEndCell.getColumn();
 
+
+        RangeType rangeType;
 
         if (startColumn == endColumn && startRow == endRow) {
-            this.rangeType = RangeType.SINGLE_CELL;
+            rangeType = RangeType.SINGLE_CELL;
         } else if (endColumn > startColumn && endRow > startRow) {
-            this.rangeType = RangeType.ROW_AND_COLUMN;
+            rangeType = RangeType.ROW_AND_COLUMN;
         } else if (endColumn == startColumn && endRow > startRow) {
-            this.rangeType = RangeType.COLUMN_ONLY;
+            rangeType = RangeType.COLUMN_ONLY;
         } else if (endColumn > startColumn && endRow == startRow) {
-            this.rangeType = RangeType.ROW_ONLY;
+            rangeType = RangeType.ROW_ONLY;
         } else // (endRow < startRow || endColumn < startColumn)
         {
             throw new IllegalArgumentException("The starting cell should come before ending cell");
         }
+        return rangeType;
     }
 
     public TableCellReference getStartingCell() {
@@ -84,8 +90,14 @@ public class TableRangeReference {
         return this.endingCell;
     }
 
-    public RangeType getRangeType() {
-        return this.rangeType;
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TableRangeReference other = (TableRangeReference) obj;
+        return (other.getStartingCell().equals(this.getStartingCell())
+                && other.getEndingCell().equals(this.getEndingCell())
+        );
     }
-
 }
