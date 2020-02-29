@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.metastringfoundation.healthheatmap.helpers.PatternParsingAssistants.quotedDimension;
 
@@ -35,6 +36,12 @@ public class UnmatchedSettlement {
             }
         }
         return result;
+    }
+
+    public UnmatchedSettlement() {}
+
+    public UnmatchedSettlement(String type) {
+        setType(type);
     }
 
     public String getType() {
@@ -58,5 +65,10 @@ public class UnmatchedSettlement {
     public String toString() {
         return super.toString() + "\n" +
                 "type: " + getType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
     }
 }

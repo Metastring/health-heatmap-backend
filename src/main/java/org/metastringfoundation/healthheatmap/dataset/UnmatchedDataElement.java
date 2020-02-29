@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import java.util.Objects;
+
 public class UnmatchedDataElement {
     private UnmatchedGeography geography;
     private UnmatchedIndicator indicator;
@@ -60,10 +62,10 @@ public class UnmatchedDataElement {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         UnmatchedDataElement other = (UnmatchedDataElement) obj;
-        return (other.getValue().equals(this.getValue())
-                && other.getGeography().equals(this.getGeography())
-                && other.getIndicator().equals(this.getIndicator())
-                && other.getSettlement().equals(this.getSettlement())
+        return (Objects.deepEquals(other.getValue(), this.getValue()) &&
+                Objects.deepEquals(other.getGeography(), this.getGeography()) &&
+                Objects.deepEquals(other.getIndicator(), this.getIndicator()) &&
+                Objects.deepEquals(other.getSettlement(), this.getSettlement())
         );
     }
 
@@ -73,6 +75,11 @@ public class UnmatchedDataElement {
                 "geography " + getGeography() + "\n" +
                 "indicator " + getIndicator() + "\n" +
                 "settlement " + getSettlement() + "\n" +
-                "value" + getValue();
+                "value " + getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(geography, indicator, settlement, value);
     }
 }

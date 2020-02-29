@@ -16,13 +16,15 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 
 import static org.metastringfoundation.healthheatmap.helpers.PatternParsingAssistants.quotedDimension;
 
 public class CSVTableToDatasetAdapter implements Dataset {
-    private CSVTable table;
-    private CSVTableDescription tableDescription;
+    private static final Logger LOG = LogManager.getLogger(CSVTableToDatasetAdapter.class);
 
     private static final Map<String, String> regexMapOfDimensions = new HashMap<>();
     static {
@@ -32,6 +34,9 @@ public class CSVTableToDatasetAdapter implements Dataset {
         regexMapOfDimensions.put(quotedDimension("indicator"), ".+");
         regexMapOfDimensions.put(quotedDimension("data"), ".+");
     }
+
+    private CSVTable table;
+    private CSVTableDescription tableDescription;
 
     public CSVTableToDatasetAdapter(CSVTable csvTable, CSVTableDescription csvTableDescription) {
         table = csvTable;
@@ -69,6 +74,8 @@ public class CSVTableToDatasetAdapter implements Dataset {
                 int column = cell.getColumn();
                 Map<String, String> dimensionsFound = patternParser.parse(cell.getValue());
 
+                LOG.debug("Dimensions found in " + cell + " are " + dimensionsFound);
+
                 if (dimensionsFound.get(dataDimension) != null) {
                     UnprocessedDataElement unprocessedDataElement = new UnprocessedDataElement();
                     unprocessedDataElement.setCsvCell(cell);
@@ -76,18 +83,22 @@ public class CSVTableToDatasetAdapter implements Dataset {
                     unprocessedDataElements.add(unprocessedDataElement);
                 } else {
                     if (rowDimensions.get(row) == null) {
-                        rowDimensions.put(row, dimensionsFound);
+                        rowDimensions.put(row, new HashMap<>(dimensionsFound));
                     } else {
                         rowDimensions.get(row).putAll(dimensionsFound);
                     }
                     if (columnDimensions.get(column) == null) {
-                        columnDimensions.put(column, dimensionsFound);
+                        columnDimensions.put(column, new HashMap<>(dimensionsFound));
                     } else {
                         columnDimensions.get(column).putAll(dimensionsFound);
                     }
                 }
             }
         }
+
+        LOG.debug("RowDimensions are " + rowDimensions);
+        LOG.debug("ColumnDimensions are " + columnDimensions);
+
 
         // now let us process the dimensions
         /*
@@ -109,6 +120,9 @@ public class CSVTableToDatasetAdapter implements Dataset {
         rowDimensions.keySet().retainAll(rowsWithData);
         columnDimensions.keySet().retainAll(columnsWithData);
 
+        LOG.debug("Cleaned rowDimensions is " + rowDimensions);
+        LOG.debug("Cleaned colDimensions is " + columnDimensions);
+
         // Now our dimension maps will have only valid dimensions
         // Using that we can find out what indicator, etc they are supposed to contain
         Map<String, String> dimensionsAvailableInDataset = new HashMap<>();
@@ -118,16 +132,16 @@ public class CSVTableToDatasetAdapter implements Dataset {
             dimensionsAvailableInDataset.put("entity", "row");
         } else {
             unmatchedEntities = UnmatchedGeography.getGeography(columnDimensions);
+            if (!unmatchedEntities.isEmpty()) dimensionsAvailableInDataset.put("entity", "column");
         }
-        if (!unmatchedEntities.isEmpty()) dimensionsAvailableInDataset.put("entity", "column");
 
         Map<Integer, UnmatchedIndicator> unmatchedIndicatos = UnmatchedIndicator.getIndicator(rowDimensions);
         if (!unmatchedIndicatos.isEmpty()) {
             dimensionsAvailableInDataset.put("indicator", "row");
         } else {
             unmatchedIndicatos = UnmatchedIndicator.getIndicator(columnDimensions);
+            if (!unmatchedIndicatos.isEmpty()) dimensionsAvailableInDataset.put("indicator", "column");
         }
-        if (!unmatchedIndicatos.isEmpty()) dimensionsAvailableInDataset.put("indicator", "column");
 
 
         Map<Integer, UnmatchedSettlement> unmatchedSettlements = UnmatchedSettlement.getSettlement(rowDimensions);
@@ -135,8 +149,10 @@ public class CSVTableToDatasetAdapter implements Dataset {
             dimensionsAvailableInDataset.put("settlement", "row");
         } else {
             unmatchedSettlements = UnmatchedSettlement.getSettlement(columnDimensions);
+            if (!unmatchedSettlements.isEmpty()) dimensionsAvailableInDataset.put("settlement", "column");
         }
-        if (!unmatchedSettlements.isEmpty()) dimensionsAvailableInDataset.put("settlement", "column");
+
+        LOG.debug("Dimensions available in dataset are " + dimensionsAvailableInDataset);
 
         for (UnprocessedDataElement unprocessedDataElement: unprocessedDataElements) {
             UnmatchedDataElement dataElement = new UnmatchedDataElement();

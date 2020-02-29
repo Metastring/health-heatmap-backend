@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.metastringfoundation.healthheatmap.helpers.PatternParsingAssistants.quotedDimension;
 
@@ -38,6 +39,13 @@ public class UnmatchedGeography {
             }
         }
         return result;
+    }
+
+    public UnmatchedGeography() {}
+
+    public UnmatchedGeography(String state, String district) {
+        setState(state);
+        setDistrict(district);
     }
 
     public String getState() {
@@ -72,5 +80,10 @@ public class UnmatchedGeography {
         return super.toString() + "\n" +
                 "state: " + getState() + "\n" +
                 "district: " + getDistrict();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(state, district);
     }
 }

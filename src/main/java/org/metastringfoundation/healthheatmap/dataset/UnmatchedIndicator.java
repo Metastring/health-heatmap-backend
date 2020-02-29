@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.metastringfoundation.healthheatmap.helpers.PatternParsingAssistants.quotedDimension;
 
@@ -29,12 +30,19 @@ public class UnmatchedIndicator {
         for (Map.Entry<Integer, Map<String, String>> row: dimensionsMap.entrySet()) {
             String indicatorName = row.getValue().get(quotedDimension("indicator"));
             if (!(indicatorName == null)) {
-                UnmatchedIndicator indicator = new UnmatchedIndicator();
-                indicator.setName(indicatorName);
+                UnmatchedIndicator indicator = new UnmatchedIndicator(indicatorName);
                 result.put(row.getKey(), indicator);
             }
         }
         return result;
+    }
+
+    public UnmatchedIndicator() {
+
+    }
+
+    public UnmatchedIndicator(String name) {
+        setName(name);
     }
 
     public String getName() {
@@ -58,5 +66,10 @@ public class UnmatchedIndicator {
     public String toString() {
         return super.toString() + "\n" +
                 "name: " + getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

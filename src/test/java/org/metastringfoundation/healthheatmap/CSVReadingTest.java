@@ -19,14 +19,15 @@ package org.metastringfoundation.healthheatmap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.dataset.CSVRangeDescription;
-import org.metastringfoundation.healthheatmap.dataset.CSVTableDescription;
-import org.metastringfoundation.healthheatmap.dataset.TableRangeReference;
+import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.pojo.DataElement;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,13 +71,60 @@ class CSVReadingTest {
     }
 
     @Test
-    void endToEndTest() throws IOException {
+    void endToEndTest() throws IOException, DatasetIntegrityError {
         String csv = IOUtils.toString(
                 this.getClass().getResourceAsStream("sampleData.csv"),
                 StandardCharsets.UTF_8
         );
         String csvPath = this.getClass().getResource("sampleData.csv").getPath();
+        String descriptionPath = this.getClass().getResource("sampleData.description.json").getPath();
 
+        CSVTable table = CSVTable.fromPath(csvPath);
+        CSVTableDescription tableDescription = CSVTableDescription.fromPath(descriptionPath);
+
+        Dataset csvDataset = new CSVTableToDatasetAdapter(table, tableDescription);
+        Collection<UnmatchedDataElement> elements = csvDataset.getData();
+
+        Collection<UnmatchedDataElement> expectedElements = new HashSet<>();
+
+        UnmatchedGeography kannur = new UnmatchedGeography();
+        kannur.setState("Kerala");
+        kannur.setDistrict("Kannur");
+
+        UnmatchedGeography bangalore = new UnmatchedGeography();
+        bangalore.setState("Karnataka");
+        bangalore.setDistrict("Bangalore");
+
+        UnmatchedIndicator mmr = new UnmatchedIndicator();
+        mmr.setName("MMR");
+
+        UnmatchedIndicator u5mr = new UnmatchedIndicator();
+        u5mr.setName("U5MR");
+
+        UnmatchedDataElement d1 = new UnmatchedDataElement();
+        d1.setGeography(kannur);
+        d1.setIndicator(mmr);
+        d1.setValue("0.5");
+        expectedElements.add(d1);
+
+        UnmatchedDataElement d2 = new UnmatchedDataElement();
+        d2.setGeography(kannur);
+        d2.setIndicator(u5mr);
+        d2.setValue("0.6");
+        expectedElements.add(d2);
+
+        UnmatchedDataElement d3 = new UnmatchedDataElement();
+        d3.setGeography(bangalore);
+        d3.setIndicator(mmr);
+        d3.setValue("1");
+        expectedElements.add(d3);
+
+        UnmatchedDataElement d4 = new UnmatchedDataElement();
+        d4.setGeography(bangalore);
+        d4.setIndicator(u5mr);
+        d4.setValue("1.2");
+        expectedElements.add(d4);
+
+        assertEquals(expectedElements, elements);
     }
-
 }
