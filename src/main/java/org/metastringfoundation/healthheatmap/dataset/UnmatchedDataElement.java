@@ -53,4 +53,17 @@ public class UnmatchedDataElement {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        UnmatchedDataElement other = (UnmatchedDataElement) obj;
+        return (other.getValue().equals(this.getValue())
+                && other.getGeography().equals(this.getGeography())
+                && other.getIndicator().equals(this.getIndicator())
+                && other.getSettlement().equals(this.getSettlement())
+        );
+    }
 }

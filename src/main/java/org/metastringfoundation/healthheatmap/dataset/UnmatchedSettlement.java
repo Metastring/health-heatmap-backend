@@ -45,4 +45,13 @@ public class UnmatchedSettlement {
         this.type = type;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        UnmatchedSettlement other = (UnmatchedSettlement) obj;
+        return other.getType().equals(this.getType());
+    }
+
 }

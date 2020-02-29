@@ -44,4 +44,13 @@ public class UnmatchedIndicator {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        UnmatchedIndicator other = (UnmatchedIndicator) obj;
+        return other.getName().equals(this.getName());
+    }
 }

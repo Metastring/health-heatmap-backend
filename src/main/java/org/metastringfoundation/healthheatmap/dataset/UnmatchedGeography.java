@@ -55,4 +55,15 @@ public class UnmatchedGeography {
     public void setDistrict(String district) {
         this.district = district;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        UnmatchedGeography other = (UnmatchedGeography) obj;
+        return (other.getDistrict().equals(this.getDistrict())
+                && other.getState().equals(this.getState())
+        );
+    }
 }
