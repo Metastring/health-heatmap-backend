@@ -54,4 +54,9 @@ public class UnmatchedSettlement {
         return other.getType().equals(this.getType());
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "type: " + getType();
+    }
 }

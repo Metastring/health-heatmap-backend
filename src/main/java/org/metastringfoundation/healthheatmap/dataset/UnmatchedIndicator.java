@@ -53,4 +53,10 @@ public class UnmatchedIndicator {
         UnmatchedIndicator other = (UnmatchedIndicator) obj;
         return other.getName().equals(this.getName());
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "name: " + getName();
+    }
 }

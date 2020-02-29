@@ -66,4 +66,11 @@ public class UnmatchedGeography {
                 && other.getState().equals(this.getState())
         );
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "state: " + getState() + "\n" +
+                "district: " + getDistrict();
+    }
 }

@@ -66,4 +66,13 @@ public class UnmatchedDataElement {
                 && other.getSettlement().equals(this.getSettlement())
         );
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "geography " + getGeography() + "\n" +
+                "indicator " + getIndicator() + "\n" +
+                "settlement " + getSettlement() + "\n" +
+                "value" + getValue();
+    }
 }
