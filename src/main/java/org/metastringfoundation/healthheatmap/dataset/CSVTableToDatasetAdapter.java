@@ -169,6 +169,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
             }
 
             dataElement.setValue(unprocessedDataElement.getValue());
+            dataElements.add(dataElement);
         }
 
         return dataElements;

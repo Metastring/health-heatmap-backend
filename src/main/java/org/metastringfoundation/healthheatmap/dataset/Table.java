@@ -16,10 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface Table {
     List<List<String>> getTable();
@@ -38,7 +35,7 @@ public interface Table {
         int endRow = rangeReference.getEndingCell().getRow();
         int endCol = rangeReference.getEndingCell().getColumn();
 
-        Collection<CSVCell> range = new ArrayList<>();
+        Collection<CSVCell> range = new HashSet<>();
         for (int rowIndex = startRow; rowIndex < endRow + 1 && rowIndex < getNumberOfRows(); rowIndex++) {
             for (int colIndex = startCol; colIndex < endCol + 1 && colIndex < getNumberOfColumns(); colIndex++) {
                 CSVCell cell = new CSVCell(rowIndex, colIndex, getCell(rowIndex, colIndex));
