@@ -16,13 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import org.metastringfoundation.healthheatmap.datapoint.DataPoint;
-
-import java.util.Optional;
-
 public class DataElement {
     private Indicator indicator;
     private Entity entity;
     private TimePeriod timePeriod;
-    private Optional<DataPoint> datapoint;
+    private String value;
 }
