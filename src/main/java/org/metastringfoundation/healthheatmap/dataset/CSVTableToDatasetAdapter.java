@@ -19,12 +19,16 @@ package org.metastringfoundation.healthheatmap.dataset;
 import org.metastringfoundation.healthheatmap.pojo.DataElement;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CSVTableToDatasetAdapter implements Dataset {
     private CSVTable table;
+    private CSVTableDescription tableDescription;
 
-    public CSVTableToDatasetAdapter(CSVTable csvTable) {
+    public CSVTableToDatasetAdapter(CSVTable csvTable, CSVTableDescription csvTableDescription) {
         table = csvTable;
+        tableDescription = csvTableDescription;
     }
 
     @Override
@@ -34,6 +38,16 @@ public class CSVTableToDatasetAdapter implements Dataset {
 
     @Override
     public Collection<DataElement> getData() {
-        return null;
+        Collection<DataElement> dataElements = null;
+        for (CSVRangeDescription rangeDescription: tableDescription.getRangeDescriptionList()) {
+            Collection<CSVCell> cellsInRange = table.getRange(rangeDescription.getRange());
+            String rangePattern = rangeDescription.getPattern();
+            Pattern patternParsingPattern = Pattern.compile("/#{([^}]*)}/");
+            Matcher rangeMatcher = patternParsingPattern.matcher(rangePattern);
+            while (rangeMatcher.find()) {
+                rangeMatcher.group();
+            }
+        }
+        return dataElements;
     }
 }

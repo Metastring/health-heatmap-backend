@@ -17,7 +17,9 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface Table {
     List<List<String>> getTable();
@@ -30,21 +32,19 @@ public interface Table {
         return getRow(rowNumber).get(columnNumber);
     }
 
-    default List<List<String>> getRange(TableRangeReference rangeReference) {
+    default Collection<CSVCell> getRange(TableRangeReference rangeReference) {
         int startRow = rangeReference.getStartingCell().getRow();
         int startCol = rangeReference.getStartingCell().getColumn();
         int endRow = rangeReference.getEndingCell().getRow();
         int endCol = rangeReference.getEndingCell().getColumn();
 
-        List<List<String>> range = new ArrayList<>();
-        for (int rowIndex = startRow; rowIndex < endRow + 1; rowIndex++) {
-            List<String> currentRow = new ArrayList<>();
-            for (int colIndex = startCol; colIndex < endCol + 1; colIndex++) {
-                currentRow.add(getCell(rowIndex, colIndex));
+        Collection<CSVCell> range = new ArrayList<>();
+        for (int rowIndex = startRow; rowIndex < endRow + 1 && rowIndex < getNumberOfRows(); rowIndex++) {
+            for (int colIndex = startCol; colIndex < endCol + 1 && colIndex < getNumberOfColumns(); colIndex++) {
+                CSVCell cell = new CSVCell(rowIndex, colIndex, getCell(rowIndex, colIndex));
+                range.add(cell);
             }
-            range.add(currentRow);
         }
-
         return range;
     }
 

@@ -16,9 +16,13 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class TableRangeReference {
     private TableCellReference startingCell;
     private TableCellReference endingCell;
+
+    @JsonIgnore
     private RangeType rangeType;
 
     public enum RangeType {
@@ -28,8 +32,20 @@ public class TableRangeReference {
         ROW_AND_COLUMN
     }
 
-    TableRangeReference(String reference) {
+    public TableRangeReference(String reference) {
         convertReferenceToCellReferences(reference);
+    }
+
+    public TableRangeReference() {
+
+    }
+
+    public void setStartingCell(TableCellReference startingCell) {
+        this.startingCell = startingCell;
+    }
+
+    public void setEndingCell(TableCellReference endingCell) {
+        this.endingCell = endingCell;
     }
 
     private void convertReferenceToCellReferences(String reference) {

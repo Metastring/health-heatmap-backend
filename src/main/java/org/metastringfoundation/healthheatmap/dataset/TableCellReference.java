@@ -22,12 +22,22 @@ public class TableCellReference {
     private int row = 0;
     private int column = 0;
 
-    TableCellReference(String reference) {
+    public TableCellReference(String reference) {
          parseReference(reference);
     }
 
-    TableCellReference(int row, int column) {
+    public TableCellReference(int row, int column) {
         this.row = row;
+        this.column = column;
+    }
+
+    public TableCellReference(){}
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setColumn(int column) {
         this.column = column;
     }
 

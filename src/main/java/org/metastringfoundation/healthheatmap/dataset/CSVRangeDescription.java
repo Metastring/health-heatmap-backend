@@ -16,17 +16,23 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import java.util.List;
+public class CSVRangeDescription {
+    private TableRangeReference range;
+    private String pattern;
 
-public class CSVTableDescription {
-
-    private List<CSVRangeDescription> rangeDescriptionList;
-
-    public List<CSVRangeDescription> getRangeDescriptionList() {
-        return rangeDescriptionList;
+    public TableRangeReference getRange() {
+        return range;
     }
 
-    public void setRangeDescriptionList(List<CSVRangeDescription> rangeDescriptionList) {
-        this.rangeDescriptionList = rangeDescriptionList;
+    public void setRange(TableRangeReference range) {
+        this.range = range;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 }
