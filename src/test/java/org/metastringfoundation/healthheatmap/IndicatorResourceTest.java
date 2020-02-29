@@ -16,19 +16,21 @@
 
 package org.metastringfoundation.healthheatmap;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-
 import org.glassfish.grizzly.http.server.HttpServer;
-
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.web.Server;
 
-import static org.junit.Assert.assertEquals;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IndicatorResourceTest {
 
@@ -38,6 +40,16 @@ public class IndicatorResourceTest {
     @Before
     public void setUp() throws Exception {
         ResourceConfig resourceConfig = Server.createApp();
+
+        Application mockApplication = new MockApplication();
+
+        resourceConfig.registerInstances(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind(mockApplication).to(Application.class);
+            }
+        });
+
         server = Server.getServer(resourceConfig);
         server.start();
 
@@ -53,7 +65,8 @@ public class IndicatorResourceTest {
 
     @Test
     public void testIndicator() {
-        String responseMsg = target.path("indicator").request().get(String.class);
-        assertEquals("indicator", responseMsg);
+        Response response = target.path("indicators").request().build("GET").invoke();
+        assertEquals(200, response.getStatus());
+        assertEquals("indicators", response.readEntity(String.class));
     }
 }
