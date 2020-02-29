@@ -32,7 +32,11 @@ public class CSVTable implements Table {
     private int totalRecords;
     private int eachRecordSize;
 
-    CSVTable(Path path) throws DatasetIntegrityError {
+    public static CSVTable fromPath(String path) throws DatasetIntegrityError {
+        return new CSVTable(FileManager.getPathFromString(path));
+    }
+
+    public CSVTable(Path path) throws DatasetIntegrityError {
         try {
             Reader csvReader = FileManager.getFileReader(path);
             CSVParser csvParser = new CSVParser(csvReader, CSVFormat.DEFAULT);
@@ -42,7 +46,7 @@ public class CSVTable implements Table {
         }
     }
 
-    CSVTable(String csvString) throws DatasetIntegrityError {
+    public CSVTable(String csvString) throws DatasetIntegrityError {
         try {
             CSVParser csvParser = CSVParser.parse(csvString, CSVFormat.DEFAULT);
             setRecords(csvParser.getRecords());
