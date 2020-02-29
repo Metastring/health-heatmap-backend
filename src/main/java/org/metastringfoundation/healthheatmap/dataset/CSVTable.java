@@ -21,6 +21,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -37,6 +38,15 @@ public class CSVTable implements Table {
             CSVParser csvParser = new CSVParser(csvReader, CSVFormat.DEFAULT);
             setRecords(csvParser.getRecords());
         } catch (Exception e) {
+            throw new DatasetIntegrityError(e);
+        }
+    }
+
+    CSVTable(String csvString) throws DatasetIntegrityError {
+        try {
+            CSVParser csvParser = CSVParser.parse(csvString, CSVFormat.DEFAULT);
+            setRecords(csvParser.getRecords());
+        } catch (IOException e) {
             throw new DatasetIntegrityError(e);
         }
     }
