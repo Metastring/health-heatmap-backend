@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap;
 
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.dataset.CSVCell;
+import org.metastringfoundation.healthheatmap.dataset.TableCell;
 import org.metastringfoundation.healthheatmap.dataset.CSVTable;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.TableRangeReference;
@@ -33,13 +33,13 @@ public class TableTest {
     public void getRangeGetsRange() throws DatasetIntegrityError {
         String simpleSample = this.getClass().getResource("sampleData.csv").getPath();
         CSVTable table = CSVTable.fromPath(simpleSample);
-        List<CSVCell> obtainedRange = table.getRange(new TableRangeReference("C2:D3"));
+        List<TableCell> obtainedRange = table.getRange(new TableRangeReference("C2:D3"));
 
-        List<CSVCell> expectedRange = new ArrayList<>();
-        expectedRange.add(new CSVCell(1, 2, "0.5"));
-        expectedRange.add(new CSVCell(1, 3, "0.6"));
-        expectedRange.add(new CSVCell(2, 2, "1"));
-        expectedRange.add(new CSVCell(2, 3, "1.2"));
+        List<TableCell> expectedRange = new ArrayList<>();
+        expectedRange.add(new TableCell(1, 2, "0.5"));
+        expectedRange.add(new TableCell(1, 3, "0.6"));
+        expectedRange.add(new TableCell(2, 2, "1"));
+        expectedRange.add(new TableCell(2, 3, "1.2"));
 
         assertEquals(expectedRange, obtainedRange);
     }

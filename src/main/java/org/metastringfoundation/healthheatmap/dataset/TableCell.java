@@ -18,12 +18,12 @@ package org.metastringfoundation.healthheatmap.dataset;
 
 import java.util.Objects;
 
-public class CSVCell {
+public class TableCell {
     private int row;
     private int column;
     private String value;
 
-    public CSVCell(int row, int column, String value) {
+    public TableCell(int row, int column, String value) {
         this.row = row;
         this.column = column;
         this.value = value;
@@ -64,7 +64,7 @@ public class CSVCell {
         if (super.equals(obj)) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        CSVCell other = (CSVCell) obj;
+        TableCell other = (TableCell) obj;
         return (other.getColumn() == this.getColumn() &&
                 other.getRow() == this.getRow() &&
                 other.getValue().equals(this.getValue())

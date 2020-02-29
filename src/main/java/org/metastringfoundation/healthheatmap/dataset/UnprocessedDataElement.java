@@ -17,15 +17,15 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 public class UnprocessedDataElement {
-    private CSVCell csvCell;
+    private TableCell tableCell;
     private String value;
 
-    public CSVCell getCsvCell() {
-        return csvCell;
+    public TableCell getTableCell() {
+        return tableCell;
     }
 
-    public void setCsvCell(CSVCell csvCell) {
-        this.csvCell = csvCell;
+    public void setTableCell(TableCell tableCell) {
+        this.tableCell = tableCell;
     }
 
     public String getValue() {

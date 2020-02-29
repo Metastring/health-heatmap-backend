@@ -17,25 +17,25 @@
 package org.metastringfoundation.healthheatmap;
 
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.dataset.CSVCell;
+import org.metastringfoundation.healthheatmap.dataset.TableCell;
 
 import java.util.Collection;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CSVCellTest {
+public class TableCellTest {
     @Test
     public void equalsAreEquals() {
-        CSVCell cell1 = new CSVCell(1, 1, "1");
-        CSVCell cell2 = new CSVCell(1, 1, "1");
+        TableCell cell1 = new TableCell(1, 1, "1");
+        TableCell cell2 = new TableCell(1, 1, "1");
         assertEquals(cell1, cell2);
 
-        Collection<CSVCell> set1 = new HashSet<>();
+        Collection<TableCell> set1 = new HashSet<>();
         set1.add(cell1);
         set1.add(cell2);
 
-        Collection<CSVCell> set2 = new HashSet<>();
+        Collection<TableCell> set2 = new HashSet<>();
         set2.add(cell2);
         set2.add(cell1);
 

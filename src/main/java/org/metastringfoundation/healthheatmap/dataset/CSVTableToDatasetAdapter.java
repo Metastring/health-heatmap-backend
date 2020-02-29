@@ -65,11 +65,11 @@ public class CSVTableToDatasetAdapter implements Dataset {
         Collection<UnprocessedDataElement> unprocessedDataElements = new HashSet<>();
 
         for (CSVRangeDescription rangeDescription: tableDescription.getRangeDescriptionList()) {
-            List<CSVCell> cellsInRange = table.getRange(rangeDescription.getRange());
+            List<TableCell> cellsInRange = table.getRange(rangeDescription.getRange());
             String rangePattern = rangeDescription.getPattern();
             ReversePatternParser patternParser = new ReversePatternParser(rangePattern, regexMapOfDimensions);
 
-            for (CSVCell cell: cellsInRange) {
+            for (TableCell cell: cellsInRange) {
                 int row = cell.getRow();
                 int column = cell.getColumn();
                 Map<String, String> dimensionsFound = patternParser.parse(cell.getValue());
@@ -78,7 +78,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
 
                 if (dimensionsFound.get(dataDimension) != null) {
                     UnprocessedDataElement unprocessedDataElement = new UnprocessedDataElement();
-                    unprocessedDataElement.setCsvCell(cell);
+                    unprocessedDataElement.setTableCell(cell);
                     unprocessedDataElement.setValue(dimensionsFound.get(dataDimension));
                     unprocessedDataElements.add(unprocessedDataElement);
                 } else {
@@ -114,8 +114,8 @@ public class CSVTableToDatasetAdapter implements Dataset {
         Set<Integer> rowsWithData = new HashSet<>();
         Set<Integer> columnsWithData = new HashSet<>();
         for (UnprocessedDataElement unprocessedDataElement: unprocessedDataElements) {
-            rowsWithData.add(unprocessedDataElement.getCsvCell().getRow());
-            columnsWithData.add(unprocessedDataElement.getCsvCell().getColumn());
+            rowsWithData.add(unprocessedDataElement.getTableCell().getRow());
+            columnsWithData.add(unprocessedDataElement.getTableCell().getColumn());
         }
         rowDimensions.keySet().retainAll(rowsWithData);
         columnDimensions.keySet().retainAll(columnsWithData);
@@ -161,7 +161,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
             if (geographyDimension != null) {
                 dataElement.setGeography(
                         unmatchedEntities.get(
-                                unprocessedDataElement.getCsvCell().get(geographyDimension)
+                                unprocessedDataElement.getTableCell().get(geographyDimension)
                         )
                 );
             }
@@ -170,7 +170,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
             if (indicatorDimension != null) {
                 dataElement.setIndicator(
                         unmatchedIndicatos.get(
-                                unprocessedDataElement.getCsvCell().get(indicatorDimension)
+                                unprocessedDataElement.getTableCell().get(indicatorDimension)
                         )
                 );
             }
@@ -179,7 +179,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
             if (settlementDimension != null) {
                 dataElement.setSettlement(
                         unmatchedSettlements.get(
-                                unprocessedDataElement.getCsvCell().get(settlementDimension)
+                                unprocessedDataElement.getTableCell().get(settlementDimension)
                         )
                 );
             }

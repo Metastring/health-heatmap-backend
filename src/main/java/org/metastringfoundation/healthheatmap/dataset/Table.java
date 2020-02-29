@@ -29,16 +29,16 @@ public interface Table {
         return getRow(rowNumber).get(columnNumber);
     }
 
-    default List<CSVCell> getRange(TableRangeReference rangeReference) {
+    default List<TableCell> getRange(TableRangeReference rangeReference) {
         int startRow = rangeReference.getStartingCell().getRow();
         int startCol = rangeReference.getStartingCell().getColumn();
         int endRow = rangeReference.getEndingCell().getRow();
         int endCol = rangeReference.getEndingCell().getColumn();
 
-        List<CSVCell> range = new ArrayList<>();
+        List<TableCell> range = new ArrayList<>();
         for (int rowIndex = startRow; rowIndex < endRow + 1 && rowIndex < getNumberOfRows(); rowIndex++) {
             for (int colIndex = startCol; colIndex < endCol + 1 && colIndex < getNumberOfColumns(); colIndex++) {
-                CSVCell cell = new CSVCell(rowIndex, colIndex, getCell(rowIndex, colIndex));
+                TableCell cell = new TableCell(rowIndex, colIndex, getCell(rowIndex, colIndex));
                 range.add(cell);
             }
         }
