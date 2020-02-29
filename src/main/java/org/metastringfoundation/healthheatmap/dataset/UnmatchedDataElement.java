@@ -16,37 +16,34 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-public class CSVCell {
-    private int row;
-    private int column;
+public class UnmatchedDataElement {
+    private UnmatchedGeography geography;
+    private UnmatchedIndicator indicator;
+    private UnmatchedSettlement settlement;
     private String value;
 
-    public CSVCell(int row, int column, String value) {
-        this.row = row;
-        this.column = column;
-        this.value = value;
+    public UnmatchedGeography getGeography() {
+        return geography;
     }
 
-    public int getRow() {
-        return row;
+    public void setGeography(UnmatchedGeography geography) {
+        this.geography = geography;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public UnmatchedIndicator getIndicator() {
+        return indicator;
     }
 
-    public int getColumn() {
-        return column;
+    public void setIndicator(UnmatchedIndicator indicator) {
+        this.indicator = indicator;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
+    public UnmatchedSettlement getSettlement() {
+        return settlement;
     }
 
-    public int get(String dimension) {
-        if (dimension.equals("row")) return getRow();
-        if (dimension.equals("column")) return getColumn();
-        throw new IllegalArgumentException("Either a row or a column dimension can be got");
+    public void setSettlement(UnmatchedSettlement settlement) {
+        this.settlement = settlement;
     }
 
     public String getValue() {

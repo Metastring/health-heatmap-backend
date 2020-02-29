@@ -14,13 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.helpers;
 
-import org.metastringfoundation.healthheatmap.pojo.DataElement;
-
-import java.util.Collection;
-
-public interface Dataset {
-    public DatasetMetadata getMetadata();
-    public Collection<UnmatchedDataElement> getData();
+public class PatternParsingAssistants {
+    public static String quotedDimension(String dimension) {
+        return "#{" + dimension + "}";
+    }
 }

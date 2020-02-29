@@ -16,37 +16,16 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-public class CSVCell {
-    private int row;
-    private int column;
+public class UnprocessedDataElement {
+    private CSVCell csvCell;
     private String value;
 
-    public CSVCell(int row, int column, String value) {
-        this.row = row;
-        this.column = column;
-        this.value = value;
+    public CSVCell getCsvCell() {
+        return csvCell;
     }
 
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
-    public int get(String dimension) {
-        if (dimension.equals("row")) return getRow();
-        if (dimension.equals("column")) return getColumn();
-        throw new IllegalArgumentException("Either a row or a column dimension can be got");
+    public void setCsvCell(CSVCell csvCell) {
+        this.csvCell = csvCell;
     }
 
     public String getValue() {
