@@ -22,8 +22,8 @@ import org.metastringfoundation.healthheatmap.dataset.CSVTable;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.TableRangeReference;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,9 +33,9 @@ public class TableTest {
     public void getRangeGetsRange() throws DatasetIntegrityError {
         String simpleSample = this.getClass().getResource("sampleData.csv").getPath();
         CSVTable table = CSVTable.fromPath(simpleSample);
-        Collection<CSVCell> obtainedRange = table.getRange(new TableRangeReference("C2:D3"));
+        List<CSVCell> obtainedRange = table.getRange(new TableRangeReference("C2:D3"));
 
-        Collection<CSVCell> expectedRange = new HashSet<>();
+        List<CSVCell> expectedRange = new ArrayList<>();
         expectedRange.add(new CSVCell(1, 2, "0.5"));
         expectedRange.add(new CSVCell(1, 3, "0.6"));
         expectedRange.add(new CSVCell(2, 2, "1"));

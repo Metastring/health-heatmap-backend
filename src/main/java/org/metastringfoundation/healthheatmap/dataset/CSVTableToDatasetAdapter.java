@@ -60,7 +60,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
         Collection<UnprocessedDataElement> unprocessedDataElements = new HashSet<>();
 
         for (CSVRangeDescription rangeDescription: tableDescription.getRangeDescriptionList()) {
-            Collection<CSVCell> cellsInRange = table.getRange(rangeDescription.getRange());
+            List<CSVCell> cellsInRange = table.getRange(rangeDescription.getRange());
             String rangePattern = rangeDescription.getPattern();
             ReversePatternParser patternParser = new ReversePatternParser(rangePattern, regexMapOfDimensions);
 
