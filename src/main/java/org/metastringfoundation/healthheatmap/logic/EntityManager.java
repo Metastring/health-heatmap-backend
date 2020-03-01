@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
 import org.metastringfoundation.healthheatmap.pojo.Entity;
 
 import java.util.List;
@@ -49,5 +50,21 @@ public class EntityManager {
 
     ) {
         return null;
+    }
+
+    public List<Entity> findEntityByName(String name) {
+
+    }
+
+    public Entity findEntityFromGeography(UnmatchedGeography geography) throws UnknownEntityError, AmbiguousEntityError {
+        String state = geography.getState();
+        List<Entity> stateEntityList = findEntityByName(state);
+        if (stateEntityList.size() > 1) {
+            throw new AmbiguousEntityError("More than one state by the name " + state + ". Please pass more specificiers");
+        }
+        if (stateEntityList.size() < 1) {
+            throw new UnknownEntityError("No such state known: " + state);
+        }
+        Entity stateEntity = stateEntityList.get(0);
     }
 }

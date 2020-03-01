@@ -22,14 +22,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.pojo.DataElement;
 import org.metastringfoundation.healthheatmap.pojo.Entity;
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
+import org.metastringfoundation.healthheatmap.pojo.Settlement;
 import org.metastringfoundation.healthheatmap.storage.Database;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
-import java.util.List;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.*;
 
 public class DefaultApplication implements Application {
 
@@ -57,8 +64,7 @@ public class DefaultApplication implements Application {
 
     public DefaultApplication() {
         RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(
-                new HttpHost("localhost", 9200, "http"),
-                new HttpHost("localhost", 9201, "http")
+                new HttpHost("localhost", 9200, "http")
         ));
         setElastic(client);
 
@@ -67,6 +73,19 @@ public class DefaultApplication implements Application {
 
         javax.persistence.EntityManager persistenceManager = HibernateManager.openEntityManager();
         setPersistenceManager(persistenceManager);
+
+        loadGeographies();
+        loadIndicators();
+    }
+
+    private static void loadGeographies() {
+        List<Entity> entityList = HibernateManager.loadAllOfType(persistenceManager, Entity.class);
+        entityManager.setEntities(entityList);
+    }
+
+    private static void loadIndicators() {
+        List<Indicator> indicatorList = HibernateManager.loadAllOfType(persistenceManager, Indicator.class);
+        indicatorManager.setIndicatorList(indicatorList);
     }
 
     public DefaultApplication(RestHighLevelClient restHighLevelClient, Database psql) {
@@ -122,5 +141,33 @@ public class DefaultApplication implements Application {
 
     public String getHealth() {
         return psql.getHealth();
+    }
+
+    public void saveDataset(Dataset dataset) {
+        Map<UnmatchedGeography, Entity> geographyEntityMap = new HashMap<>();
+        Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
+        Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
+
+        Collection<DataElement> dataElementCollection = new HashSet<>();
+
+        for (UnmatchedDataElement unmatchedDataElement: dataset.getData()) {
+            DataElement dataElement = new DataElement();
+
+            UnmatchedGeography unmatchedGeography = unmatchedDataElement.getGeography();
+            if (unmatchedGeography != null) {
+                Entity entity;
+                Entity entityFromMap = geographyEntityMap.get(unmatchedGeography);
+                if (entityFromMap != null) {
+                    entity = entityFromMap;
+                } else {
+                    try {
+                        entity = entityManager.findEntityFromGeography(unmatchedGeography);
+                    } catch (AmbiguousEntityError | UnknownEntityError ex) {
+                        LOG.error(ex);
+                    }
+                }
+
+            }
+        }
     }
 }

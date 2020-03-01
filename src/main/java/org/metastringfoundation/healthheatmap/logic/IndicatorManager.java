@@ -44,7 +44,8 @@ public class IndicatorManager {
     private IndicatorManager() {
     }
 
-    public void loadIndicators() {
+    public void setIndicatorList(List<Indicator> indicatorList) {
+        this.indicatorList = indicatorList;
     }
 
     public Indicator addIndicator(String name) {

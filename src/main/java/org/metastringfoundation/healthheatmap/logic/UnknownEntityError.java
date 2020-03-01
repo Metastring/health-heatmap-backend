@@ -16,18 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
-
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
-
-    String addIndicator(String indicatorName) throws ApplicationError;
-
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
-
-    String getHealth();
-
-    void saveDataset(Dataset dataset);
+public class UnknownEntityError extends Exception {
+    public UnknownEntityError(Exception e) { super("AmbigousEntityError", e); }
+    public UnknownEntityError(String msg) { super(msg); }
 }
