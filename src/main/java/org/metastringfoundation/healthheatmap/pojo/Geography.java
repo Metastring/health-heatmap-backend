@@ -46,7 +46,9 @@ public class Geography {
     private GeographyType type;
 
     @ManyToOne
-    @JoinColumn(name = "belongs_to_id")
+    @JoinColumn(name = "belongs_to_id",
+            foreignKey = @ForeignKey(name = "belongs_to_id_fk")
+    )
     private Geography belongsTo;
 
     public Long getId() {
