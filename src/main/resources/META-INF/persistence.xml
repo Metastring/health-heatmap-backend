@@ -19,6 +19,9 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hbm2ddl.halt.on.error" value="true"/>
+            
+            <property name="hibernate.search.backends.elastic.type" value="elasticsearch"/>
+            <property name="hibernate.search.default_backend" value="elastic"/>
         </properties>
     </persistence-unit>
 </persistence>
