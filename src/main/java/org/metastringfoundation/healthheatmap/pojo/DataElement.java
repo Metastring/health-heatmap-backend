@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap.pojo;
 
 public class DataElement {
     private Indicator indicator;
-    private Entity entity;
+    private Geography geography;
     private TimePeriod timePeriod;
     private String value;
 }

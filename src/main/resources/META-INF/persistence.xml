@@ -6,7 +6,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>org.metastringfoundation.healthheatmap.pojo.Indicator</class>
-        <class>org.metastringfoundation.healthheatmap.pojo.Entity</class>
+        <class>org.metastringfoundation.healthheatmap.pojo.Geography</class>
         <class>org.metastringfoundation.healthheatmap.pojo.DataElement</class>
 
         <properties>

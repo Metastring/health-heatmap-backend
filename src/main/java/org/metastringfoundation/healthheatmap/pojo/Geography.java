@@ -16,21 +16,23 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import javax.persistence.Entity;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Entity {
-    public enum EntityType {
+@Entity
+public class Geography {
+    public enum GeographyType {
         DISTRICT,
         STATE
     }
 
     private String canonicalName;
     private Map<Locale, String> translations;
-    private List<Entity> belongsTo;
-    private EntityType type;
+    private List<Geography> belongsTo;
+    private GeographyType type;
     private Date established;
     private Date ceased;
 
@@ -66,19 +68,19 @@ public class Entity {
         this.translations = translations;
     }
 
-    public List<Entity> getBelongsTo() {
+    public List<Geography> getBelongsTo() {
         return belongsTo;
     }
 
-    public void setBelongsTo(List<Entity> belongsTo) {
+    public void setBelongsTo(List<Geography> belongsTo) {
         this.belongsTo = belongsTo;
     }
 
-    public EntityType getType() {
+    public GeographyType getType() {
         return type;
     }
 
-    public void setType(EntityType type) {
+    public void setType(GeographyType type) {
         this.type = type;
     }
 }

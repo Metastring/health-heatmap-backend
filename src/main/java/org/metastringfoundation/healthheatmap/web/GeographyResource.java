@@ -25,13 +25,12 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("entities")
-public class EntityResource {
-    private static final Logger LOG = LogManager.getLogger(EntityResource.class);
+public class GeographyResource {
+    private static final Logger LOG = LogManager.getLogger(GeographyResource.class);
 
     private static final String ZOOM_LEVEL = "zoom";
     private static final String LOAD_ENTITY_TYPE = "type";

@@ -45,5 +45,4 @@ public class HibernateManager {
         TypedQuery<C> allQuery = persistenceManager.createQuery(allEntities);
         return allQuery.getResultList();
     }
-
 }

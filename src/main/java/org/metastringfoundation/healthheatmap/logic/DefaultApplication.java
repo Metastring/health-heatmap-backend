@@ -25,17 +25,13 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.pojo.DataElement;
-import org.metastringfoundation.healthheatmap.pojo.Entity;
+import org.metastringfoundation.healthheatmap.pojo.Geography;
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
 import org.metastringfoundation.healthheatmap.pojo.Settlement;
 import org.metastringfoundation.healthheatmap.storage.Database;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 public class DefaultApplication implements Application {
@@ -56,11 +52,11 @@ public class DefaultApplication implements Application {
 
     public static void setPersistenceManager(javax.persistence.EntityManager persistenceManager) {
         DefaultApplication.persistenceManager = persistenceManager;
-        indicatorManager.setPersistenceManager(persistenceManager);
+        INDICATOR_MANAGER.setPersistenceManager(persistenceManager);
     }
 
-    private static final IndicatorManager indicatorManager = IndicatorManager.getInstance();
-    private static final EntityManager entityManager = EntityManager.getInstance();
+    private static final IndicatorManager INDICATOR_MANAGER = IndicatorManager.getInstance();
+    private static final GeographyManager GEOGRAPHY_MANAGER = GeographyManager.getInstance();
 
     public DefaultApplication() {
         RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(
@@ -79,13 +75,13 @@ public class DefaultApplication implements Application {
     }
 
     private static void loadGeographies() {
-        List<Entity> entityList = HibernateManager.loadAllOfType(persistenceManager, Entity.class);
-        entityManager.setEntities(entityList);
+        List<Geography> geographyList = HibernateManager.loadAllOfType(persistenceManager, Geography.class);
+        GEOGRAPHY_MANAGER.setGeographies(geographyList);
     }
 
     private static void loadIndicators() {
         List<Indicator> indicatorList = HibernateManager.loadAllOfType(persistenceManager, Indicator.class);
-        indicatorManager.setIndicatorList(indicatorList);
+        INDICATOR_MANAGER.setIndicatorList(indicatorList);
     }
 
     public DefaultApplication(RestHighLevelClient restHighLevelClient, Database psql) {
@@ -113,19 +109,19 @@ public class DefaultApplication implements Application {
 
     @Override
     public String getIndicators() throws ApplicationError {
-        List<Indicator> indicatorList = indicatorManager.getIndicators();
+        List<Indicator> indicatorList = INDICATOR_MANAGER.getIndicators();
         return jsonizeList(indicatorList);
     }
 
     @Override
     public String getEntities() throws ApplicationError {
-        List<Entity> entityList = entityManager.getEntities();
-        return jsonizeList(entityList);
+        List<Geography> geographyList = GEOGRAPHY_MANAGER.getGeographies();
+        return jsonizeList(geographyList);
     }
 
     @Override
     public String addIndicator(String indicatorName) throws ApplicationError {
-        Indicator indicator = indicatorManager.addIndicator(indicatorName);
+        Indicator indicator = INDICATOR_MANAGER.addIndicator(indicatorName);
         return jsonizeObject(indicator);
     }
 
@@ -144,7 +140,7 @@ public class DefaultApplication implements Application {
     }
 
     public void saveDataset(Dataset dataset) {
-        Map<UnmatchedGeography, Entity> geographyEntityMap = new HashMap<>();
+        Map<UnmatchedGeography, Geography> geographyEntityMap = new HashMap<>();
         Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
         Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
 
@@ -155,13 +151,13 @@ public class DefaultApplication implements Application {
 
             UnmatchedGeography unmatchedGeography = unmatchedDataElement.getGeography();
             if (unmatchedGeography != null) {
-                Entity entity;
-                Entity entityFromMap = geographyEntityMap.get(unmatchedGeography);
-                if (entityFromMap != null) {
-                    entity = entityFromMap;
+                Geography geography;
+                Geography geographyFromMap = geographyEntityMap.get(unmatchedGeography);
+                if (geographyFromMap != null) {
+                    geography = geographyFromMap;
                 } else {
                     try {
-                        entity = entityManager.findEntityFromGeography(unmatchedGeography);
+                        geography = GEOGRAPHY_MANAGER.findGeographyFromUnmatchedGeography(unmatchedGeography);
                     } catch (AmbiguousEntityError | UnknownEntityError ex) {
                         LOG.error(ex);
                     }
