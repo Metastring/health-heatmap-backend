@@ -16,25 +16,70 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 @Entity
+@Table(name = "geographies")
 public class Geography {
     public enum GeographyType {
         DISTRICT,
         STATE
     }
 
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "short_code")
+    private String uniqueShortCode;
+
+    @Column(name = "name")
     private String canonicalName;
-    private Map<Locale, String> translations;
-    private List<Geography> belongsTo;
-    private GeographyType type;
+
+    @Column(name = "established")
     private Date established;
+
+    @Column(name = "ceased")
     private Date ceased;
+
+    @Enumerated(EnumType.STRING)
+    private GeographyType type;
+
+    @ManyToOne
+    private Geography belongsTo;
+
+    @Transient
+    private Map<Locale, String> translations;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUniqueShortCode() {
+        return uniqueShortCode;
+    }
+
+    public void setUniqueShortCode(String uniqueShortCode) {
+        this.uniqueShortCode = uniqueShortCode;
+    }
+
+    public String getCanonicalName() {
+        return canonicalName;
+    }
+
+    public void setCanonicalName(String canonicalName) {
+        this.canonicalName = canonicalName;
+    }
 
     public Date getEstablished() {
         return established;
@@ -52,12 +97,12 @@ public class Geography {
         this.ceased = ceased;
     }
 
-    public String getCanonicalName() {
-        return canonicalName;
+    public GeographyType getType() {
+        return type;
     }
 
-    public void setCanonicalName(String canonicalName) {
-        this.canonicalName = canonicalName;
+    public void setType(GeographyType type) {
+        this.type = type;
     }
 
     public Map<Locale, String> getTranslations() {
@@ -74,13 +119,5 @@ public class Geography {
 
     public void setBelongsTo(List<Geography> belongsTo) {
         this.belongsTo = belongsTo;
-    }
-
-    public GeographyType getType() {
-        return type;
-    }
-
-    public void setType(GeographyType type) {
-        this.type = type;
     }
 }

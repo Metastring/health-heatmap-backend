@@ -16,9 +16,72 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "dataelements")
+@Indexed
 public class DataElement {
+    @Id
+    @GeneratedValue
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "indicator_id",
+                foreignKey = @ForeignKey(name = "indicator_id_fk")
+    )
     private Indicator indicator;
+
+    @ManyToOne
+    @JoinColumn(name = "geography_id",
+                foreignKey =  @ForeignKey(name = "geography_id_fk")
+    )
     private Geography geography;
+
+    @Embedded
     private TimePeriod timePeriod;
+
     private String value;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Indicator getIndicator() {
+        return indicator;
+    }
+
+    public void setIndicator(Indicator indicator) {
+        this.indicator = indicator;
+    }
+
+    public Geography getGeography() {
+        return geography;
+    }
+
+    public void setGeography(Geography geography) {
+        this.geography = geography;
+    }
+
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
