@@ -18,9 +18,6 @@ package org.metastringfoundation.healthheatmap.pojo;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Entity
 @Table(name = "geographies")
@@ -29,7 +26,6 @@ public class Geography {
         DISTRICT,
         STATE
     }
-
 
     @Id
     @Column(name = "id")
@@ -42,20 +38,16 @@ public class Geography {
     @Column(name = "name")
     private String canonicalName;
 
-    @Column(name = "established")
     private Date established;
 
-    @Column(name = "ceased")
     private Date ceased;
 
     @Enumerated(EnumType.STRING)
     private GeographyType type;
 
     @ManyToOne
+    @JoinColumn(name = "belongs_to_id")
     private Geography belongsTo;
-
-    @Transient
-    private Map<Locale, String> translations;
 
     public Long getId() {
         return id;
@@ -105,19 +97,11 @@ public class Geography {
         this.type = type;
     }
 
-    public Map<Locale, String> getTranslations() {
-        return translations;
-    }
-
-    public void setTranslations(Map<Locale, String> translations) {
-        this.translations = translations;
-    }
-
-    public List<Geography> getBelongsTo() {
+    public Geography getBelongsTo() {
         return belongsTo;
     }
 
-    public void setBelongsTo(List<Geography> belongsTo) {
+    public void setBelongsTo(Geography belongsTo) {
         this.belongsTo = belongsTo;
     }
 }

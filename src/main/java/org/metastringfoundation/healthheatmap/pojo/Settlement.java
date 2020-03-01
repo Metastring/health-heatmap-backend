@@ -16,14 +16,42 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-public class Settlement {
-    private String settlement;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    public String getSettlement() {
+@Embeddable
+public class Settlement {
+    public enum SettlementType {
+        ANY,
+        RURAL,
+        URBAN
+    }
+
+    @Enumerated(EnumType.STRING)
+    private SettlementType settlement;
+
+    public static SettlementType getSettlementTypeFromString(String settlementType) throws IllegalArgumentException {
+        List<String> anyList = new ArrayList<>(Arrays.asList("any", "total", "all"));
+        if (anyList.contains(settlementType.toLowerCase())) return SettlementType.ANY;
+
+        List<String> ruralList = new ArrayList<>(Arrays.asList("rural", "r"));
+        if (ruralList.contains(settlementType.toLowerCase())) return SettlementType.RURAL;
+
+        List<String> urbanList = new ArrayList<>(Arrays.asList("urban", "u"));
+        if (urbanList.contains(settlementType.toLowerCase())) return SettlementType.URBAN;
+
+        throw new IllegalArgumentException("Unknown settlement type: " + settlementType);
+    }
+
+    public SettlementType getSettlement() {
         return settlement;
     }
 
-    public void setSettlement(String settlement) {
+    public void setSettlement(SettlementType settlement) {
         this.settlement = settlement;
     }
 }

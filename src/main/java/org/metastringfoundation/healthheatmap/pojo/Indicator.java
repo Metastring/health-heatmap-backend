@@ -22,23 +22,26 @@ import javax.persistence.Entity;
 @Entity
 @Table(name = "indicators")
 public class Indicator {
-    private long id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "short_code")
     private String shortCode;
+
+    @Column(name = "name")
     private String canonicalName;
+
     private String derivation;
 
-    @Id
-    @GeneratedValue(strategy =  GenerationType.SEQUENCE)
-    @Column(name = "id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    @Column(name = "short_code")
     public String getShortCode() {
         return shortCode;
     }
@@ -47,7 +50,6 @@ public class Indicator {
         this.shortCode = shortCode;
     }
 
-    @Column(name = "name")
     public String getCanonicalName() {
         return canonicalName;
     }
@@ -56,7 +58,6 @@ public class Indicator {
         this.canonicalName = canonicalName;
     }
 
-    @Column(name = "derivation")
     public String getDerivation() {
         return derivation;
     }

@@ -26,7 +26,7 @@ import javax.persistence.*;
 public class DataElement {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "indicator_id",
@@ -40,16 +40,22 @@ public class DataElement {
     )
     private Geography geography;
 
+    @ManyToOne
+    @JoinColumn(name = "source_id",
+                foreignKey = @ForeignKey(name = "source_id_fk")
+    )
+    private Source source;
+
     @Embedded
     private TimePeriod timePeriod;
 
     private String value;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -67,6 +73,14 @@ public class DataElement {
 
     public void setGeography(Geography geography) {
         this.geography = geography;
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
     }
 
     public TimePeriod getTimePeriod() {

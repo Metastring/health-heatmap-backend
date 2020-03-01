@@ -22,10 +22,13 @@ import java.util.Date;
 
 @Embeddable
 public class TimePeriod {
+
+    @Column(name="start_time")
     private Date startTime;
+
+    @Column(name="end_time")
     private Date endTime;
 
-    @Column(name="START_TIME")
     public Date getStartTime() {
         return startTime;
     }
@@ -34,7 +37,6 @@ public class TimePeriod {
         this.startTime = startTime;
     }
 
-    @Column(name="END_TIME")
     public Date getEndTime() {
         return endTime;
     }
