@@ -20,7 +20,7 @@
             <!-- TODO: https://stackoverflow.com/a/8839779 the password -->
             <property name="hibernate.connection.password" value="metastring"/>
             <property name="hibernate.connection.pool_size" value="5"/>
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.halt.on.error" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
