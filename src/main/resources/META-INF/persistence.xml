@@ -24,9 +24,8 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.halt.on.error" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-            
-            <property name="hibernate.search.backends.elastic.type" value="elasticsearch"/>
-            <property name="hibernate.search.default_backend" value="elastic"/>
+
+            <!-- TODO: Add hibernate.search properties -->
         </properties>
     </persistence-unit>
 </persistence>
