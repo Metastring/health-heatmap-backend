@@ -16,10 +16,12 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DatasetMetadata {
     private String name;
 
-    public DatasetMetadata(String name) {
+    public DatasetMetadata(@JsonProperty("name") String name) {
         this.name = name;
     }
 
