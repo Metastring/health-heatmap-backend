@@ -20,6 +20,12 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Indicator.findAll",
+                query = "SELECT i FROM Indicator i"),
+        @NamedQuery(name = "Indicator.findByName",
+                query = "SELECT i FROM Indicator i WHERE i.name = :name")
+})
 @Table(name = "indicators")
 public class Indicator {
     @Id

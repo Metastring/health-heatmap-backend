@@ -24,14 +24,12 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
-import org.metastringfoundation.healthheatmap.pojo.DataElement;
-import org.metastringfoundation.healthheatmap.pojo.Geography;
-import org.metastringfoundation.healthheatmap.pojo.Indicator;
-import org.metastringfoundation.healthheatmap.pojo.Settlement;
+import org.metastringfoundation.healthheatmap.pojo.*;
 import org.metastringfoundation.healthheatmap.storage.Database;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 public class DefaultApplication implements Application {
@@ -53,10 +51,13 @@ public class DefaultApplication implements Application {
     public static void setPersistenceManager(javax.persistence.EntityManager persistenceManager) {
         DefaultApplication.persistenceManager = persistenceManager;
         INDICATOR_MANAGER.setPersistenceManager(persistenceManager);
+        GEOGRAPHY_MANAGER.setPersistenceManager(persistenceManager);
+        SOURCE_MANAGER.setPersistenceManager(persistenceManager);
     }
 
     private static final IndicatorManager INDICATOR_MANAGER = IndicatorManager.getInstance();
     private static final GeographyManager GEOGRAPHY_MANAGER = GeographyManager.getInstance();
+    private static final SourceManager SOURCE_MANAGER = SourceManager.getInstance();
 
     public DefaultApplication() {
         RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(
@@ -67,21 +68,9 @@ public class DefaultApplication implements Application {
         Database psql = new PostgreSQL();
         setPsql(psql);
 
-        javax.persistence.EntityManager persistenceManager = HibernateManager.openEntityManager();
+        EntityManager persistenceManager = HibernateManager.openEntityManager();
         setPersistenceManager(persistenceManager);
 
-        loadGeographies();
-        loadIndicators();
-    }
-
-    private static void loadGeographies() {
-        List<Geography> geographyList = HibernateManager.loadAllOfType(persistenceManager, Geography.class);
-        GEOGRAPHY_MANAGER.setGeographies(geographyList);
-    }
-
-    private static void loadIndicators() {
-        List<Indicator> indicatorList = HibernateManager.loadAllOfType(persistenceManager, Indicator.class);
-        INDICATOR_MANAGER.setIndicatorList(indicatorList);
     }
 
     public DefaultApplication(RestHighLevelClient restHighLevelClient, Database psql) {
@@ -109,13 +98,13 @@ public class DefaultApplication implements Application {
 
     @Override
     public String getIndicators() throws ApplicationError {
-        List<Indicator> indicatorList = INDICATOR_MANAGER.getIndicators();
+        List<Indicator> indicatorList = INDICATOR_MANAGER.getAllIndicators();
         return jsonizeList(indicatorList);
     }
 
     @Override
     public String getEntities() throws ApplicationError {
-        List<Geography> geographyList = GEOGRAPHY_MANAGER.getGeographies();
+        List<Geography> geographyList = GEOGRAPHY_MANAGER.getAllGeographies();
         return jsonizeList(geographyList);
     }
 
@@ -139,31 +128,95 @@ public class DefaultApplication implements Application {
         return psql.getHealth();
     }
 
+    private void beginTransaction() {
+        persistenceManager.getTransaction().begin();
+    }
+
+    private void commitTransaction() {
+        persistenceManager.getTransaction().commit();
+    }
+
     public void saveDataset(Dataset dataset) {
         Map<UnmatchedGeography, Geography> geographyEntityMap = new HashMap<>();
         Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
         Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
 
-        Collection<DataElement> dataElementCollection = new HashSet<>();
+        // TODO: Read this from metadata
+        UnmatchedSource unmatchedSource = new UnmatchedSource();
+        unmatchedSource.setName("NFHS");
+
+        Source source = null;
+        try {
+            source = SOURCE_MANAGER.findSourceFromUnmatchedSource(unmatchedSource);
+        } catch (AmbiguousEntityError ambiguousEntityError) {
+            LOG.error(ambiguousEntityError);
+        }
+
+
+        beginTransaction();
 
         for (UnmatchedDataElement unmatchedDataElement: dataset.getData()) {
             DataElement dataElement = new DataElement();
+            Geography geography = null;
+            Indicator indicator = null;
+            Settlement settlement = null;
 
             UnmatchedGeography unmatchedGeography = unmatchedDataElement.getGeography();
             if (unmatchedGeography != null) {
-                Geography geography;
                 Geography geographyFromMap = geographyEntityMap.get(unmatchedGeography);
                 if (geographyFromMap != null) {
                     geography = geographyFromMap;
                 } else {
                     try {
                         geography = GEOGRAPHY_MANAGER.findGeographyFromUnmatchedGeography(unmatchedGeography);
+                        geographyEntityMap.put(unmatchedGeography, geography);
                     } catch (AmbiguousEntityError | UnknownEntityError ex) {
                         LOG.error(ex);
                     }
                 }
-
             }
+
+            UnmatchedIndicator unmatchedIndicator = unmatchedDataElement.getIndicator();
+            if (unmatchedIndicator != null) {
+                Indicator indicatorFromMap = indicatorMap.get(unmatchedIndicator);
+                if (indicatorFromMap != null) {
+                    indicator = indicatorFromMap;
+                } else {
+                    try {
+                        indicator = INDICATOR_MANAGER.findIndicatorFromUnmatchedIndicator(unmatchedIndicator);
+                        indicatorMap.put(unmatchedIndicator, indicator);
+                    } catch (AmbiguousEntityError | UnknownEntityError ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+
+            UnmatchedSettlement unmatchedSettlement = unmatchedDataElement.getSettlement();
+            if (unmatchedSettlement != null) {
+                Settlement settlementFromMap = settlementMap.get(unmatchedSettlement);
+                if (settlementFromMap != null) {
+                    settlement = settlementFromMap;
+                } else {
+                    try {
+                        settlement = new Settlement();
+                        Settlement.SettlementType settlementType = Settlement.getSettlementTypeFromString(unmatchedSettlement.getType());
+                        settlement.setSettlement(settlementType);
+                        settlementMap.put(unmatchedSettlement, settlement);
+                    } catch (IllegalArgumentException ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+
+
+            dataElement.setGeography(geography);
+            dataElement.setIndicator(indicator);
+            dataElement.setSettlement(settlement);
+            dataElement.setSource(source);
+
+            persistenceManager.persist(dataElement);
         }
+
+        commitTransaction();
     }
 }

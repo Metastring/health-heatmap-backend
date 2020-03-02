@@ -49,6 +49,9 @@ public class DataElement {
     @Embedded
     private TimePeriod timePeriod;
 
+    @Embedded
+    private Settlement settlement;
+
     private String value;
 
     public Long getId() {
@@ -89,6 +92,14 @@ public class DataElement {
 
     public void setTimePeriod(TimePeriod timePeriod) {
         this.timePeriod = timePeriod;
+    }
+
+    public Settlement getSettlement() {
+        return settlement;
+    }
+
+    public void setSettlement(Settlement settlement) {
+        this.settlement = settlement;
     }
 
     public String getValue() {

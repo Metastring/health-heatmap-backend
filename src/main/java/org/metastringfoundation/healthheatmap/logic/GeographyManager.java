@@ -19,6 +19,9 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
 import org.metastringfoundation.healthheatmap.pojo.Geography;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeographyManager {
@@ -32,34 +35,76 @@ public class GeographyManager {
         return geographyManager;
     }
 
-    private GeographyManager() {
+    private EntityManager persistenceManager;
 
+    public void setPersistenceManager(EntityManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
     }
 
-    private List<Geography> geographyList;
-
-    public List<Geography> getGeographies() {
-        return geographyList;
+    public List<Geography> getAllGeographies() {
+        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findAll", Geography.class);
+        return query.getResultList();
     }
 
-    public void setGeographies(List<Geography> geographyList) {
-        this.geographyList = geographyList;
+    public List<Geography> findByName(String name) {
+        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findByName", Geography.class);
+        query.setParameter("name", name);
+        return query.getResultList();
     }
 
-    public List<Geography> findGeographyByName(String name) {
-        return null;
+    public List<Geography> findChildByName(String name, Geography belongsTo) {
+        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findChild", Geography.class);
+        query.setParameter("name", name);
+        query.setParameter("parent_id", belongsTo.getId());
+        return query.getResultList();
+    }
+
+    public Geography findById(Long id) {
+        return persistenceManager.find(Geography.class, id);
+    }
+
+    private List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo) {
+        List<Geography> geographies = findChildByName(name, belongsTo);
+        if (geographies.size() == 0) {
+            Geography geography = new Geography();
+            geography.setCanonicalName(name);
+            geography.setBelongsTo(belongsTo);
+            persistenceManager.persist(geography);
+        }
+        return geographies;
+    }
+
+    private List<Geography> findStateByNameCreatingIfNotExists(String name) {
+        List<Geography> geographies = findByName(name);
+        if (geographies.size() == 0) {
+            Geography geography = createGeography(name, null, Geography.GeographyType.STATE);
+            geographies.add(geography);
+        }
+        return geographies;
+    }
+
+    public Geography createGeography(String name, Geography belongsTo, Geography.GeographyType type) {
+        Geography geography = new Geography();
+        geography.setBelongsTo(belongsTo);
+        geography.setCanonicalName(name);
+        geography.setType(type);
+        persistenceManager.persist(geography);
+        return geography;
     }
 
     public Geography findGeographyFromUnmatchedGeography(UnmatchedGeography geography) throws UnknownEntityError, AmbiguousEntityError {
         String state = geography.getState();
-        List<Geography> stateGeographyList = findGeographyByName(state);
+        List<Geography> stateGeographyList = findStateByNameCreatingIfNotExists(state);
         if (stateGeographyList.size() > 1) {
             throw new AmbiguousEntityError("More than one state by the name " + state + ". Please pass more specificiers");
         }
-        if (stateGeographyList.size() < 1) {
-            throw new UnknownEntityError("No such state known: " + state);
-        }
         Geography stateGeography = stateGeographyList.get(0);
-        return null;
+
+        String district = geography.getDistrict();
+        List<Geography> districtGeographyList = findDistrictByNameCreatingIfNotExists(district, stateGeography);
+        if (districtGeographyList.size() > 1) {
+            throw new AmbiguousEntityError("More than one district in state " + state + " by name " + district);
+        }
+        return districtGeographyList.get(0);
     }
 }

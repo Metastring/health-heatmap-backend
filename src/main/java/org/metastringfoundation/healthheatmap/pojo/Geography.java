@@ -20,6 +20,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Geography.findAll",
+                query = "SELECT g FROM Geography g"),
+        @NamedQuery(name = "Geography.findByName",
+                query = "SELECT g FROM Geography g WHERE g.name = :name"),
+        @NamedQuery(name = "Geography.findChild",
+                query = "SELECT g FROM Geography g WHERE g.name = :name AND g.belongs_to_id = :parent_id")
+})
 @Table(name = "geographies")
 public class Geography {
     public enum GeographyType {
