@@ -31,8 +31,8 @@ public class ReversePatternParserTest {
     public void correctlyParsesPattern() {
         String inputPattern = "#{entity.district} - #{settlement}";
         Map<String, String> replacementMap = new HashMap<>();
-        replacementMap.put("#{entity.district}", ".+");
-        replacementMap.put("#{settlement}", ".+");
+        replacementMap.put("#{entity.district}", "(.+)");
+        replacementMap.put("#{settlement}", "(.+)");
         ReversePatternParser parser = new ReversePatternParser(inputPattern, replacementMap);
         Map<String, String> result = parser.parse("Kannur - Rural");
         String resultEntity = result.get("#{entity.district}");

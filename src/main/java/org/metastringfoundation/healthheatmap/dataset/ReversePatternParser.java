@@ -61,11 +61,6 @@ public class ReversePatternParser {
             if (indexOfKey != -1) {
                 positions.put(key, inputPattern.indexOf(key));
             }
-
-            // then make sure every pattern is capturing
-            String value = replacementMap.get(key);
-            String capturingValue = "(" + value + ")";
-            replacementMap.replace(key, capturingValue);
         }
 
         LOG.debug("Positions is " + positions.toString());
@@ -91,18 +86,21 @@ public class ReversePatternParser {
     }
 
     public Map<String, String> parse(String value) {
+        LOG.debug("Parsing " + value);
         Matcher m = pattern.matcher(value);
 
         Map<String, String> output = new HashMap<>();
 
         if (m.find()) {
-            for (int match = 1; match < orderedElements.size() + 1; match++) {
+            for (int match = 1; match <= orderedElements.size(); match++) {
                 String foundEntity = m.group(match);
+                LOG.debug("Found " + foundEntity + " at match " + match);
                 String entityKey = orderedElements.get(match - 1);
                 output.put(entityKey, foundEntity);
             }
         }
 
+        LOG.debug("Parsed as " + output);
         return output;
     }
 }

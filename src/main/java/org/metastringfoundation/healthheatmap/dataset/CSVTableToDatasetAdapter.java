@@ -28,11 +28,11 @@ public class CSVTableToDatasetAdapter implements Dataset {
 
     private static final Map<String, String> regexMapOfDimensions = new HashMap<>();
     static {
-        regexMapOfDimensions.put(quotedDimension("entity.district"), ".+");
-        regexMapOfDimensions.put(quotedDimension("entity.state"), ".+");
-        regexMapOfDimensions.put(quotedDimension("settlement"), ".+");
-        regexMapOfDimensions.put(quotedDimension("indicator"), ".+");
-        regexMapOfDimensions.put(quotedDimension("data"), ".+");
+        regexMapOfDimensions.put(quotedDimension("entity.district"), "(.+)");
+        regexMapOfDimensions.put(quotedDimension("entity.state"), "(.+)");
+        regexMapOfDimensions.put(quotedDimension("settlement"), "(.+)");
+        regexMapOfDimensions.put(quotedDimension("indicator"), "(.+)");
+        regexMapOfDimensions.put(quotedDimension("data"), "(.+)");
     }
 
     private CSVTable table;
