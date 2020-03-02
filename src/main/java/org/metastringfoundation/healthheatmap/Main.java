@@ -20,6 +20,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.housekeeping.DatabaseProfiler;
+import org.metastringfoundation.healthheatmap.logic.DatasetUploader;
 import org.metastringfoundation.healthheatmap.storage.DataStorer;
 import org.metastringfoundation.healthheatmap.storage.MultiplexDataStorer;
 import org.metastringfoundation.healthheatmap.web.Server;
@@ -34,21 +35,14 @@ public class Main {
             DataStorer dataStorer = new MultiplexDataStorer();
 
             String path = commandLine.getOptionValue("path");
-            String datasetName = commandLine.getOptionValue("name");
-            String rangeReference = commandLine.getOptionValue("ranges");
-            boolean random = commandLine.hasOption("random");
-            boolean profiler = commandLine.hasOption("profiler");
             boolean serverShouldStart = commandLine.hasOption("server");
-            String profilerAction = commandLine.getOptionValue("profiler");
 
-            if (profiler) {
-                System.out.println("Starting profiler...");
-                new DatabaseProfiler(profilerAction).run();
-                System.out.println("Ended profiling.");
-            } else if (serverShouldStart) {
+            if (serverShouldStart) {
                 Server.startProductionServer();
+            } else if (!path.isEmpty()) {
+                DatasetUploader.upload(path);
             } else {
-
+                CLI.printHelp();
             }
 
         } catch (ParseException e) {
