@@ -115,4 +115,12 @@ public class TableCellReference {
                 && other.getColumn() == this.getColumn()
         );
     }
+
+    @Override
+    public String toString() {
+        return "TableCellReference{" +
+                "row=" + row +
+                ", column=" + column +
+                '}';
+    }
 }

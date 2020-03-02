@@ -61,4 +61,13 @@ public class CSVRangeDescription {
                 && other.getPattern().equals(this.getPattern())
         );
     }
+
+    @Override
+    public String toString() {
+        return "CSVRangeDescription{" +
+                "range=" + range +
+                ", pattern='" + pattern + '\'' +
+                ", metadata=" + metadata +
+                '}';
+    }
 }

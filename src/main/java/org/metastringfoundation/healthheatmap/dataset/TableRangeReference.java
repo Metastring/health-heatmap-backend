@@ -19,6 +19,8 @@ package org.metastringfoundation.healthheatmap.dataset;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.util.Objects;
+
 @JsonDeserialize(using = TableRangeReferenceDeserializer.class)
 public class TableRangeReference {
     private TableCellReference startingCell;
@@ -104,5 +106,18 @@ public class TableRangeReference {
         return (other.getStartingCell().equals(this.getStartingCell())
                 && other.getEndingCell().equals(this.getEndingCell())
         );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startingCell, endingCell);
+    }
+
+    @Override
+    public String toString() {
+        return "TableRangeReference{" +
+                "startingCell=" + startingCell +
+                ", endingCell=" + endingCell +
+                '}';
     }
 }
