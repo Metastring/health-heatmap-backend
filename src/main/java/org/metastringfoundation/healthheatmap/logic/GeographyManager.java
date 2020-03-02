@@ -66,10 +66,8 @@ public class GeographyManager {
     private List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo) {
         List<Geography> geographies = findChildByName(name, belongsTo);
         if (geographies.size() == 0) {
-            Geography geography = new Geography();
-            geography.setCanonicalName(name);
-            geography.setBelongsTo(belongsTo);
-            persistenceManager.persist(geography);
+            Geography geography = createGeography(name, belongsTo, Geography.GeographyType.DISTRICT);
+            geographies.add(geography);
         }
         return geographies;
     }
