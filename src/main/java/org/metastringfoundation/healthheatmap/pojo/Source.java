@@ -16,13 +16,16 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "sources")
+@NamedQueries({
+        @NamedQuery(name = "Source.findAll",
+                query = "SELECT s FROM Source s"),
+        @NamedQuery(name = "Source.findByName",
+                query = "SELECT s FROM Source s WHERE s.name = :name")
+})
 public class Source {
     @Id
     @GeneratedValue
