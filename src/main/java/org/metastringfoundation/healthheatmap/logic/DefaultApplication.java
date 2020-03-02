@@ -214,6 +214,8 @@ public class DefaultApplication implements Application {
             dataElement.setSettlement(settlement);
             dataElement.setSource(source);
 
+            dataElement.setValue(unmatchedDataElement.getValue());
+
             persistenceManager.persist(dataElement);
         }
 
