@@ -36,8 +36,8 @@ public interface Table {
         int endCol = rangeReference.getEndingCell().getColumn();
 
         List<TableCell> range = new ArrayList<>();
-        for (int rowIndex = startRow; rowIndex < endRow + 1 && rowIndex < getNumberOfRows(); rowIndex++) {
-            for (int colIndex = startCol; colIndex < endCol + 1 && colIndex < getNumberOfColumns(); colIndex++) {
+        for (int rowIndex = startRow; rowIndex <= endRow && rowIndex < getNumberOfRows(); rowIndex++) {
+            for (int colIndex = startCol; colIndex <= endCol && colIndex < getNumberOfColumns(); colIndex++) {
                 TableCell cell = new TableCell(rowIndex, colIndex, getCell(rowIndex, colIndex));
                 range.add(cell);
             }
