@@ -18,12 +18,42 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.healthheatmap.dataset.*;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class DatasetUploader {
     private static final Logger LOG = LogManager.getLogger(DatasetUploader.class);
 
-    public static void upload(String path) {
+    public static void upload(String path)  {
+        CSVTable table = null;
+        CSVTableDescription tableDescription = null;
+        Dataset dataset;
+
+        Path basedir = Paths.get(path).getParent();
+        String metadataPath = Paths.get(basedir.toString(), "metadata.json").toString();
+        LOG.info("basedir is " + basedir);
+        LOG.info("Assuming metadata is at " + metadataPath);
+        try {
+            table = CSVTable.fromPath(path);
+            LOG.debug("table is " + table.getTable().toString());
+        } catch (DatasetIntegrityError datasetIntegrityError) {
+            datasetIntegrityError.printStackTrace();
+        }
+
+        try {
+            tableDescription = CSVTableDescription.fromPath(metadataPath);
+            LOG.debug("Metadata is " + tableDescription);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Application application = new DefaultApplication();
-        LOG.info(path);
+        dataset = new CSVTableToDatasetAdapter(table, tableDescription);
+        application.saveDataset(dataset);
+
+        LOG.info("Done persisting dataset");
     }
 }
