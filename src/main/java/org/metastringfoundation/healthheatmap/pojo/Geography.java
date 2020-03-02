@@ -26,7 +26,7 @@ import java.util.Date;
         @NamedQuery(name = "Geography.findByName",
                 query = "SELECT g FROM Geography g WHERE g.canonicalName = :name"),
         @NamedQuery(name = "Geography.findChild",
-                query = "SELECT g FROM Geography g WHERE g.canonicalName = :name AND g.belongsTo = :parent_id")
+                query = "SELECT g FROM Geography g WHERE g.canonicalName = :name AND g.belongsTo = :parent")
 })
 @Table(name = "geographies")
 public class Geography {

@@ -55,7 +55,7 @@ public class GeographyManager {
     public List<Geography> findChildByName(String name, Geography belongsTo) {
         TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findChild", Geography.class);
         query.setParameter("name", name);
-        query.setParameter("parent_id", belongsTo.getId());
+        query.setParameter("parent", belongsTo);
         return query.getResultList();
     }
 
