@@ -1,1 +1,1 @@
-{"rangeDescriptionList":[{"range":{"startingCell":{"row":0,"column":0},"endingCell":{"row":1,"column":1}},"pattern":"#{indicator}"}]}
+{"ranges":[{"range": "A1:B2","pattern":"#{indicator}"}]}

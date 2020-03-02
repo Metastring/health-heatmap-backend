@@ -17,7 +17,9 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+@JsonDeserialize(using = TableRangeReferenceDeserializer.class)
 public class TableRangeReference {
     private TableCellReference startingCell;
     private TableCellReference endingCell;

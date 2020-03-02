@@ -47,7 +47,7 @@ class CSVReadingTest {
 
         String json = Jsonizer.asJSON(tableDescription);
 
-        String expectedJson = "{\"rangeDescriptionList\":[{\"range\":{\"startingCell\":{\"row\":0,\"column\":0},\"endingCell\":{\"row\":1,\"column\":1}},\"pattern\":\"#{indicator}\"}]}";
+        String expectedJson = "{\"ranges\":[{\"range\":{\"startingCell\":{\"row\":0,\"column\":0},\"endingCell\":{\"row\":1,\"column\":1}},\"pattern\":\"#{indicator}\"}]}";
         assertEquals(expectedJson, json);
     }
 

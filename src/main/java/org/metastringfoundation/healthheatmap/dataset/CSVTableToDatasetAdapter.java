@@ -67,12 +67,18 @@ public class CSVTableToDatasetAdapter implements Dataset {
         for (CSVRangeDescription rangeDescription: tableDescription.getRangeDescriptionList()) {
             List<TableCell> cellsInRange = table.getRange(rangeDescription.getRange());
             String rangePattern = rangeDescription.getPattern();
+            Map<String, String> rangeMetadata = rangeDescription.getMetadata();
+
             ReversePatternParser patternParser = new ReversePatternParser(rangePattern, regexMapOfDimensions);
 
             for (TableCell cell: cellsInRange) {
                 int row = cell.getRow();
                 int column = cell.getColumn();
                 Map<String, String> dimensionsFound = patternParser.parse(cell.getValue());
+
+                if (rangeMetadata != null) {
+                    dimensionsFound.putAll(rangeMetadata);
+                }
 
                 LOG.debug("Dimensions found in " + cell + " are " + dimensionsFound);
 

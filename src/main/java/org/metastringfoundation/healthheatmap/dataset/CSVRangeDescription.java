@@ -16,9 +16,16 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.Map;
+
 public class CSVRangeDescription {
     private TableRangeReference range;
     private String pattern;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, String> metadata;
 
     public TableRangeReference getRange() {
         return range;
@@ -34,6 +41,14 @@ public class CSVRangeDescription {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 
     @Override

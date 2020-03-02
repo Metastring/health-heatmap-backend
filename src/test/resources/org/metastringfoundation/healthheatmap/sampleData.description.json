@@ -1,55 +1,19 @@
 {
-  "rangeDescriptionList": [
+  "ranges": [
     {
-      "range": {
-        "startingCell": {
-          "row": 1,
-          "column": 0
-        },
-        "endingCell": {
-          "row": 2,
-          "column": 0
-        }
-      },
+      "range": "A2:A3",
       "pattern": "#{entity.state}"
     },
     {
-      "range": {
-        "startingCell": {
-          "row": 1,
-          "column": 1
-        },
-        "endingCell": {
-          "row": 2,
-          "column": 1
-        }
-      },
+      "range": "B2:B3",
       "pattern": "#{entity.district}"
     },
     {
-      "range": {
-        "startingCell": {
-          "row": 0,
-          "column": 2
-        },
-        "endingCell": {
-          "row": 0,
-          "column": 3
-        }
-      },
+      "range": "C1:D1",
       "pattern": "#{indicator}"
     },
     {
-      "range": {
-        "startingCell": {
-          "row": 1,
-          "column": 2
-        },
-        "endingCell": {
-          "row": 2,
-          "column": 3
-        }
-      },
+      "range": "C2:D3",
       "pattern": "#{data}"
     }
   ]

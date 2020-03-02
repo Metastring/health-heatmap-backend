@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 
@@ -33,6 +34,7 @@ public class CSVTableDescription {
         return (CSVTableDescription) Jsonizer.fromJSON(jsonString, CSVTableDescription.class);
     }
 
+    @JsonProperty("ranges")
     private List<CSVRangeDescription> rangeDescriptionList;
 
     public List<CSVRangeDescription> getRangeDescriptionList() {
@@ -42,6 +44,8 @@ public class CSVTableDescription {
     public void setRangeDescriptionList(List<CSVRangeDescription> rangeDescriptionList) {
         this.rangeDescriptionList = rangeDescriptionList;
     }
+
+    private DatasetMetadata datasetMetadata;
 
     @Override
     public boolean equals(Object obj) {
