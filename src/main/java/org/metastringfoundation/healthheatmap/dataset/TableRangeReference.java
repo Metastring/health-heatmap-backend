@@ -52,6 +52,9 @@ public class TableRangeReference {
     }
 
     private void setReferencesFromString(String reference) {
+        if (reference.endsWith(":")) {
+            reference = reference.concat(" ");
+        }
         String[] referenceSplit = reference.split(":");
         if (referenceSplit.length != 2) {
             throw new IllegalArgumentException("Reference should be of format CELL:CELL");
