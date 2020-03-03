@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.helpers;
 
 import static org.junit.jupiter.api.Assertions.*;
 

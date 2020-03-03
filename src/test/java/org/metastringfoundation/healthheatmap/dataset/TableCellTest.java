@@ -14,20 +14,31 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
 import org.junit.jupiter.api.Test;
+import org.metastringfoundation.healthheatmap.dataset.TableCell;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JavaUnderstandingTest {
+public class TableCellTest {
     @Test
-    public void getNonExistentKeyFromMap() {
-        Map<String, String> someHashMap = new HashMap<>();
-        String nonExistent = someHashMap.get("non-existent key");
-        assertEquals(null, nonExistent);
+    public void equalsAreEquals() {
+        TableCell cell1 = new TableCell(1, 1, "1");
+        TableCell cell2 = new TableCell(1, 1, "1");
+        assertEquals(cell1, cell2);
+
+        Collection<TableCell> set1 = new HashSet<>();
+        set1.add(cell1);
+        set1.add(cell2);
+
+        Collection<TableCell> set2 = new HashSet<>();
+        set2.add(cell2);
+        set2.add(cell1);
+
+        assertEquals(set1, set2);
     }
 }

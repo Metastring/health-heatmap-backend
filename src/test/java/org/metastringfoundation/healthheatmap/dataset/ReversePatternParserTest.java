@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
 import org.junit.Test;
 import org.metastringfoundation.healthheatmap.dataset.ReversePatternParser;

@@ -14,31 +14,27 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.dataset;
 
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.dataset.TableCell;
-
-import java.util.Collection;
-import java.util.HashSet;
+import org.metastringfoundation.healthheatmap.dataset.UnmatchedDataElement;
+import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
+import org.metastringfoundation.healthheatmap.dataset.UnmatchedIndicator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TableCellTest {
+public class UnmatchedDataElementTest {
     @Test
     public void equalsAreEquals() {
-        TableCell cell1 = new TableCell(1, 1, "1");
-        TableCell cell2 = new TableCell(1, 1, "1");
-        assertEquals(cell1, cell2);
+        UnmatchedDataElement d1 = new UnmatchedDataElement();
+        d1.setGeography(new UnmatchedGeography("Kerala", "Kannur"));
+        d1.setIndicator(new UnmatchedIndicator("U5MR"));
 
-        Collection<TableCell> set1 = new HashSet<>();
-        set1.add(cell1);
-        set1.add(cell2);
+        UnmatchedDataElement d2 = new UnmatchedDataElement();
+        d2.setGeography(new UnmatchedGeography("Kerala", "Kannur"));
+        d2.setIndicator(new UnmatchedIndicator("U5MR"));
+        d2.setSettlement(null);
 
-        Collection<TableCell> set2 = new HashSet<>();
-        set2.add(cell2);
-        set2.add(cell1);
-
-        assertEquals(set1, set2);
+        assertEquals(d1, d2);
     }
 }
