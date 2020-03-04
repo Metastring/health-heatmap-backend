@@ -18,13 +18,18 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.*;
 
+/**
+ * Wrapper CLI to parse arguments using standard libraries (Apache Commons CLI)
+ */
 public class CLI {
+    /** Path to a file that needs to be uploaded to the dataset */
     final static Option path = Option.builder("p")
             .hasArg()
             .longOpt("path")
             .desc("Path to the file")
             .build();
 
+    /** Option to start the server */
     final static Option server = new Option("s", "server", false, "Run server");
 
     public final static Options options = new Options()
