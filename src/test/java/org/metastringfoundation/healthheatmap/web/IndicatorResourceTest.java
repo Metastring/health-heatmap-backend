@@ -39,7 +39,8 @@ public class IndicatorResourceTest {
 
     @Before
     public void setUp() throws Exception {
-        ResourceConfig resourceConfig = Server.createApp();
+        boolean injectDependencies = false;
+        ResourceConfig resourceConfig = new ApplicationConfig(injectDependencies);
 
         Application mockApplication = new MockApplication();
 

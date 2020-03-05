@@ -34,12 +34,6 @@ public class Server {
 
     public static HttpServer server;
 
-    private static void configureProductionServer() {
-        ResourceConfig rc = createApp();
-        rc = injectProductionDependencies(rc);
-        server = getServer(rc);
-    }
-
     private static void startServer() {
         try {
             server.start();
@@ -55,7 +49,8 @@ public class Server {
     }
 
     public static void startProductionServer() {
-        configureProductionServer();
+        ResourceConfig productionApp = new ApplicationConfig();
+        server = getServer(productionApp);
         startServer();
     }
 
@@ -63,22 +58,5 @@ public class Server {
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
         return server;
-    }
-
-    public static ResourceConfig createApp() {
-        final ResourceConfig rc = new ResourceConfig().packages("org.metastringfoundation.healthheatmap");
-        return rc;
-    }
-
-    public static ResourceConfig injectProductionDependencies(ResourceConfig rc) {
-        DefaultApplication app = new DefaultApplication();
-
-        rc.registerInstances(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(app).to(Application.class);
-            }
-        });
-        return rc;
     }
 }
