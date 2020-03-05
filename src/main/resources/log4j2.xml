@@ -19,7 +19,7 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <File name="File" fileName="log.out" immediateFlush="false" append="false">
+        <File name="File" fileName="${env:HEALTHHEATMAP_LOG:-/tmp/healthheatmap/log.out}" immediateFlush="false" append="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
     </Appenders>
