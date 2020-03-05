@@ -24,9 +24,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * This is a utility that helps upload data directly from command line
+ */
 public class DatasetUploader {
     private static final Logger LOG = LogManager.getLogger(DatasetUploader.class);
 
+    /**
+     * Uploads the data into the database of the application.
+     *
+     * @param path - path to the CSV file that contains data
+     */
     public static void upload(String path)  {
         CSVTable table = null;
         CSVTableDescription tableDescription = null;

@@ -32,6 +32,10 @@ import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 import javax.persistence.EntityManager;
 import java.util.*;
 
+/**
+ * One (and only) implementation of the application that acutally does the hard work of wiring everything together.
+ * Brings everything else together to make web resources work, CLI, and anything else that needs to work.
+ */
 public class DefaultApplication implements Application {
 
     private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
