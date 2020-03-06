@@ -16,10 +16,12 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
 import javax.persistence.*;
 
 @Entity
-//TODO: Make this @Indexed
+@Indexed
 @Table(name = "dataelements")
 public class DataElement {
     @Id
