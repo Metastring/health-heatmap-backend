@@ -20,10 +20,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.pojo.TimePeriod;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,7 +93,12 @@ class CSVReadingTest {
         source.setName("NFHS");
         UnmatchedReport report = new UnmatchedReport();
         report.setUri(URI.create("http://data.gov.in"));
+        LocalDate start = LocalDate.of(2014,1,1);
+        LocalDate end = LocalDate.of(2015,12,31);
+        TimePeriod timePeriod = new TimePeriod(start, end);
+
         DatasetMetadata metadata = new DatasetMetadata(source, report);
+        metadata.setTimePeriod(timePeriod);
 
         CSVTableDescription expectedDescription = new CSVTableDescription();
         expectedDescription.setRangeDescriptionList(rangeDescriptionList);

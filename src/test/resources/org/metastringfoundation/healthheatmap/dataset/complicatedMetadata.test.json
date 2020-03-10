@@ -16,6 +16,10 @@
   ],
   "metadata": {
     "source": "NFHS",
-    "report": "http://data.gov.in"
+    "report": "http://data.gov.in",
+    "duration": {
+      "start": "2014-01-01",
+      "end": "2015-12-31"
+    }
   }
 }

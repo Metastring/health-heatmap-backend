@@ -42,6 +42,8 @@ public class DatasetUploader {
         UnmatchedSource unmatchedSource = dataset.getMetadata().getSource();
         UnmatchedReport unmatchedReport = dataset.getMetadata().getReport();
 
+        TimePeriod timePeriod = dataset.getMetadata().getTimePeriod();
+
         Source source;
         Report report;
         Upload upload;
@@ -121,6 +123,7 @@ public class DatasetUploader {
             dataElement.setUpload(upload);
             dataElement.setSource(source);
             dataElement.setReport(report);
+            dataElement.setTimePeriod(timePeriod);
 
             dataElement.setValue(unmatchedDataElement.getValue());
 

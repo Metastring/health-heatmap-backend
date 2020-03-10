@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap.pojo;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -48,9 +48,9 @@ public class Geography {
     @OneToMany(mappedBy = "geography", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GeographyName> otherNames;
 
-    private Date established;
+    private LocalDate established;
 
-    private Date ceased;
+    private LocalDate ceased;
 
     @Enumerated(EnumType.STRING)
     private GeographyType type;
@@ -85,19 +85,19 @@ public class Geography {
         this.canonicalName = canonicalName;
     }
 
-    public Date getEstablished() {
+    public LocalDate getEstablished() {
         return established;
     }
 
-    public void setEstablished(Date established) {
+    public void setEstablished(LocalDate established) {
         this.established = established;
     }
 
-    public Date getCeased() {
+    public LocalDate getCeased() {
         return ceased;
     }
 
-    public void setCeased(Date ceased) {
+    public void setCeased(LocalDate ceased) {
         this.ceased = ceased;
     }
 

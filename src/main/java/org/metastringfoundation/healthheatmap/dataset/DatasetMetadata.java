@@ -17,12 +17,18 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metastringfoundation.healthheatmap.pojo.TimePeriod;
 
 import java.util.Objects;
 
 public class DatasetMetadata {
     private UnmatchedSource source;
     private UnmatchedReport report;
+
+    @JsonProperty("duration")
+    private TimePeriod timePeriod;
+
+    public DatasetMetadata() {}
 
     public DatasetMetadata(@JsonProperty("source") UnmatchedSource source,
                            @JsonProperty("report") UnmatchedReport report) {
@@ -44,6 +50,14 @@ public class DatasetMetadata {
 
     public void setReport(UnmatchedReport report) {
         this.report = report;
+    }
+
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
     }
 
     @Override

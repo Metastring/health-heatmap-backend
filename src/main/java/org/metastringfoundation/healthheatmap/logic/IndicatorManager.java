@@ -42,6 +42,12 @@ public class IndicatorManager extends DimensionManager {
         return indicator;
     }
 
+    public static Indicator findById(Long id) {
+        TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findById", Indicator.class);
+        query.setParameter("id", id);
+        return query.getResultList().get(0);
+    }
+
     private static List<Indicator> findByName(String name) {
         TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findByName", Indicator.class);
         query.setParameter("name", name);

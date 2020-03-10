@@ -16,13 +16,11 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(name = "geography_names")
 public class GeographyName {
     @Id
     @GeneratedValue

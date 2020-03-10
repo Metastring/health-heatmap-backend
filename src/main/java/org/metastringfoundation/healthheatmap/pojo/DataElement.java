@@ -16,7 +16,12 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
+import org.metastringfoundation.healthheatmap.helpers.bridges.*;
 
 import javax.persistence.*;
 
@@ -32,11 +37,17 @@ public class DataElement {
     @JoinColumn(name = "indicator_id",
                 foreignKey = @ForeignKey(name = "data_element_indicator_id_fk")
     )
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = IndicatorIdBridge.class)
+    )
     private Indicator indicator;
 
     @ManyToOne
     @JoinColumn(name = "geography_id",
                 foreignKey =  @ForeignKey(name = "data_element_geography_id_fk")
+    )
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = GeographyIdBridge.class)
     )
     private Geography geography;
 
@@ -44,24 +55,40 @@ public class DataElement {
     @JoinColumn(name = "upload_id",
                 foreignKey = @ForeignKey(name = "data_element_upload_id_fk")
     )
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = UploadIdBridge.class)
+    )
     private Upload upload;
 
     @ManyToOne
     @JoinColumn(name = "report_id",
-                foreignKey = @ForeignKey(name = "data_element_report_id_fk"))
+                foreignKey = @ForeignKey(name = "data_element_report_id_fk")
+    )
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = ReportIdBridge.class)
+    )
     private Report report;
 
     @ManyToOne
     @JoinColumn(name = "source_id",
-                foreignKey = @ForeignKey(name = "data_element_source_id_fk"))
+                foreignKey = @ForeignKey(name = "data_element_source_id_fk")
+    )
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = SourceIdBridge.class)
+    )
     private Source source;
 
     @Embedded
+    @PropertyBinding(binder = @PropertyBinderRef(type = TimePeriodDatesBinder.class))
     private TimePeriod timePeriod;
 
     @Embedded
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = SettlementValueBridge.class)
+    )
     private Settlement settlement;
 
+    @GenericField
     private String value;
 
     public Long getId() {

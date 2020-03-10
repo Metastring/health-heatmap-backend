@@ -16,32 +16,43 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Embeddable
 public class TimePeriod {
 
     @Column(name="start_time")
-    private Date startTime;
+    @JsonProperty("start")
+    private LocalDate startTime;
 
     @Column(name="end_time")
-    private Date endTime;
+    @JsonProperty("end")
+    private LocalDate endTime;
 
-    public Date getStartTime() {
+    public TimePeriod() {}
+
+    public TimePeriod(LocalDate startTime, LocalDate endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public LocalDate getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDate startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public LocalDate getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDate endTime) {
         this.endTime = endTime;
     }
 }
