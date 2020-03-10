@@ -16,55 +16,52 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
-public class DatasetMetadata {
-    private UnmatchedSource source;
-    private UnmatchedReport report;
+public class UnmatchedReport {
+    private URI uri;
 
-    public DatasetMetadata(@JsonProperty("source") UnmatchedSource source,
-                           @JsonProperty("report") UnmatchedReport report) {
-        this.source = source;
-        this.report = report;
+    public URI getUri() {
+        return uri;
     }
 
-    public UnmatchedSource getSource() {
-        return source;
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
-    public void setSource(UnmatchedSource source) {
-        this.source = source;
+    public UnmatchedReport(URI uri) {
+        this.uri = uri;
     }
 
-    public UnmatchedReport getReport() {
-        return report;
-    }
+    public UnmatchedReport() {}
 
-    public void setReport(UnmatchedReport report) {
-        this.report = report;
+    public UnmatchedReport(String uri) throws DatasetIntegrityError {
+        try {
+            this.uri = new URI(uri);
+        } catch (URISyntaxException e) {
+            throw new DatasetIntegrityError("Metadata has an invalid uri: " + uri);
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DatasetMetadata that = (DatasetMetadata) o;
-        return Objects.equals(source, that.source) &&
-                Objects.equals(report, that.report);
+        UnmatchedReport that = (UnmatchedReport) o;
+        return Objects.equals(uri, that.uri);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(source, report);
+        return Objects.hash(uri);
     }
 
     @Override
     public String toString() {
-        return "DatasetMetadata{" +
-                "source=" + source +
-                ", report=" + report +
+        return "UnmatchedReport{" +
+                "uri=" + uri +
                 '}';
     }
 }

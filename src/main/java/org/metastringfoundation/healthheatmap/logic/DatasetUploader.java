@@ -19,49 +19,114 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.*;
+import org.metastringfoundation.healthheatmap.pojo.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * This is a utility that helps upload data directly from command line
- */
 public class DatasetUploader {
     private static final Logger LOG = LogManager.getLogger(DatasetUploader.class);
 
-    /**
-     * Uploads the data into the database of the application.
-     *
-     * @param path - path to the CSV file that contains data
-     */
-    public static void upload(String path)  {
-        CSVTable table = null;
-        CSVTableDescription tableDescription = null;
-        Dataset dataset;
+    private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
 
-        Path basedir = Paths.get(path).getParent();
-        String metadataPath = Paths.get(basedir.toString(), "metadata.json").toString();
-        LOG.info("basedir is " + basedir);
-        LOG.info("Assuming metadata is at " + metadataPath);
+    public static void upload(Dataset dataset) throws ApplicationError {
+        Map<UnmatchedGeography, Geography> geographyEntityMap = new HashMap<>();
+        Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
+        Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
+
+        persistenceManager.getTransaction().begin();
+
+        LOG.debug(dataset.getMetadata());
+
+        UnmatchedSource unmatchedSource = dataset.getMetadata().getSource();
+        UnmatchedReport unmatchedReport = dataset.getMetadata().getReport();
+
+        Source source;
+        Report report;
+        Upload upload;
+
         try {
-            table = CSVTable.fromPath(path);
-            LOG.debug("table is " + table.getTable().toString());
-        } catch (DatasetIntegrityError datasetIntegrityError) {
-            datasetIntegrityError.printStackTrace();
+            source = SourceManager.findSourceFromUnmatchedSource(unmatchedSource);
+        } catch (AmbiguousEntityError ex) {
+            throw new ApplicationError("Impossible to find source");
         }
 
         try {
-            tableDescription = CSVTableDescription.fromPath(metadataPath);
-            LOG.debug("Metadata is " + tableDescription);
-        } catch (IOException e) {
-            e.printStackTrace();
+            report = ReportManager.findReportFromUnmatchedReport(unmatchedReport);
+        } catch (AmbiguousEntityError ambiguousEntityError) {
+            throw new ApplicationError("No report");
         }
 
-        Application application = new DefaultApplication();
-        dataset = new CSVTableToDatasetAdapter(table, tableDescription);
-        application.saveDataset(dataset);
+        upload = UploadManager.newUpload(report, source);
 
-        LOG.info("Done persisting dataset");
+        for (UnmatchedDataElement unmatchedDataElement: dataset.getData()) {
+            DataElement dataElement = new DataElement();
+            Geography geography = null;
+            Indicator indicator = null;
+            Settlement settlement = null;
+
+            UnmatchedGeography unmatchedGeography = unmatchedDataElement.getGeography();
+            if (unmatchedGeography != null) {
+                Geography geographyFromMap = geographyEntityMap.get(unmatchedGeography);
+                if (geographyFromMap != null) {
+                    geography = geographyFromMap;
+                } else {
+                    try {
+                        geography = GeographyManager.findGeographyFromUnmatchedGeography(unmatchedGeography);
+                        geographyEntityMap.put(unmatchedGeography, geography);
+                    } catch (AmbiguousEntityError | UnknownEntityError ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+
+            UnmatchedIndicator unmatchedIndicator = unmatchedDataElement.getIndicator();
+            if (unmatchedIndicator != null) {
+                Indicator indicatorFromMap = indicatorMap.get(unmatchedIndicator);
+                if (indicatorFromMap != null) {
+                    indicator = indicatorFromMap;
+                } else {
+                    try {
+                        indicator = IndicatorManager.findIndicatorFromUnmatchedIndicator(unmatchedIndicator);
+                        indicatorMap.put(unmatchedIndicator, indicator);
+                    } catch (AmbiguousEntityError | UnknownEntityError ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+
+            UnmatchedSettlement unmatchedSettlement = unmatchedDataElement.getSettlement();
+            if (unmatchedSettlement != null) {
+                Settlement settlementFromMap = settlementMap.get(unmatchedSettlement);
+                if (settlementFromMap != null) {
+                    settlement = settlementFromMap;
+                } else {
+                    try {
+                        settlement = new Settlement();
+                        Settlement.SettlementType settlementType = Settlement.getSettlementTypeFromString(unmatchedSettlement.getType());
+                        settlement.setSettlement(settlementType);
+                        settlementMap.put(unmatchedSettlement, settlement);
+                    } catch (IllegalArgumentException ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+
+
+            dataElement.setGeography(geography);
+            dataElement.setIndicator(indicator);
+            dataElement.setSettlement(settlement);
+
+            dataElement.setUpload(upload);
+            dataElement.setSource(source);
+            dataElement.setReport(report);
+
+            dataElement.setValue(unmatchedDataElement.getValue());
+
+            persistenceManager.persist(dataElement);
+        }
+
+        persistenceManager.getTransaction().commit();
     }
 }

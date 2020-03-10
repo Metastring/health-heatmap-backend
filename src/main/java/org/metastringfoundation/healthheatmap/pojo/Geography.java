@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.pojo;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -30,11 +31,6 @@ import java.util.Date;
 })
 @Table(name = "geographies")
 public class Geography {
-    public enum GeographyType {
-        DISTRICT,
-        STATE
-    }
-
     @Id
     @Column(name = "id")
     @GeneratedValue
@@ -43,8 +39,14 @@ public class Geography {
     @Column(name = "short_code")
     private String uniqueShortCode;
 
+    @Column(name = "wikidata_code")
+    private String wikidataCode;
+
     @Column(name = "name")
     private String canonicalName;
+
+    @OneToMany(mappedBy = "geography", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GeographyName> otherNames;
 
     private Date established;
 
@@ -54,8 +56,8 @@ public class Geography {
     private GeographyType type;
 
     @ManyToOne
-    @JoinColumn(name = "belongs_to_id",
-            foreignKey = @ForeignKey(name = "belongs_to_id_fk")
+    @JoinColumn(name = "belongs_to",
+            foreignKey = @ForeignKey(name = "geography_belongs_to_fk")
     )
     private Geography belongsTo;
 
@@ -107,11 +109,43 @@ public class Geography {
         this.type = type;
     }
 
+    public String getWikidataCode() {
+        return wikidataCode;
+    }
+
+    public void setWikidataCode(String wikidataCode) {
+        this.wikidataCode = wikidataCode;
+    }
+
     public Geography getBelongsTo() {
         return belongsTo;
     }
 
     public void setBelongsTo(Geography belongsTo) {
         this.belongsTo = belongsTo;
+    }
+
+    public List<GeographyName> getOtherNames() {
+        return otherNames;
+    }
+
+    public void setOtherNames(List<GeographyName> otherNames) {
+        this.otherNames = otherNames;
+    }
+
+    public void addOtherName(GeographyName otherName) {
+        otherName.setGeography(this);
+        otherNames.add(otherName);
+    }
+
+    public void removeOtherName(GeographyName otherName) {
+        otherNames.remove(otherName);
+    }
+
+    public enum GeographyType {
+        COUNTRY,
+        STATE,
+        DIVISION,
+        DISTRICT
     }
 }

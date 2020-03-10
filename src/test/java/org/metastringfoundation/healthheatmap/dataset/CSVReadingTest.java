@@ -19,15 +19,12 @@ package org.metastringfoundation.healthheatmap.dataset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.dataset.*;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -65,6 +62,40 @@ class CSVReadingTest {
 
         CSVTableDescription expectedDescription = new CSVTableDescription();
         expectedDescription.setRangeDescriptionList(rangeDescriptionList);
+
+        assertEquals(expectedDescription, description);
+    }
+
+    @Test()
+    void correctlyReadsComplicatedJSON() throws IOException {
+        String jsonFileName = "complicatedMetadata.test.json";
+        String path = this.getClass().getResource(jsonFileName).getPath();
+        CSVTableDescription description = CSVTableDescription.fromPath(path);
+
+        CSVRangeDescription range1 = new CSVRangeDescription();
+        range1.setRange(new TableRangeReference("A2:A"));
+        range1.setPattern("#{indicator}");
+
+        CSVRangeDescription range2 = new CSVRangeDescription();
+        range2.setRange(new TableRangeReference("B1:1"));
+        range2.setPattern("#{entity.district} - #{settlement}");
+        range2.setMetadata(Collections.singletonMap("#{entity.state}", "Andhra Pradesh"));
+
+        CSVRangeDescription range3 = new CSVRangeDescription();
+        range3.setRange(new TableRangeReference("B2:AE"));
+        range3.setPattern("#{data}");
+
+        List<CSVRangeDescription> rangeDescriptionList = Arrays.asList(range1, range2, range3);;
+
+        UnmatchedSource source = new UnmatchedSource();
+        source.setName("NFHS");
+        UnmatchedReport report = new UnmatchedReport();
+        report.setUri(URI.create("http://data.gov.in"));
+        DatasetMetadata metadata = new DatasetMetadata(source, report);
+
+        CSVTableDescription expectedDescription = new CSVTableDescription();
+        expectedDescription.setRangeDescriptionList(rangeDescriptionList);
+        expectedDescription.setDatasetMetadata(metadata);
 
         assertEquals(expectedDescription, description);
     }

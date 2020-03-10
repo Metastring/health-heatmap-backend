@@ -16,18 +16,16 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.pojo.Report;
+import org.metastringfoundation.healthheatmap.pojo.Source;
+import org.metastringfoundation.healthheatmap.pojo.Upload;
 
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
-
-    String addIndicator(String indicatorName) throws ApplicationError;
-
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
-
-    String getHealth();
-
-    void saveDataset(Dataset dataset) throws ApplicationError;
+public class UploadManager extends DimensionManager {
+    public static Upload newUpload(Report report, Source source) {
+        Upload upload = new Upload();
+        upload.setReport(report);
+        upload.setSource(source);
+        persistenceManager.persist(upload);
+        return upload;
+    }
 }

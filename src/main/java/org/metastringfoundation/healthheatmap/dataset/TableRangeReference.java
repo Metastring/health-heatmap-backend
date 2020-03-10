@@ -16,7 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Objects;

@@ -16,17 +16,14 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
-@Table(name = "sources")
-@NamedQueries({
-        @NamedQuery(name = "Source.findAll",
-                query = "SELECT s FROM Source s"),
-        @NamedQuery(name = "Source.findByName",
-                query = "SELECT s FROM Source s WHERE s.name = :name")
-})
-public class Source {
+public class GeographyName {
     @Id
     @GeneratedValue
     private Long id;
@@ -34,10 +31,7 @@ public class Source {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "belongs_to",
-            foreignKey = @ForeignKey(name = "source_belongs_to_fk")
-    )
-    private Source belongsTo;
+    private Geography geography;
 
     public Long getId() {
         return id;
@@ -55,11 +49,25 @@ public class Source {
         this.name = name;
     }
 
-    public Source getBelongsTo() {
-        return belongsTo;
+    public Geography getGeography() {
+        return geography;
     }
 
-    public void setBelongsTo(Source belongsTo) {
-        this.belongsTo = belongsTo;
+    public void setGeography(Geography geography) {
+        this.geography = geography;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeographyName that = (GeographyName) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(geography, that.geography);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, geography);
     }
 }

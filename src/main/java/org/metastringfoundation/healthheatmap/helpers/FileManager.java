@@ -18,7 +18,10 @@ package org.metastringfoundation.healthheatmap.helpers;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;

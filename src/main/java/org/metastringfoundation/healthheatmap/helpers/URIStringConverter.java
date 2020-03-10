@@ -14,20 +14,21 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.helpers;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.net.URI;
 
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
+@Converter
+public class URIStringConverter implements AttributeConverter<URI, String> {
+    @Override
+    public String convertToDatabaseColumn(URI uri) {
+        return uri.toString();
+    }
 
-    String addIndicator(String indicatorName) throws ApplicationError;
-
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
-
-    String getHealth();
-
-    void saveDataset(Dataset dataset) throws ApplicationError;
+    @Override
+    public URI convertToEntityAttribute(String s) {
+        return URI.create(s);
+    }
 }

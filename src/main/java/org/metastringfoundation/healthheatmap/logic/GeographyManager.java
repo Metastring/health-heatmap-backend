@@ -19,51 +19,33 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
 import org.metastringfoundation.healthheatmap.pojo.Geography;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.List;
 
-public class GeographyManager {
-    public static GeographyManager geographyManager;
-
-    public static GeographyManager getInstance() {
-        if (geographyManager != null) {
-            return geographyManager;
-        }
-        geographyManager = new GeographyManager();
-        return geographyManager;
-    }
-
-    private EntityManager persistenceManager;
-
-    public void setPersistenceManager(EntityManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
-    }
-
-    public List<Geography> getAllGeographies() {
+public class GeographyManager extends DimensionManager {
+    public static List<Geography> getAllGeographies() {
         TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findAll", Geography.class);
         return query.getResultList();
     }
 
-    public List<Geography> findByName(String name) {
+    public static List<Geography> findByName(String name) {
         TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findByName", Geography.class);
         query.setParameter("name", name);
         return query.getResultList();
     }
 
-    public List<Geography> findChildByName(String name, Geography belongsTo) {
+    public static List<Geography> findChildByName(String name, Geography belongsTo) {
         TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findChild", Geography.class);
         query.setParameter("name", name);
         query.setParameter("parent", belongsTo);
         return query.getResultList();
     }
 
-    public Geography findById(Long id) {
+    public static Geography findById(Long id) {
         return persistenceManager.find(Geography.class, id);
     }
 
-    private List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo) {
+    private static List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo) {
         List<Geography> geographies = findChildByName(name, belongsTo);
         if (geographies.size() == 0) {
             Geography geography = createGeography(name, belongsTo, Geography.GeographyType.DISTRICT);
@@ -72,7 +54,7 @@ public class GeographyManager {
         return geographies;
     }
 
-    private List<Geography> findStateByNameCreatingIfNotExists(String name) {
+    private static List<Geography> findStateByNameCreatingIfNotExists(String name) {
         List<Geography> geographies = findByName(name);
         if (geographies.size() == 0) {
             Geography geography = createGeography(name, null, Geography.GeographyType.STATE);
@@ -81,16 +63,15 @@ public class GeographyManager {
         return geographies;
     }
 
-    public Geography createGeography(String name, Geography belongsTo, Geography.GeographyType type) {
+    public static Geography createGeography(String name, Geography belongsTo, Geography.GeographyType type) {
         Geography geography = new Geography();
-        geography.setBelongsTo(belongsTo);
         geography.setCanonicalName(name);
         geography.setType(type);
         persistenceManager.persist(geography);
         return geography;
     }
 
-    public Geography findGeographyFromUnmatchedGeography(UnmatchedGeography geography) throws UnknownEntityError, AmbiguousEntityError {
+    public static Geography findGeographyFromUnmatchedGeography(UnmatchedGeography geography) throws UnknownEntityError, AmbiguousEntityError {
         String state = geography.getState();
         List<Geography> stateGeographyList = findStateByNameCreatingIfNotExists(state);
         if (stateGeographyList.size() > 1) {

@@ -16,59 +16,39 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedIndicator;
-import org.metastringfoundation.healthheatmap.pojo.Geography;
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.List;
 
-public class IndicatorManager {
-    private static IndicatorManager indicatorManager;
-
-    public static IndicatorManager getInstance() {
-        if (indicatorManager != null) {
-            return indicatorManager;
-        }
-        indicatorManager = new IndicatorManager();
-        return indicatorManager;
-    }
-
-    private EntityManager persistenceManager;
-
-    public void setPersistenceManager(EntityManager persistenceManager) {
-        this.persistenceManager = persistenceManager;
-    }
-
-    public List<Indicator> getAllIndicators() {
+public class IndicatorManager extends DimensionManager {
+    public static List<Indicator> getAllIndicators() {
         TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findAll", Indicator.class);
         return query.getResultList();
     }
 
-    public Indicator addIndicatorWithCommit(String name) {
+    public static Indicator addIndicatorWithCommit(String name) {
         persistenceManager.getTransaction().begin();
         Indicator indicator = addIndicator(name);
         persistenceManager.getTransaction().commit();
         return indicator;
     }
 
-    public Indicator addIndicator(String name) {
+    public static Indicator addIndicator(String name) {
         Indicator indicator = new Indicator();
         indicator.setCanonicalName(name);
         persistenceManager.persist(indicator);
         return indicator;
     }
 
-    private List<Indicator> findByName(String name) {
+    private static List<Indicator> findByName(String name) {
         TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findByName", Indicator.class);
         query.setParameter("name", name);
         return query.getResultList();
     }
 
-    private List<Indicator> findIndicatorByNameCreatingIfNotExists(String name) {
+    private static List<Indicator> findIndicatorByNameCreatingIfNotExists(String name) {
         List<Indicator> indicators = findByName(name);
         if (indicators.size() == 0) {
             Indicator indicator = addIndicator(name);
@@ -77,7 +57,7 @@ public class IndicatorManager {
         return indicators;
     }
 
-    public Indicator findIndicatorFromUnmatchedIndicator(UnmatchedIndicator indicator) throws UnknownEntityError, AmbiguousEntityError {
+    public static Indicator findIndicatorFromUnmatchedIndicator(UnmatchedIndicator indicator) throws UnknownEntityError, AmbiguousEntityError {
         String name = indicator.getName();
         List<Indicator> indicatorList = findIndicatorByNameCreatingIfNotExists(name);
 

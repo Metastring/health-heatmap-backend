@@ -17,7 +17,6 @@
 package org.metastringfoundation.healthheatmap.pojo;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
 
 @Entity
 @NamedQueries({

@@ -16,7 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.dataset;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface Table {
     List<List<String>> getTable();

@@ -23,6 +23,7 @@ import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class CSVTableDescription {
 
@@ -59,12 +60,17 @@ public class CSVTableDescription {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        CSVTableDescription other = (CSVTableDescription) obj;
-        return other.getRangeDescriptionList().equals(this.getRangeDescriptionList());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CSVTableDescription that = (CSVTableDescription) o;
+        return Objects.equals(rangeDescriptionList, that.rangeDescriptionList) &&
+                Objects.equals(datasetMetadata, that.datasetMetadata);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rangeDescriptionList, datasetMetadata);
     }
 
     @Override

@@ -47,13 +47,14 @@ public class UnmatchedSource {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + "\n" +
-                "name: " + getName();
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name);
+    public String toString() {
+        return "UnmatchedSource{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

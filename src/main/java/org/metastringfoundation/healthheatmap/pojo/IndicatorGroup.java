@@ -16,36 +16,18 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-@Entity
-@Table(name = "sources")
-@NamedQueries({
-        @NamedQuery(name = "Source.findAll",
-                query = "SELECT s FROM Source s"),
-        @NamedQuery(name = "Source.findByName",
-                query = "SELECT s FROM Source s WHERE s.name = :name")
-})
-public class Source {
-    @Id
-    @GeneratedValue
-    private Long id;
+import java.util.List;
 
+public class IndicatorGroup {
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "belongs_to",
-            foreignKey = @ForeignKey(name = "source_belongs_to_fk")
-    )
-    private Source belongsTo;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<IndicatorGroup> subGroups;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Indicator> indicators;
 
     public String getName() {
         return name;
@@ -55,11 +37,19 @@ public class Source {
         this.name = name;
     }
 
-    public Source getBelongsTo() {
-        return belongsTo;
+    public List<IndicatorGroup> getSubGroups() {
+        return subGroups;
     }
 
-    public void setBelongsTo(Source belongsTo) {
-        this.belongsTo = belongsTo;
+    public void setSubGroups(List<IndicatorGroup> subGroups) {
+        this.subGroups = subGroups;
+    }
+
+    public List<Indicator> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(List<Indicator> indicators) {
+        this.indicators = indicators;
     }
 }

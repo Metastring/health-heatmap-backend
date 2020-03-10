@@ -19,25 +19,22 @@ package org.metastringfoundation.healthheatmap.pojo;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sources")
-@NamedQueries({
-        @NamedQuery(name = "Source.findAll",
-                query = "SELECT s FROM Source s"),
-        @NamedQuery(name = "Source.findByName",
-                query = "SELECT s FROM Source s WHERE s.name = :name")
-})
-public class Source {
+@Table(name = "uploads")
+public class Upload {
     @Id
     @GeneratedValue
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "report_id",
+            foreignKey = @ForeignKey(name = "upload_report_id_fk")
+    )
+    private Report report;
 
     @ManyToOne
-    @JoinColumn(name = "belongs_to",
-            foreignKey = @ForeignKey(name = "source_belongs_to_fk")
-    )
-    private Source belongsTo;
+    @JoinColumn(name = "source_id",
+            foreignKey = @ForeignKey(name = "upload_source_id_fk"))
+    private Source source;
 
     public Long getId() {
         return id;
@@ -47,19 +44,19 @@ public class Source {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Report getReport() {
+        return report;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setReport(Report report) {
+        this.report = report;
     }
 
-    public Source getBelongsTo() {
-        return belongsTo;
+    public Source getSource() {
+        return source;
     }
 
-    public void setBelongsTo(Source belongsTo) {
-        this.belongsTo = belongsTo;
+    public void setSource(Source source) {
+        this.source = source;
     }
 }

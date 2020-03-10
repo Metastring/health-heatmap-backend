@@ -30,20 +30,30 @@ public class DataElement {
 
     @ManyToOne
     @JoinColumn(name = "indicator_id",
-                foreignKey = @ForeignKey(name = "indicator_id_fk")
+                foreignKey = @ForeignKey(name = "data_element_indicator_id_fk")
     )
     private Indicator indicator;
 
     @ManyToOne
     @JoinColumn(name = "geography_id",
-                foreignKey =  @ForeignKey(name = "geography_id_fk")
+                foreignKey =  @ForeignKey(name = "data_element_geography_id_fk")
     )
     private Geography geography;
 
     @ManyToOne
-    @JoinColumn(name = "source_id",
-                foreignKey = @ForeignKey(name = "source_id_fk")
+    @JoinColumn(name = "upload_id",
+                foreignKey = @ForeignKey(name = "data_element_upload_id_fk")
     )
+    private Upload upload;
+
+    @ManyToOne
+    @JoinColumn(name = "report_id",
+                foreignKey = @ForeignKey(name = "data_element_report_id_fk"))
+    private Report report;
+
+    @ManyToOne
+    @JoinColumn(name = "source_id",
+                foreignKey = @ForeignKey(name = "data_element_source_id_fk"))
     private Source source;
 
     @Embedded
@@ -76,6 +86,22 @@ public class DataElement {
 
     public void setGeography(Geography geography) {
         this.geography = geography;
+    }
+
+    public Upload getUpload() {
+        return upload;
+    }
+
+    public void setUpload(Upload upload) {
+        this.upload = upload;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
     }
 
     public Source getSource() {

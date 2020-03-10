@@ -45,7 +45,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
 
     @Override
     public DatasetMetadata getMetadata() {
-        return null;
+        return tableDescription.getDatasetMetadata();
     }
 
     @Override

@@ -18,9 +18,7 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
-import org.metastringfoundation.healthheatmap.dataset.*;
-import org.metastringfoundation.healthheatmap.housekeeping.DatabaseProfiler;
-import org.metastringfoundation.healthheatmap.logic.DatasetUploader;
+import org.metastringfoundation.healthheatmap.logic.TableUploader;
 import org.metastringfoundation.healthheatmap.storage.DataStorer;
 import org.metastringfoundation.healthheatmap.storage.MultiplexDataStorer;
 import org.metastringfoundation.healthheatmap.web.Server;
@@ -40,7 +38,7 @@ public class Main {
             if (serverShouldStart) {
                 Server.startProductionServer();
             } else if (!path.isEmpty()) {
-                DatasetUploader.upload(path);
+                TableUploader.upload(path);
             } else {
                 CLI.printHelp();
             }
