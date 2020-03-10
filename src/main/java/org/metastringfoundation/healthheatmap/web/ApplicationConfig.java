@@ -29,7 +29,7 @@ public class ApplicationConfig extends ResourceConfig {
     }
 
     private void setup(boolean production) {
-        packages("org.metastringfoundation.healthheatmap");
+        packages("org.metastringfoundation.healthheatmap,io.swagger.v3.jaxrs2.integration.resources");
         if (production) {
             DefaultApplication app = new DefaultApplication();
             registerInstances(new AbstractBinder() {
