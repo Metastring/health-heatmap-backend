@@ -14,19 +14,12 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.Table;
 
-public class MultiplexDataStorer implements DataStorer {
-    private Database postgres;
-
-    public MultiplexDataStorer() {
-        this.postgres = new PostgreSQL();
-    }
-
-    @Override
-    public void addDataset(Dataset dataset) {
-        this.postgres.addDataset(dataset);
+public class TableBackup {
+    public static void backup(String name, Table table) throws ApplicationError {
+        DefaultApplication.psql.createArbitraryTable(name, table);
     }
 }

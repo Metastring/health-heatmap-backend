@@ -60,9 +60,10 @@ public class TableUploader {
 
         Application application = new DefaultApplication();
         dataset = new CSVTableToDatasetAdapter(table, tableDescription);
-        Long uploadId;
         try {
-            uploadId = application.saveDataset(dataset);
+            Long uploadId = application.saveDataset(dataset);
+            String tableName = "upload_" + uploadId.toString();
+            application.saveTable(tableName, table);
         } catch (ApplicationError applicationError) {
             applicationError.printStackTrace();
         }

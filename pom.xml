@@ -83,7 +83,11 @@
             <artifactId>hibernate-search-backend-elasticsearch</artifactId>
             <version>6.0.0.Beta5</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.13.1</version>
+        </dependency>
 
 
         <!-- web -->

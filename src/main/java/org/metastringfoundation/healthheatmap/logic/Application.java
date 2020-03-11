@@ -17,6 +17,7 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.Table;
 
 public interface Application {
     String getIndicators() throws ApplicationError;
@@ -30,4 +31,5 @@ public interface Application {
     String getHealth();
 
     Long saveDataset(Dataset dataset) throws ApplicationError;
+    void saveTable(String name, Table table) throws ApplicationError;
 }

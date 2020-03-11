@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.Table;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.pojo.Geography;
 import org.metastringfoundation.healthheatmap.pojo.Indicator;
@@ -46,18 +47,6 @@ public class DefaultApplication implements Application {
     public static final RestHighLevelClient elastic = new RestHighLevelClient(RestClient.builder(
             new HttpHost("localhost", 9200, "http")
     ));
-
-    public static EntityManager getPersistenceManager() {
-        return persistenceManager;
-    }
-
-    public static Database getPsql() {
-        return psql;
-    }
-
-    public static RestHighLevelClient getElastic() {
-        return elastic;
-    }
 
     private String jsonizeList(List<?> objectList) throws ApplicationError{
         try {
@@ -119,5 +108,9 @@ public class DefaultApplication implements Application {
 
     public Long saveDataset(Dataset dataset) throws ApplicationError {
         return DatasetUploader.upload(dataset);
+    }
+
+    public void saveTable(String name, Table table) throws ApplicationError {
+        TableBackup.backup(name, table);
     }
 }

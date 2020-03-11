@@ -105,6 +105,34 @@ public class TableCellReference {
         return retval-1;
     }
 
+    /**
+     * This function has been copied from Apache POI library (which is under Apache License)
+     * https://github.com/apache/poi/blob/trunk/src/java/org/apache/poi/ss/util/CellReference.java
+     * Takes in a 0-based base-10 column and returns a ALPHA-26
+     *  representation.
+     * eg {@code convertNumToColString(3)} returns {@code "D"}
+     */
+    public static String convertNumToColString(int col) {
+        // Excel counts column A as the 1st column, we
+        //  treat it as the 0th one
+        int excelColNum = col + 1;
+
+        StringBuilder colRef = new StringBuilder(2);
+        int colRemain = excelColNum;
+
+        while(colRemain > 0) {
+            int thisPart = colRemain % 26;
+            if(thisPart == 0) { thisPart = 26; }
+            colRemain = (colRemain - thisPart) / 26;
+
+            // The letter A is at 65
+            char colChar = (char)(thisPart+64);
+            colRef.insert(0, colChar);
+        }
+
+        return colRef.toString();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) return true;

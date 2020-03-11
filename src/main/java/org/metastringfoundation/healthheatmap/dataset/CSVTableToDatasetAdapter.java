@@ -68,8 +68,8 @@ public class CSVTableToDatasetAdapter implements Dataset {
             List<TableCell> cellsInRange = table.getRange(rangeDescription.getRange());
 
             // Replace values on the fly with replacement values, if any
-            if (rangeDescription.getReplacements().size() != 0) {
-                List<String> replacements = rangeDescription.getReplacements();
+            List<String> replacements = rangeDescription.getReplacements();
+            if (replacements != null && replacements.size() != 0) {
                 for (int replacementIndex = 0; replacementIndex < replacements.size() && replacementIndex < cellsInRange.size(); replacementIndex++) {
                     String replacement = replacements.get(replacementIndex);
                     if (replacement != null) {
@@ -152,12 +152,12 @@ public class CSVTableToDatasetAdapter implements Dataset {
             if (!unmatchedEntities.isEmpty()) dimensionsAvailableInDataset.put("entity", "column");
         }
 
-        Map<Integer, UnmatchedIndicator> unmatchedIndicatos = UnmatchedIndicator.getIndicator(rowDimensions);
-        if (!unmatchedIndicatos.isEmpty()) {
+        Map<Integer, UnmatchedIndicator> unmatchedIndicators = UnmatchedIndicator.getIndicator(rowDimensions);
+        if (!unmatchedIndicators.isEmpty()) {
             dimensionsAvailableInDataset.put("indicator", "row");
         } else {
-            unmatchedIndicatos = UnmatchedIndicator.getIndicator(columnDimensions);
-            if (!unmatchedIndicatos.isEmpty()) dimensionsAvailableInDataset.put("indicator", "column");
+            unmatchedIndicators = UnmatchedIndicator.getIndicator(columnDimensions);
+            if (!unmatchedIndicators.isEmpty()) dimensionsAvailableInDataset.put("indicator", "column");
         }
 
 
@@ -186,7 +186,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
             String indicatorDimension = dimensionsAvailableInDataset.get("indicator");
             if (indicatorDimension != null) {
                 dataElement.setIndicator(
-                        unmatchedIndicatos.get(
+                        unmatchedIndicators.get(
                                 unprocessedDataElement.getTableCell().get(indicatorDimension)
                         )
                 );

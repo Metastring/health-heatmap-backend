@@ -19,8 +19,6 @@ package org.metastringfoundation.healthheatmap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.metastringfoundation.healthheatmap.logic.TableUploader;
-import org.metastringfoundation.healthheatmap.storage.DataStorer;
-import org.metastringfoundation.healthheatmap.storage.MultiplexDataStorer;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 public class Main {
@@ -29,8 +27,6 @@ public class Main {
     public static void main(String[] args) throws IllegalArgumentException {
         try {
             CommandLine commandLine = new CLI().parse(args);
-
-            DataStorer dataStorer = new MultiplexDataStorer();
 
             String path = commandLine.getOptionValue("path");
             boolean serverShouldStart = commandLine.hasOption("server");

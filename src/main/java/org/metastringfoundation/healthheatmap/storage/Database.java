@@ -16,9 +16,10 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.Table;
+import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 
 public interface Database {
-    public void addDataset(Dataset dataset);
     public String getHealth();
+    public void createArbitraryTable(String name, Table table) throws ApplicationError;
 }
