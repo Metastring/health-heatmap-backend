@@ -22,8 +22,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.metastringfoundation.healthheatmap.logic.MockApplication;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.MockApplication;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

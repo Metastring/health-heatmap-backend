@@ -17,10 +17,6 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.dataset.TableCell;
-import org.metastringfoundation.healthheatmap.dataset.CSVTable;
-import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.dataset.TableRangeReference;
 
 import java.util.ArrayList;
 import java.util.List;

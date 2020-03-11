@@ -17,7 +17,6 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import org.junit.Test;
-import org.metastringfoundation.healthheatmap.dataset.ReversePatternParser;
 
 import java.util.HashMap;
 import java.util.Map;
