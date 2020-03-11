@@ -66,6 +66,17 @@ public class CSVTableToDatasetAdapter implements Dataset {
 
         for (CSVRangeDescription rangeDescription: tableDescription.getRangeDescriptionList()) {
             List<TableCell> cellsInRange = table.getRange(rangeDescription.getRange());
+
+            // Replace values on the fly with replacement values, if any
+            if (rangeDescription.getReplacements().size() != 0) {
+                List<String> replacements = rangeDescription.getReplacements();
+                for (int replacementIndex = 0; replacementIndex < replacements.size() && replacementIndex < cellsInRange.size(); replacementIndex++) {
+                    String replacement = replacements.get(replacementIndex);
+                    if (replacement != null) {
+                        cellsInRange.get(replacementIndex).setValue(replacement);
+                    }
+                }
+            }
             String rangePattern = rangeDescription.getPattern();
             Map<String, String> rangeMetadata = rangeDescription.getMetadata();
 
