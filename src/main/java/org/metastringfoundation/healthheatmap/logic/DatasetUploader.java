@@ -54,6 +54,8 @@ public class DatasetUploader {
             throw new ApplicationError("Impossible to find source");
         }
 
+        source.setTimePeriod(timePeriod);
+
         try {
             report = ReportManager.findReportFromUnmatchedReport(unmatchedReport);
         } catch (AmbiguousEntityError ambiguousEntityError) {

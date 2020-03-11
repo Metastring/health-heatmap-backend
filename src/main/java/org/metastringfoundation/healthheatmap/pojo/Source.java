@@ -33,6 +33,9 @@ public class Source {
 
     private String name;
 
+    @Embedded
+    private TimePeriod timePeriod;
+
     @ManyToOne
     @JoinColumn(name = "belongs_to",
             foreignKey = @ForeignKey(name = "source_belongs_to_fk")
@@ -61,5 +64,13 @@ public class Source {
 
     public void setBelongsTo(Source belongsTo) {
         this.belongsTo = belongsTo;
+    }
+
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
     }
 }

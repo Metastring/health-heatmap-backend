@@ -47,9 +47,6 @@ public class Report {
     @Convert(converter = URIStringConverter.class)
     private URI uri;
 
-    @Embedded
-    private TimePeriod timePeriod;
-
     public Long getId() {
         return id;
     }
