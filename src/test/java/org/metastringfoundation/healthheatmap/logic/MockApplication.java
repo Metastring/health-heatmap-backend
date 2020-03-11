@@ -17,8 +17,6 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
-import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 
 public class MockApplication implements Application {
     @Override
@@ -52,7 +50,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public void saveDataset(Dataset dataset) {
-
+    public Long saveDataset(Dataset dataset) {
+        return null;
     }
 }

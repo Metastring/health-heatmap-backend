@@ -117,7 +117,7 @@ public class DefaultApplication implements Application {
         persistenceManager.getTransaction().commit();
     }
 
-    public void saveDataset(Dataset dataset) throws ApplicationError {
-        DatasetUploader.upload(dataset);
+    public Long saveDataset(Dataset dataset) throws ApplicationError {
+        return DatasetUploader.upload(dataset);
     }
 }

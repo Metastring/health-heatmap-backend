@@ -29,5 +29,5 @@ public interface Application {
 
     String getHealth();
 
-    void saveDataset(Dataset dataset) throws ApplicationError;
+    Long saveDataset(Dataset dataset) throws ApplicationError;
 }

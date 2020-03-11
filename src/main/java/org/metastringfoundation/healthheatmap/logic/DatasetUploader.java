@@ -30,7 +30,8 @@ public class DatasetUploader {
 
     private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
 
-    public static void upload(Dataset dataset) throws ApplicationError {
+    public static Long upload(Dataset dataset) throws ApplicationError {
+        Long returnValue;
         Map<UnmatchedGeography, Geography> geographyEntityMap = new HashMap<>();
         Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
         Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
@@ -63,6 +64,7 @@ public class DatasetUploader {
         }
 
         upload = UploadManager.newUpload(report, source);
+        returnValue = upload.getId();
 
         for (UnmatchedDataElement unmatchedDataElement: dataset.getData()) {
             DataElement dataElement = new DataElement();
@@ -133,5 +135,7 @@ public class DatasetUploader {
         }
 
         persistenceManager.getTransaction().commit();
+
+        return returnValue;
     }
 }
