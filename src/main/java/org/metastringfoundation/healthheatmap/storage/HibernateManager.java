@@ -36,6 +36,12 @@ public class HibernateManager {
         return entityManagerFactory.createEntityManager();
     }
 
+    public static void closeEntityManagerFactory() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+        }
+    }
+
     public static <C> List<C> loadAllOfType(EntityManager persistenceManager, Class<C> type) {
         CriteriaBuilder criteriaBuilder = persistenceManager.getCriteriaBuilder();
         CriteriaQuery<C> criteriaQuery = criteriaBuilder.createQuery(type);

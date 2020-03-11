@@ -32,6 +32,8 @@ import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -47,6 +49,21 @@ public class DefaultApplication implements Application {
     public static final RestHighLevelClient elastic = new RestHighLevelClient(RestClient.builder(
             new HttpHost("localhost", 9200, "http")
     ));
+
+    public void shutDown() throws ApplicationError {
+        try {
+            elastic.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        HibernateManager.closeEntityManagerFactory();
+        try {
+            psql.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new ApplicationError("Closing psql errored");
+        }
+    }
 
     private String jsonizeList(List<?> objectList) throws ApplicationError{
         try {

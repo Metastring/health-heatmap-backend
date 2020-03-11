@@ -59,4 +59,9 @@ public class MockApplication implements Application {
     public void saveTable(String name, Table table) throws ApplicationError {
 
     }
+
+    @Override
+    public void shutDown() throws ApplicationError {
+
+    }
 }

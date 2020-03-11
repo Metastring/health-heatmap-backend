@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
 import org.metastringfoundation.healthheatmap.pojo.Geography;
 
@@ -23,6 +25,8 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class GeographyManager extends DimensionManager {
+    private static Logger LOG = LogManager.getLogger(GeographyManager.class);
+
     public static List<Geography> getAllGeographies() {
         TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findAll", Geography.class);
         return query.getResultList();
@@ -75,15 +79,20 @@ public class GeographyManager extends DimensionManager {
         String state = geography.getState();
         List<Geography> stateGeographyList = findStateByNameCreatingIfNotExists(state);
         if (stateGeographyList.size() > 1) {
+            LOG.debug(stateGeographyList);
             throw new AmbiguousEntityError("More than one state by the name " + state + ". Please pass more specificiers");
         }
         Geography stateGeography = stateGeographyList.get(0);
 
         String district = geography.getDistrict();
-        List<Geography> districtGeographyList = findDistrictByNameCreatingIfNotExists(district, stateGeography);
-        if (districtGeographyList.size() > 1) {
-            throw new AmbiguousEntityError("More than one district in state " + state + " by name " + district);
+        if (district != null) {
+            List<Geography> districtGeographyList = findDistrictByNameCreatingIfNotExists(district, stateGeography);
+            if (districtGeographyList.size() > 1) {
+                throw new AmbiguousEntityError("More than one district in state " + state + " by name " + district);
+            }
+            return districtGeographyList.get(0);
+        } else {
+            return stateGeography;
         }
-        return districtGeographyList.get(0);
     }
 }

@@ -53,6 +53,11 @@ public class PostgreSQL implements Database {
         dslContext = DSL.using(psqlConnection, SQLDialect.POSTGRES);
     }
 
+    public void close() throws SQLException {
+        dslContext.close();
+        psqlConnection.close();
+    }
+
     public void createArbitraryTable(String name, Table table) throws ApplicationError {
         List<String> columnNames = new ArrayList<>();
         for (int col = 0; col < table.getNumberOfColumns(); col++) {

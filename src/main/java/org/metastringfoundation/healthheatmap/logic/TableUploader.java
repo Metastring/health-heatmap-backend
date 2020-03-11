@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.*;
@@ -41,7 +42,9 @@ public class TableUploader {
         Dataset dataset;
 
         Path basedir = Paths.get(path).getParent();
-        String metadataPath = Paths.get(basedir.toString(), "metadata.json").toString();
+        String fileName = Paths.get(path).getFileName().toString();
+        String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
+        String metadataPath = Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
         LOG.info("basedir is " + basedir);
         LOG.info("Assuming metadata is at " + metadataPath);
         try {
@@ -64,10 +67,10 @@ public class TableUploader {
             Long uploadId = application.saveDataset(dataset);
             String tableName = "upload_" + uploadId.toString();
             application.saveTable(tableName, table);
+            LOG.info("Done persisting dataset");
+            application.shutDown();
         } catch (ApplicationError applicationError) {
             applicationError.printStackTrace();
         }
-
-        LOG.info("Done persisting dataset");
     }
 }

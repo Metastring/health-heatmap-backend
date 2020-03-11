@@ -32,4 +32,6 @@ public interface Application {
 
     Long saveDataset(Dataset dataset) throws ApplicationError;
     void saveTable(String name, Table table) throws ApplicationError;
+
+    void shutDown() throws ApplicationError;
 }

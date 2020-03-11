@@ -135,7 +135,7 @@ public class DatasetUploader {
         }
 
         persistenceManager.getTransaction().commit();
-
+        persistenceManager.close();
         return returnValue;
     }
 }

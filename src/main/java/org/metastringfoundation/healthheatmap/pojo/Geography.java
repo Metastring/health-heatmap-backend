@@ -148,4 +148,19 @@ public class Geography {
         DIVISION,
         DISTRICT
     }
+
+    @Override
+    public String toString() {
+        return "Geography{" +
+                "id=" + id +
+                ", uniqueShortCode='" + uniqueShortCode + '\'' +
+                ", wikidataCode='" + wikidataCode + '\'' +
+                ", canonicalName='" + canonicalName + '\'' +
+                ", otherNames=" + otherNames +
+                ", established=" + established +
+                ", ceased=" + ceased +
+                ", type=" + type +
+                ", belongsTo=" + belongsTo +
+                '}';
+    }
 }

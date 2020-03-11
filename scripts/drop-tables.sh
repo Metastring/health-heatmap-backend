@@ -13,5 +13,7 @@ cat scripts/dropcommand.sql
 
 $dbql -f scripts/dropcommand.sql
 
+$dbql -c "drop sequence public.hibernate_sequence;"
+
 
 rm scripts/dropcommand*.sql
