@@ -85,6 +85,7 @@ public class PostgreSQL implements Database {
                 Field<String> fieldName = DSL.field(DSL.name(colName), String.class);
                 insertDataStep.set(fieldName, row.get(col));
             }
+            @SuppressWarnings("unchecked") // only because the code works.
             InsertSetMoreStep<Record> step = (InsertSetMoreStep<Record>) insertDataStep;
             step.execute();
         }
