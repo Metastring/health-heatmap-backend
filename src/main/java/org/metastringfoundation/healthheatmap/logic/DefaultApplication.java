@@ -44,7 +44,17 @@ public class DefaultApplication implements Application {
 
     private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
 
-    public static final Database psql = new PostgreSQL();
+    public static final Database psql;
+
+    static {
+        try {
+            psql = new PostgreSQL();
+        } catch (ApplicationError applicationError) {
+            applicationError.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
     public static final EntityManager persistenceManager = HibernateManager.openEntityManager();
     public static final RestHighLevelClient elastic = new RestHighLevelClient(RestClient.builder(
             new HttpHost("localhost", 9200, "http")

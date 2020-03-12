@@ -37,11 +37,17 @@ public class PostgreSQL implements Database {
     private Connection psqlConnection;
     private DSLContext dslContext;
 
-    public PostgreSQL() {
+    public PostgreSQL() throws ApplicationError {
         //TODO: Make this loaded from configuration/environment
         String username = "metastring";
         String password = "metastring";
         String url = "jdbc:postgresql://localhost:5432/healthheatmap";
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new ApplicationError("No driver found");
+        }
         try {
             psqlConnection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
