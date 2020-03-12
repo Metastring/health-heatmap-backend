@@ -20,4 +20,4 @@ This software can handle multitudes of spreadsheets and upload into a multi-dime
 
 ## Run server
 * Use the "Server" run configuration in intellij OR
-* `mvn war:war && sudo cp target/data-reader-0.0.1.war /var/lib/tomcat8/webapps && sudo systemctl start tomcat8` and navigate to localhost:8080/data-reader-0.0.1/api/openapi.json
+* `mvn compile && mvn war:war && sudo cp target/data-reader-0.0.1.war /var/lib/tomcat8/webapps && sudo systemctl start tomcat8` and navigate to localhost:8080/data-reader-0.0.1/api/openapi.json
