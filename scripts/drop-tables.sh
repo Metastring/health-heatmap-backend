@@ -17,3 +17,5 @@ $dbql -c "drop sequence public.hibernate_sequence;"
 
 
 rm scripts/dropcommand*.sql
+
+curl -X DELETE http://localhost:9200/dataelement-write

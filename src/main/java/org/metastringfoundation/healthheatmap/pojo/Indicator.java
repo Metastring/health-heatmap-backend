@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+
 import javax.persistence.*;
 
 @Entity
@@ -32,9 +34,11 @@ public class Indicator {
     private Long id;
 
     @Column(name = "short_code")
+    @FullTextField(analyzer = "english")
     private String shortCode;
 
     @Column(name = "name")
+    @FullTextField(analyzer = "english")
     private String canonicalName;
 
     private String derivation;

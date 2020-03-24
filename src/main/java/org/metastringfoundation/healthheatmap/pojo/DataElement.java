@@ -16,11 +16,10 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 import org.metastringfoundation.healthheatmap.helpers.bridges.*;
 
 import javax.persistence.*;
@@ -35,11 +34,11 @@ public class DataElement {
 
     @ManyToOne
     @JoinColumn(name = "indicator_id",
-                foreignKey = @ForeignKey(name = "data_element_indicator_id_fk")
+            foreignKey = @ForeignKey(name = "data_element_indicator_id_fk")
     )
-    @GenericField(
-            valueBridge = @ValueBridgeRef(type = IndicatorIdBridge.class)
-    )
+
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     private Indicator indicator;
 
     @ManyToOne
