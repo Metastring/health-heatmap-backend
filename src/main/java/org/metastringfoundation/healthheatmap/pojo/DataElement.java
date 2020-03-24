@@ -20,7 +20,9 @@ import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
-import org.metastringfoundation.healthheatmap.helpers.bridges.*;
+import org.metastringfoundation.healthheatmap.helpers.bridges.SettlementValueBridge;
+import org.metastringfoundation.healthheatmap.helpers.bridges.TimePeriodDatesBinder;
+import org.metastringfoundation.healthheatmap.helpers.bridges.UploadIdBridge;
 
 import javax.persistence.*;
 
@@ -36,18 +38,16 @@ public class DataElement {
     @JoinColumn(name = "indicator_id",
             foreignKey = @ForeignKey(name = "data_element_indicator_id_fk")
     )
-
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     private Indicator indicator;
 
     @ManyToOne
     @JoinColumn(name = "geography_id",
-                foreignKey =  @ForeignKey(name = "data_element_geography_id_fk")
+            foreignKey = @ForeignKey(name = "data_element_geography_id_fk")
     )
-    @GenericField(
-            valueBridge = @ValueBridgeRef(type = GeographyIdBridge.class)
-    )
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     private Geography geography;
 
     @ManyToOne
@@ -61,20 +61,18 @@ public class DataElement {
 
     @ManyToOne
     @JoinColumn(name = "report_id",
-                foreignKey = @ForeignKey(name = "data_element_report_id_fk")
+            foreignKey = @ForeignKey(name = "data_element_report_id_fk")
     )
-    @GenericField(
-            valueBridge = @ValueBridgeRef(type = ReportIdBridge.class)
-    )
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     private Report report;
 
     @ManyToOne
     @JoinColumn(name = "source_id",
-                foreignKey = @ForeignKey(name = "data_element_source_id_fk")
+            foreignKey = @ForeignKey(name = "data_element_source_id_fk")
     )
-    @GenericField(
-            valueBridge = @ValueBridgeRef(type = SourceIdBridge.class)
-    )
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     private Source source;
 
     @Embedded

@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
 import javax.persistence.*;
 
 @Entity
@@ -31,6 +33,7 @@ public class Source {
     @GeneratedValue
     private Long id;
 
+    @KeywordField
     private String name;
 
     @Embedded

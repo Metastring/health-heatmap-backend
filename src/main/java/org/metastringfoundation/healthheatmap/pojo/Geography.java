@@ -16,6 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.pojo;
 
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,12 +40,14 @@ public class Geography {
     private Long id;
 
     @Column(name = "short_code")
+    @KeywordField
     private String uniqueShortCode;
 
     @Column(name = "wikidata_code")
     private String wikidataCode;
 
     @Column(name = "name")
+    @FullTextField(analyzer = "english")
     private String canonicalName;
 
     @OneToMany(mappedBy = "geography", cascade = CascadeType.ALL, orphanRemoval = true)
