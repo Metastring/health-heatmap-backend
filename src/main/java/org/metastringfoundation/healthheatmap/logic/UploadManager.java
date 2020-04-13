@@ -16,9 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.pojo.Report;
-import org.metastringfoundation.healthheatmap.pojo.Source;
-import org.metastringfoundation.healthheatmap.pojo.Upload;
+import org.metastringfoundation.healthheatmap.entities.Report;
+import org.metastringfoundation.healthheatmap.entities.Source;
+import org.metastringfoundation.healthheatmap.entities.Upload;
 
 public class UploadManager extends DimensionManager {
     public static Upload newUpload(Report report, Source source) {

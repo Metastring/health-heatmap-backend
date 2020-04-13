@@ -47,7 +47,7 @@ public class GeographyResource {
     public Response getEntities(
     ) {
         try {
-            return Response.status(200).entity(app.getIndicators()).build();
+            return Response.status(200).entity(app.getEntities()).build();
         } catch (ApplicationError applicationError) {
             LOG.error(applicationError);
             return Response.status(503).entity(applicationError.toString()).build();

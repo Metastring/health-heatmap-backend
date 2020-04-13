@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
-import org.metastringfoundation.healthheatmap.pojo.TimePeriod;
+import org.metastringfoundation.healthheatmap.entities.TimePeriod;
 
 import java.io.IOException;
 import java.net.URI;

@@ -64,4 +64,9 @@ public class MockApplication implements Application {
     public void shutDown() throws ApplicationError {
 
     }
+
+    @Override
+    public String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError {
+        return null;
+    }
 }

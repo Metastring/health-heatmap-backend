@@ -19,7 +19,7 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedGeography;
-import org.metastringfoundation.healthheatmap.pojo.Geography;
+import org.metastringfoundation.healthheatmap.entities.Geography;
 
 import javax.persistence.TypedQuery;
 import java.util.List;

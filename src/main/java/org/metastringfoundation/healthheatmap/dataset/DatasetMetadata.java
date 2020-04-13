@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metastringfoundation.healthheatmap.pojo.TimePeriod;
+import org.metastringfoundation.healthheatmap.entities.TimePeriod;
 
 import java.util.Objects;
 

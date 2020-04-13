@@ -23,7 +23,7 @@ import org.hibernate.search.mapper.pojo.bridge.PropertyBridge;
 import org.hibernate.search.mapper.pojo.bridge.binding.PropertyBindingContext;
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.PropertyBinder;
 import org.hibernate.search.mapper.pojo.bridge.runtime.PropertyBridgeWriteContext;
-import org.metastringfoundation.healthheatmap.pojo.TimePeriod;
+import org.metastringfoundation.healthheatmap.entities.TimePeriod;
 
 import java.time.LocalDate;
 

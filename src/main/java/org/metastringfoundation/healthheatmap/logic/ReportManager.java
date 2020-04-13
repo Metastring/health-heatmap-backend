@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedReport;
-import org.metastringfoundation.healthheatmap.pojo.Report;
+import org.metastringfoundation.healthheatmap.entities.Report;
 
 import javax.persistence.TypedQuery;
 import java.net.URI;

@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap.helpers.bridges;
 
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
-import org.metastringfoundation.healthheatmap.pojo.Upload;
+import org.metastringfoundation.healthheatmap.entities.Upload;
 
 public class UploadIdBridge implements ValueBridge<Upload, Long> {
     @Override

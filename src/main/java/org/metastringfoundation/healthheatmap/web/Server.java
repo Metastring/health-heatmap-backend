@@ -28,7 +28,7 @@ import java.net.URI;
 
 public class Server {
     private static final Logger LOG = LogManager.getLogger(Server.class);
-    public static final String BASE_URI = "http://localhost:8080/myapp/";
+    public static final String BASE_URI = "http://localhost:8080/";
 
     public static HttpServer server;
 

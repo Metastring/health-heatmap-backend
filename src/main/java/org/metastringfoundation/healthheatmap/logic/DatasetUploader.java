@@ -19,7 +19,7 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.*;
-import org.metastringfoundation.healthheatmap.pojo.*;
+import org.metastringfoundation.healthheatmap.entities.*;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;

@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.UnmatchedSource;
-import org.metastringfoundation.healthheatmap.pojo.Source;
+import org.metastringfoundation.healthheatmap.entities.Source;
 
 import javax.persistence.TypedQuery;
 import java.util.List;

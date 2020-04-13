@@ -24,12 +24,14 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.Table;
+import org.metastringfoundation.healthheatmap.entities.DataElement;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
-import org.metastringfoundation.healthheatmap.pojo.Geography;
-import org.metastringfoundation.healthheatmap.pojo.Indicator;
+import org.metastringfoundation.healthheatmap.entities.Geography;
+import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.storage.Database;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
+import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -119,6 +121,16 @@ public class DefaultApplication implements Application {
     @Override
     public String getDimension(String dimension) {
         return null;
+    }
+
+    @Override
+    public String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError {
+        LOG.info("fetching data from application");
+        List<DataElement> dataElements = DataManager.getAllData(indicatorId, geographyId);
+        AggregatedData result = new AggregatedData();
+        result.setData(dataElements);
+        result.setAggregation(Aggregator.getAverage(dataElements).toString());
+        return jsonizeObject(result);
     }
 
     public String getHealth() {

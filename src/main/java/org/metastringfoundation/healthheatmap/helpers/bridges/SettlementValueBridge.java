@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap.helpers.bridges;
 
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
-import org.metastringfoundation.healthheatmap.pojo.Settlement;
+import org.metastringfoundation.healthheatmap.entities.Settlement;
 
 public class SettlementValueBridge implements ValueBridge<Settlement, String> {
     @Override

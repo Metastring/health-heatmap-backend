@@ -34,4 +34,6 @@ public interface Application {
     void saveTable(String name, Table table) throws ApplicationError;
 
     void shutDown() throws ApplicationError;
+
+    String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError;
 }
