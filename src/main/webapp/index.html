@@ -38,8 +38,9 @@
     <script>
     window.onload = function() {
       // Begin Swagger UI call region
+      const url = window.location.host + "/data-reader/api/openapi.json"
       const ui = SwaggerUIBundle({
-        url: "http://localhost:8080/data-reader/api/openapi.json",
+        url,
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
