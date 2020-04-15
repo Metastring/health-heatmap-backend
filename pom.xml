@@ -4,6 +4,15 @@
     <artifactId>data-reader</artifactId>
     <version>0.0.1</version>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/${project.artifactId}-${project.version}</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -80,6 +89,13 @@
                                     <excludes>
                                         <exclude>index.html</exclude>
                                     </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>index.html</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>

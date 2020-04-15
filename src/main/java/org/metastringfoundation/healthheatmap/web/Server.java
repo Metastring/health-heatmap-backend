@@ -18,17 +18,20 @@ package org.metastringfoundation.healthheatmap.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.metastringfoundation.healthheatmap.Main;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Properties;
 
 public class Server {
     private static final Logger LOG = LogManager.getLogger(Server.class);
-    public static final String BASE_URI = "http://localhost:8080/";
+    public static final String BASE_URI = "http://localhost:8080/data-reader/api/";
 
     public static HttpServer server;
 
@@ -55,6 +58,18 @@ public class Server {
     public static HttpServer getServer(ResourceConfig rc) {
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
+
+        try {
+            final Properties properties = new Properties();
+            properties.load(Server.class.getClassLoader().getResourceAsStream("project.properties"));
+            String staticDir = "target/" + properties.getProperty("artifactId") + "-" + properties.getProperty("version");
+            String staticRoute = "/data-reader";
+            LOG.info("Serving static contents from " + staticDir + " at " + staticRoute);
+            server.getServerConfiguration().addHttpHandler(new StaticHttpHandler(staticDir), staticRoute);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return server;
     }
 }

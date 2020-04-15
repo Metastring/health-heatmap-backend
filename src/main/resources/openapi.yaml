@@ -1,0 +1,6 @@
+openAPI:
+  servers:
+    - url: http://localhost:8080/data-reader/api
+      description: local server
+    - url: http://206.189.142.241/data-reader/api
+      description: staging host

@@ -1,4 +1,0 @@
-openAPI:
-  servers:
-    - url: http://localhost:8080/data-reader-0.0.1/api
-      description: tomcat
