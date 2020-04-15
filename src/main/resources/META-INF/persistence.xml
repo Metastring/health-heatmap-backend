@@ -24,9 +24,11 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.halt.on.error" value="true"/>
 
-            <property name="hibernate.search.backends.myBackend.type" value="elasticsearch" />
-            <property name="hibernate.search.backends.myBackend.index_defaults.lifecycle.minimal_required_status" value="yellow"/>
+            <property name="hibernate.search.backends.myBackend.type" value="org.hibernate.search.backend.elasticsearch.impl.ElasticsearchBackendFactory" />
+            <property name="hibernate.search.backends.myBackend.index_defaults.schema_management.minimal_required_status" value="yellow"/>
             <property name="hibernate.search.default_backend" value="myBackend"/>
+            
+            <property name="hibernate.search.background_failure_handler" value="org.metastringfoundation.healthheatmap.storage.HibernateFailureHandler"/>
         </properties>
     </persistence-unit>
 </persistence>
