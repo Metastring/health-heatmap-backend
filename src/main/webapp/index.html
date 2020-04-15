@@ -38,7 +38,7 @@
     <script>
     window.onload = function() {
       // Begin Swagger UI call region
-      const url = window.location.host + "/data-reader/api/openapi.json"
+      const url = window.location.protocol + "//" + window.location.host + "/data-reader/api/openapi.json"
       const ui = SwaggerUIBundle({
         url,
         dom_id: '#swagger-ui',
