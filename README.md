@@ -5,7 +5,11 @@ This software can handle multitudes of spreadsheets and upload into a multi-dime
 ## Setup
 * Install java 8
 * Install postgresql
+  * Create a postgresql user metastring
+  * Create a postgresql database healthheatmap
+  * `/scripts/create-tables.sh`
 * Install elastic search
+* (Optionally) setup ufw to prevent remote access to postgres, elastic, etc
 * `git clone https://gitlab.com/asdofindia/data-reader`
 * Open data-reader in IntelliJ. This will:
     * Synchronize maven dependencies
