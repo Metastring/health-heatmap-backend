@@ -34,6 +34,15 @@ public class Main {
             if (serverShouldStart) {
                 Server.startProductionServer();
             } else if (!path.isEmpty()) {
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    public void run() {
+                        try {
+                            System.exit(1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 TableUploader.upload(path);
             } else {
                 CLI.printHelp();
