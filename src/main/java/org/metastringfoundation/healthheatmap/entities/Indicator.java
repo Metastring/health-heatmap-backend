@@ -30,7 +30,7 @@ import javax.persistence.*;
 @Table(name = "indicators")
 public class Indicator {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicators_sequence")
     private Long id;
 
     @Column(name = "short_code")

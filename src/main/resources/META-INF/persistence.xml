@@ -5,12 +5,6 @@
     <persistence-unit name="org.metastringfoundation.healthheatmap.persistence.truth">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>org.metastringfoundation.healthheatmap.entities.DataElement</class>
-        <class>org.metastringfoundation.healthheatmap.entities.Geography</class>
-        <class>org.metastringfoundation.healthheatmap.entities.Indicator</class>
-        <class>org.metastringfoundation.healthheatmap.entities.Source</class>
-
-
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>

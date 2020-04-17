@@ -65,12 +65,26 @@ CREATE TABLE public.uploads (
 );
 
 
-CREATE SEQUENCE public.hibernate_sequence
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE SEQUENCE public.dataelements_sequence
+   START WITH 1
+   INCREMENT BY 50
+   NO MINVALUE
+   NO MAXVALUE
+   CACHE 1;
+
+CREATE SEQUENCE public.geographies_sequence
+   START WITH 1
+   INCREMENT BY 50
+   NO MINVALUE
+   NO MAXVALUE
+   CACHE 1;
+
+CREATE SEQUENCE public.indicators_sequence
+   START WITH 1
+   INCREMENT BY 50
+   NO MINVALUE
+   NO MAXVALUE
+   CACHE 1;
 
 CREATE SEQUENCE public.indicator_groups_sequence
     START WITH 1
@@ -86,6 +100,26 @@ CREATE SEQUENCE public.indicator_group_hierarchy_sequence
     NO MAXVALUE
     CACHE 1;
 
+CREATE SEQUENCE public.reports_sequence
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE public.sources_sequence
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE public.uploads_sequence
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 ALTER TABLE ONLY public.dataelements
     ADD CONSTRAINT dataelements_pkey PRIMARY KEY (id);
@@ -157,6 +191,11 @@ ALTER TABLE public.indicator_groups OWNER TO metastring;
 ALTER TABLE public.indicator_group_hierarchy OWNER TO metastring;
 
 
-ALTER TABLE public.hibernate_sequence OWNER TO metastring;
+ALTER TABLE public.dataelements_sequence OWNER TO metastring;
+ALTER TABLE public.geographies_sequence OWNER TO metastring;
+ALTER TABLE public.indicators_sequence OWNER TO metastring;
 ALTER TABLE public.indicator_groups_sequence OWNER TO metastring;
 ALTER TABLE public.indicator_group_hierarchy_sequence OWNER TO metastring;
+ALTER TABLE public.reports_sequence OWNER TO metastring;
+ALTER TABLE public.sources_sequence OWNER TO metastring;
+ALTER TABLE public.uploads_sequence OWNER TO metastring;

@@ -30,7 +30,7 @@ import javax.persistence.*;
 })
 public class Source {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sources_sequence")
     private Long id;
 
     @KeywordField

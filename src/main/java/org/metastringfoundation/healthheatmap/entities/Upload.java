@@ -22,7 +22,7 @@ import javax.persistence.*;
 @Table(name = "uploads")
 public class Upload {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uploads_sequence")
     private Long id;
 
     @ManyToOne

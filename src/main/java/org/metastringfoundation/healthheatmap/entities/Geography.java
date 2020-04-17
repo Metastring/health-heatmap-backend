@@ -35,7 +35,7 @@ import java.time.LocalDate;
 public class Geography {
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "geographies_sequence")
     private Long id;
 
     @Column(name = "short_code")

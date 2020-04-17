@@ -41,7 +41,7 @@ import java.net.URI;
 @Table(name = "reports")
 public class Report {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reports_sequence")
     private Long id;
 
     @Convert(converter = URIStringConverter.class)

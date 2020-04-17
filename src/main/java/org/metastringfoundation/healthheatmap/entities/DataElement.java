@@ -31,7 +31,7 @@ import javax.persistence.*;
 @Table(name = "dataelements")
 public class DataElement {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dataelements_sequence")
     private Long id;
 
     @ManyToOne
