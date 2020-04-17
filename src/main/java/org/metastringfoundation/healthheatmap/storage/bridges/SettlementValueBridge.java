@@ -14,15 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.helpers.bridges;
+package org.metastringfoundation.healthheatmap.storage.bridges;
 
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
-import org.metastringfoundation.healthheatmap.entities.Upload;
+import org.metastringfoundation.healthheatmap.entities.Settlement;
 
-public class UploadIdBridge implements ValueBridge<Upload, Long> {
+public class SettlementValueBridge implements ValueBridge<Settlement, String> {
     @Override
-    public Long toIndexedValue(Upload upload, ValueBridgeToIndexedValueContext valueBridgeToIndexedValueContext) {
-        return upload == null ? null : upload.getId();
+    public String toIndexedValue(Settlement settlement, ValueBridgeToIndexedValueContext valueBridgeToIndexedValueContext) {
+        return settlement == null ? null : settlement.getSettlement().name();
     }
 }

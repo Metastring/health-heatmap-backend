@@ -20,9 +20,9 @@ import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
-import org.metastringfoundation.healthheatmap.helpers.bridges.SettlementValueBridge;
-import org.metastringfoundation.healthheatmap.helpers.bridges.TimePeriodDatesBinder;
-import org.metastringfoundation.healthheatmap.helpers.bridges.UploadIdBridge;
+import org.metastringfoundation.healthheatmap.storage.bridges.SettlementValueBridge;
+import org.metastringfoundation.healthheatmap.storage.bridges.TimePeriodDatesBinder;
+import org.metastringfoundation.healthheatmap.storage.bridges.UploadIdBridge;
 
 import javax.persistence.*;
 
