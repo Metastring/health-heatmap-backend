@@ -47,9 +47,10 @@ public class Indicator {
     @ManyToMany(mappedBy = "indicators")
     private List<IndicatorGroup> groups;
 
+    @Column(name = "group_1")
     private String group;
 
-    @Column(name = "sub_group")
+    @Column(name = "group_2")
     private String subGroup;
 
     public Long getId() {

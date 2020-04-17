@@ -43,6 +43,7 @@ public class IndicatorGroupUpload {
             application.shutDown();
         } catch (ApplicationError applicationError) {
             applicationError.printStackTrace();
+            application.shutDown();
         }
     }
 }

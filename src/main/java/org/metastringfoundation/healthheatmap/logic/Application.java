@@ -38,7 +38,7 @@ public interface Application {
 
     void importIndicatorGrouping(Table table) throws ApplicationError;
 
-    void shutDown() throws ApplicationError;
+    void shutDown();
 
     String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError;
 }

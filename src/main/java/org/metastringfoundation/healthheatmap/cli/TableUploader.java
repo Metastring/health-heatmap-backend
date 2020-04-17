@@ -78,6 +78,7 @@ public class TableUploader {
             application.shutDown();
         } catch (ApplicationError applicationError) {
             applicationError.printStackTrace();
+            application.shutDown();
         }
     }
 }

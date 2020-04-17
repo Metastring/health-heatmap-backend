@@ -29,8 +29,8 @@ CREATE TABLE public.indicators (
     name character varying(255),
     derivation character varying(255),
     short_code character varying(255),
-    group character varying(255),
-    sub_group character varying(255)
+    group_1 character varying(255),
+    group_2 character varying(255)
 );
 
 CREATE TABLE public.indicator_groups (
@@ -218,3 +218,5 @@ ALTER TABLE public.indicator_group_hierarchy_sequence OWNER TO metastring;
 ALTER TABLE public.reports_sequence OWNER TO metastring;
 ALTER TABLE public.sources_sequence OWNER TO metastring;
 ALTER TABLE public.uploads_sequence OWNER TO metastring;
+
+-- Finished creating database structure successfully

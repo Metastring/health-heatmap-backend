@@ -18,13 +18,15 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.cli.CLI;
 import org.metastringfoundation.healthheatmap.cli.IndicatorGroupUpload;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 public class Main {
-
+    private static final Logger LOG = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws IllegalArgumentException {
         try {
@@ -39,7 +41,7 @@ public class Main {
             } else if (!path.isEmpty()) {
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
-                        System.exit(1);
+                        LOG.info("Shutting down");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

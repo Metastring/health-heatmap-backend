@@ -67,7 +67,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public void shutDown() throws ApplicationError {
+    public void shutDown() {
 
     }
 

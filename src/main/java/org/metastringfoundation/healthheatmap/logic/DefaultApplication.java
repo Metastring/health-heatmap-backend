@@ -66,7 +66,7 @@ public class DefaultApplication implements Application {
     public static final EntityManager persistenceManager = HibernateManager.openEntityManager();
     public static final ElasticManager elastic = new ElasticManager();
 
-    public void shutDown() throws ApplicationError {
+    public void shutDown() {
         try {
             elastic.close();
         } catch (IOException e) {
@@ -77,7 +77,6 @@ public class DefaultApplication implements Application {
             psql.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            throw new ApplicationError("Closing psql errored");
         }
     }
 
