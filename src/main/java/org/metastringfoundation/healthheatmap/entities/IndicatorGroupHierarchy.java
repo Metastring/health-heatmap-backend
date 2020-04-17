@@ -19,8 +19,17 @@ package org.metastringfoundation.healthheatmap.entities;
 import javax.persistence.*;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "IGHierarchy.findByAddress234",
+            query = "SELECT igh FROM IndicatorGroupHierarchy igh " +
+                    "JOIN igh.level2 l2 " +
+                    "JOIN igh.level3 l3 " +
+                    "JOIN igh.level4 l4 " +
+                    "WHERE l2.name = :level2 AND l3.name = :level3 AND l4.name = :level4")
+})
 @Table(name = "indicator_group_hierarchy")
 public class IndicatorGroupHierarchy {
+    public static final int MAX_LEVELS = 6;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicator_group_hierarchy_sequence")

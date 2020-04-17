@@ -20,6 +20,12 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "IndicatorGroup.findAll",
+                query = "SELECT ig FROM IndicatorGroup ig"),
+        @NamedQuery(name = "IndicatorGroup.findByName",
+                query = "SELECT ig FROM IndicatorGroup ig WHERE ig.name = :name")
+})
 @Table(name = "indicator_groups")
 public class IndicatorGroup {
     @Id

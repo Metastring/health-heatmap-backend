@@ -28,7 +28,9 @@ CREATE TABLE public.indicators (
     id bigint NOT NULL,
     name character varying(255),
     derivation character varying(255),
-    short_code character varying(255)
+    short_code character varying(255),
+    group character varying(255),
+    sub_group character varying(255)
 );
 
 CREATE TABLE public.indicator_groups (
