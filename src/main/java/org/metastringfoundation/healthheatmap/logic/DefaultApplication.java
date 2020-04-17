@@ -33,7 +33,7 @@ import org.metastringfoundation.healthheatmap.logic.managers.GeographyManager;
 import org.metastringfoundation.healthheatmap.logic.managers.IndicatorManager;
 import org.metastringfoundation.healthheatmap.logic.workers.Aggregator;
 import org.metastringfoundation.healthheatmap.logic.workers.DatasetUploader;
-import org.metastringfoundation.healthheatmap.logic.workers.IndicatorGroupUploadWorker;
+import org.metastringfoundation.healthheatmap.logic.workers.IndicatorsWorker;
 import org.metastringfoundation.healthheatmap.logic.workers.TableBackup;
 import org.metastringfoundation.healthheatmap.storage.Database;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
@@ -160,7 +160,12 @@ public class DefaultApplication implements Application, PreDestroy {
 
     @Override
     public void importIndicatorGrouping(Table table) throws DatasetIntegrityError {
-        IndicatorGroupUploadWorker.importIndicatorGroupSimple(table);
+        IndicatorsWorker.importIndicatorGroupSimple(table);
+    }
+
+    @Override
+    public void exportIndicators(String path) {
+        IndicatorsWorker.exportIndicators(path);
     }
 
     @Override

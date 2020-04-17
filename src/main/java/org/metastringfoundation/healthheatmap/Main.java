@@ -21,7 +21,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.cli.CLI;
-import org.metastringfoundation.healthheatmap.cli.IndicatorGroupUpload;
+import org.metastringfoundation.healthheatmap.cli.Indicators;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.web.Server;
 
@@ -34,6 +34,7 @@ public class Main {
 
             String path = commandLine.getOptionValue("path");
             String type = commandLine.getOptionValue("type");
+            String direction = commandLine.getOptionValue("direction");
             boolean serverShouldStart = commandLine.hasOption("server");
 
             if (serverShouldStart) {
@@ -50,7 +51,12 @@ public class Main {
                     TableUploader.upload(path);
                 }
                 if (type != null && type.equals("indicators")) {
-                    IndicatorGroupUpload.upload(path);
+                    if (direction == null || direction.equals("in")) {
+                        Indicators.upload(path);
+                    }
+                    if (direction != null && direction.equals("out")) {
+                        Indicators.download(path);
+                    }
                 }
             } else {
                 CLI.printHelp();

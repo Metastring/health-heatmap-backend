@@ -21,10 +21,12 @@ import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroup;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroupHierarchy;
+import org.metastringfoundation.healthheatmap.helpers.CSVUtils;
 import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,17 +82,32 @@ public class IndicatorGroupingManager {
         groupings.remove(0); // which is the header row
         // we will assume that the columns are "group", "subgroup" and "indicator"
         for (List<String> row : groupings) {
-            String groupName = row.get(0);
-            String subGroupName = row.get(1);
-            String indicatorName = row.get(2);
-            List<Indicator> indicatorsFound = IndicatorManager.findByName(indicatorName);
-            if (indicatorsFound.size() < 1) {
-                throw new DatasetIntegrityError("Cannot find any indicator by that name");
+            Long id = Long.parseLong(row.get(0));
+            String groupName = row.get(1);
+            String subGroupName = row.get(2);
+            String indicatorName = row.get(3);
+            Indicator indicator = IndicatorManager.findById(id);
+            if (indicator == null) {
+                indicator = new Indicator();
             }
-            Indicator indicator = indicatorsFound.get(0);
             indicator.setGroup(groupName);
             indicator.setSubGroup(subGroupName);
+            indicator.setCanonicalName(indicatorName);
             persistenceManager.persist(indicator);
         }
+    }
+
+    public static void exportIndicators(String path) {
+        List<Indicator> indicators = IndicatorManager.getAllIndicators();
+        List<List<String>> printableIndicators = new ArrayList<>();
+        for (Indicator indicator: indicators) {
+            List<String> indicatorRow = new ArrayList<>();
+            indicatorRow.add(indicator.getId().toString());
+            indicatorRow.add(indicator.getGroup());
+            indicatorRow.add(indicator.getSubGroup());
+            indicatorRow.add(indicator.getCanonicalName());
+            printableIndicators.add(indicatorRow);
+        }
+        CSVUtils.writeCSV(path, Arrays.asList("id", "group", "subgroup", "indicator"), printableIndicators);
     }
 }

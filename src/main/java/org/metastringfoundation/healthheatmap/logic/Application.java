@@ -42,4 +42,6 @@ public interface Application {
     void shutDown();
 
     String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError;
+
+    void exportIndicators(String path);
 }

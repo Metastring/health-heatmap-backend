@@ -76,4 +76,9 @@ public class MockApplication implements Application {
     public String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError {
         return null;
     }
+
+    @Override
+    public void exportIndicators(String path) {
+
+    }
 }

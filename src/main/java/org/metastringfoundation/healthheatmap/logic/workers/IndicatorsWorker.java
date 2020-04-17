@@ -14,30 +14,25 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.cli;
+package org.metastringfoundation.healthheatmap.logic.workers;
 
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTable;
-import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
+import org.metastringfoundation.healthheatmap.logic.managers.IndicatorGroupingManager;
 
-public class IndicatorGroupUpload {
-    public static void upload(String path) {
-        CSVTable table = null;
+import javax.persistence.EntityManager;
 
-        try {
-            table = CSVTable.fromPath(path);
-        } catch (DatasetIntegrityError datasetIntegrityError) {
-            datasetIntegrityError.printStackTrace();
-        }
+public class IndicatorsWorker {
+    private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
 
-        Application application = new DefaultApplication();
-        try {
-            application.importIndicatorGrouping(table);
-            application.shutDown();
-        } catch (DatasetIntegrityError e) {
-            e.printStackTrace();
-            application.shutDown();
-        }
+    public static void importIndicatorGroupSimple(Table table) throws DatasetIntegrityError {
+        persistenceManager.getTransaction().begin();
+        IndicatorGroupingManager.importSimpleIndicatorGroups(table);
+        persistenceManager.getTransaction().commit();
+    }
+
+    public static void exportIndicators(String path) {
+        IndicatorGroupingManager.exportIndicators(path);
     }
 }

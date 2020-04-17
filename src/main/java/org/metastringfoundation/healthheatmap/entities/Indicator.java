@@ -23,6 +23,8 @@ import java.util.List;
 
 @Entity
 @NamedQueries({
+        @NamedQuery(name = "Indicator.findById",
+                query = "SELECT i FROM Indicator i WHERE i.id = :id"),
         @NamedQuery(name = "Indicator.findAll",
                 query = "SELECT i FROM Indicator i"),
         @NamedQuery(name = "Indicator.findByName",

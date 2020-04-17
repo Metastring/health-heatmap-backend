@@ -37,6 +37,12 @@ public class CLI {
             .desc("Type of the file in path")
             .build();
 
+    final static Option direction = Option.builder("d")
+            .hasArg()
+            .longOpt("direction")
+            .desc("Direction of movement. Out exports. In imports (default)")
+            .build();
+
     /**
      * Option to start the server
      */
@@ -45,6 +51,7 @@ public class CLI {
     public final static Options options = new Options()
             .addOption(path)
             .addOption(type)
+            .addOption(direction)
             .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {
