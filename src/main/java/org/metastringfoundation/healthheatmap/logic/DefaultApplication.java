@@ -17,18 +17,16 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.Table;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
-import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
+import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.storage.Database;
+import org.metastringfoundation.healthheatmap.storage.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
@@ -58,9 +56,7 @@ public class DefaultApplication implements Application {
     }
 
     public static final EntityManager persistenceManager = HibernateManager.openEntityManager();
-    public static final RestHighLevelClient elastic = new RestHighLevelClient(RestClient.builder(
-            new HttpHost("localhost", 9200, "http")
-    ));
+    public static final ElasticManager elastic = new ElasticManager();
 
     public void shutDown() throws ApplicationError {
         try {
