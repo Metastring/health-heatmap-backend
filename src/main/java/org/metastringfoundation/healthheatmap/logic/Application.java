@@ -27,12 +27,16 @@ public interface Application {
     String addIndicator(String indicatorName) throws ApplicationError;
 
     String saveEntity(String entityJSON);
+
     String getDimension(String dimension);
 
     String getHealth();
 
     Long saveDataset(Dataset dataset) throws ApplicationError;
+
     void saveTable(String name, Table table) throws ApplicationError;
+
+    void importIndicatorGrouping(Table table) throws ApplicationError;
 
     void shutDown() throws ApplicationError;
 

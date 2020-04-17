@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap;
+package org.metastringfoundation.healthheatmap.cli;
 
 import org.apache.commons.cli.*;
 
@@ -22,20 +22,30 @@ import org.apache.commons.cli.*;
  * Wrapper CLI to parse arguments using standard libraries (Apache Commons CLI)
  */
 public class CLI {
-    /** Path to a file that needs to be uploaded to the dataset */
+    /**
+     * Path to a file that needs to be uploaded to the dataset
+     */
     final static Option path = Option.builder("p")
             .hasArg()
             .longOpt("path")
             .desc("Path to the file")
             .build();
 
-    /** Option to start the server */
+    final static Option type = Option.builder("t")
+            .hasArg()
+            .longOpt("type")
+            .desc("Type of the file in path")
+            .build();
+
+    /**
+     * Option to start the server
+     */
     final static Option server = new Option("s", "server", false, "Run server");
 
     public final static Options options = new Options()
             .addOption(path)
-            .addOption(server)
-            ;
+            .addOption(type)
+            .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {
 
@@ -43,7 +53,7 @@ public class CLI {
         try {
             return commandLineParser.parse(options, args);
         } catch (ParseException e) {
-            System.out.println(e);
+            e.printStackTrace();
             throw e;
         }
     }

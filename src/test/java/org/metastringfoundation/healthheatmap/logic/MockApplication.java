@@ -62,6 +62,11 @@ public class MockApplication implements Application {
     }
 
     @Override
+    public void importIndicatorGrouping(Table table) throws ApplicationError {
+
+    }
+
+    @Override
     public void shutDown() throws ApplicationError {
 
     }

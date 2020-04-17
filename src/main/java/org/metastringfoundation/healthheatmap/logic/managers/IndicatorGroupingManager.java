@@ -17,6 +17,7 @@
 package org.metastringfoundation.healthheatmap.logic.managers;
 
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroup;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroupHierarchy;
 import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
@@ -25,11 +26,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class IndicatorGroupingManager {
-    private static EntityManager persistenceManager = DefaultApplication.persistenceManager;
+    private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
 
     public static List<IndicatorGroup> findGroupsByName(String name) {
         TypedQuery<IndicatorGroup> query = persistenceManager.createNamedQuery("IndicatorGroup.findByName", IndicatorGroup.class);
@@ -72,5 +72,20 @@ public class IndicatorGroupingManager {
 
     public static void importIndicatorsWithGroup(Table importData) {
         // TODO: Implement later
+    }
+
+    public static void importSimpleIndicatorGroups(Table importData) {
+        List<List<String>> groupings = importData.getTable();
+        groupings.remove(0); // which is the header row
+        // we will assume that the columns are "group", "subgroup" and "indicator"
+        for (List<String> row : groupings) {
+            String groupName = row.get(0);
+            String subGroupName = row.get(1);
+            String indicatorName = row.get(2);
+            Indicator indicator = IndicatorManager.findByName(indicatorName).get(0);
+            indicator.setGroup(groupName);
+            indicator.setSubGroup(subGroupName);
+            persistenceManager.persist(indicator);
+        }
     }
 }

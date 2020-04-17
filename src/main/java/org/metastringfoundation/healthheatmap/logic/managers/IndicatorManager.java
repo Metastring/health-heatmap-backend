@@ -50,7 +50,7 @@ public class IndicatorManager extends DimensionManager {
         return query.getResultList().get(0);
     }
 
-    private static List<Indicator> findByName(String name) {
+    public static List<Indicator> findByName(String name) {
         TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findByName", Indicator.class);
         query.setParameter("name", name);
         return query.getResultList();

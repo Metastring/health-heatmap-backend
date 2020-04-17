@@ -31,6 +31,7 @@ import org.metastringfoundation.healthheatmap.logic.managers.GeographyManager;
 import org.metastringfoundation.healthheatmap.logic.managers.IndicatorManager;
 import org.metastringfoundation.healthheatmap.logic.workers.Aggregator;
 import org.metastringfoundation.healthheatmap.logic.workers.DatasetUploader;
+import org.metastringfoundation.healthheatmap.logic.workers.IndicatorGroupUploadWorker;
 import org.metastringfoundation.healthheatmap.logic.workers.TableBackup;
 import org.metastringfoundation.healthheatmap.storage.Database;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
@@ -154,5 +155,10 @@ public class DefaultApplication implements Application {
 
     public void saveTable(String name, Table table) throws ApplicationError {
         TableBackup.backup(name, table);
+    }
+
+    @Override
+    public void importIndicatorGrouping(Table table) throws ApplicationError {
+        IndicatorGroupUploadWorker.importIndicatorGroupSimple(table);
     }
 }

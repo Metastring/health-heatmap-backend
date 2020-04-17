@@ -18,7 +18,9 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
-import org.metastringfoundation.healthheatmap.logic.workers.TableUploader;
+import org.metastringfoundation.healthheatmap.cli.CLI;
+import org.metastringfoundation.healthheatmap.cli.IndicatorGroupUpload;
+import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 public class Main {
@@ -29,6 +31,7 @@ public class Main {
             CommandLine commandLine = new CLI().parse(args);
 
             String path = commandLine.getOptionValue("path");
+            String type = commandLine.getOptionValue("type");
             boolean serverShouldStart = commandLine.hasOption("server");
 
             if (serverShouldStart) {
@@ -41,7 +44,12 @@ public class Main {
                         e.printStackTrace();
                     }
                 }));
-                TableUploader.upload(path);
+                if (type == null || type.equals("data")) {
+                    TableUploader.upload(path);
+                }
+                if (type != null && type.equals("indicators")) {
+                    IndicatorGroupUpload.upload(path);
+                }
             } else {
                 CLI.printHelp();
             }
