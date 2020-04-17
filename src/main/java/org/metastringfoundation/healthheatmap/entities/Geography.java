@@ -21,7 +21,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordFie
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -49,9 +48,6 @@ public class Geography {
     @Column(name = "name")
     @FullTextField(analyzer = "english")
     private String canonicalName;
-
-    @OneToMany(mappedBy = "geography", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GeographyName> otherNames;
 
     private LocalDate established;
 
@@ -130,23 +126,6 @@ public class Geography {
         this.belongsTo = belongsTo;
     }
 
-    public List<GeographyName> getOtherNames() {
-        return otherNames;
-    }
-
-    public void setOtherNames(List<GeographyName> otherNames) {
-        this.otherNames = otherNames;
-    }
-
-    public void addOtherName(GeographyName otherName) {
-        otherName.setGeography(this);
-        otherNames.add(otherName);
-    }
-
-    public void removeOtherName(GeographyName otherName) {
-        otherNames.remove(otherName);
-    }
-
     public enum GeographyType {
         COUNTRY,
         STATE,
@@ -161,7 +140,6 @@ public class Geography {
                 ", uniqueShortCode='" + uniqueShortCode + '\'' +
                 ", wikidataCode='" + wikidataCode + '\'' +
                 ", canonicalName='" + canonicalName + '\'' +
-                ", otherNames=" + otherNames +
                 ", established=" + established +
                 ", ceased=" + ceased +
                 ", type=" + type +

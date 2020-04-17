@@ -16,18 +16,16 @@
 
 package org.metastringfoundation.healthheatmap.entities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import javax.persistence.*;
 
-import java.util.List;
-
+@Entity
+@Table(name = "indicator_groups")
 public class IndicatorGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicator_group_sequence")
+    private Long id;
+
     private String name;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<IndicatorGroup> subGroups;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Indicator> indicators;
 
     public String getName() {
         return name;
@@ -37,19 +35,4 @@ public class IndicatorGroup {
         this.name = name;
     }
 
-    public List<IndicatorGroup> getSubGroups() {
-        return subGroups;
-    }
-
-    public void setSubGroups(List<IndicatorGroup> subGroups) {
-        this.subGroups = subGroups;
-    }
-
-    public List<Indicator> getIndicators() {
-        return indicators;
-    }
-
-    public void setIndicators(List<Indicator> indicators) {
-        this.indicators = indicators;
-    }
 }
