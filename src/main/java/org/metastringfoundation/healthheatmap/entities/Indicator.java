@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.entities;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -42,6 +43,9 @@ public class Indicator {
     private String canonicalName;
 
     private String derivation;
+
+    @ManyToMany(mappedBy = "indicators")
+    private List<IndicatorGroup> groups;
 
     public Long getId() {
         return id;
@@ -73,5 +77,13 @@ public class Indicator {
 
     public void setDerivation(String derivation) {
         this.derivation = derivation;
+    }
+
+    public List<IndicatorGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<IndicatorGroup> groups) {
+        this.groups = groups;
     }
 }

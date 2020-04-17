@@ -1,3 +1,4 @@
+-- Tables
 
 CREATE TABLE public.dataelements (
     id bigint NOT NULL,
@@ -64,6 +65,13 @@ CREATE TABLE public.uploads (
     source_id bigint
 );
 
+CREATE TABLE public.indicator_group_mappings (
+    indicator_id bigint,
+    group_id bigint
+);
+
+
+-- Sequences
 
 CREATE SEQUENCE public.dataelements_sequence
    START WITH 1
@@ -121,6 +129,8 @@ CREATE SEQUENCE public.uploads_sequence
     NO MAXVALUE
     CACHE 1;
 
+-- Primary Keys
+
 ALTER TABLE ONLY public.dataelements
     ADD CONSTRAINT dataelements_pkey PRIMARY KEY (id);
 
@@ -145,6 +155,7 @@ ALTER TABLE ONLY public.indicator_groups
 ALTER TABLE ONLY public.indicator_group_hierarchy
     ADD CONSTRAINT indicator_group_hierarchy_pkey PRIMARY KEY (id);
 
+-- Foreign Keys
 
 ALTER TABLE ONLY public.dataelements
     ADD CONSTRAINT data_element_geography_id_fk FOREIGN KEY (geography_id) REFERENCES public.geographies(id);
@@ -180,6 +191,12 @@ ALTER TABLE ONLY public.indicator_group_hierarchy
     ADD CONSTRAINT indicator_group_level_4_fk FOREIGN KEY (level_4) REFERENCES public.indicator_groups(id),
     ADD CONSTRAINT indicator_group_level_5_fk FOREIGN KEY (level_5) REFERENCES public.indicator_groups(id),
     ADD CONSTRAINT indicator_group_level_6_fk FOREIGN KEY (level_6) REFERENCES public.indicator_groups(id);
+
+ALTER TABLE ONLY public.indicator_group_mappings
+    ADD CONSTRAINT indicator_mapping_indicator_fk FOREIGN KEY (indicator_id) REFERENCES public.indicators(id),
+    ADD CONSTRAINT indicator_mapping_group_fk FOREIGN KEY (group_id) REFERENCES public.indicator_groups(id);
+
+-- Set permissions
 
 ALTER TABLE public.dataelements OWNER TO metastring;
 ALTER TABLE public.geographies OWNER TO metastring;

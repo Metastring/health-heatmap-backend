@@ -17,6 +17,7 @@
 package org.metastringfoundation.healthheatmap.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "indicator_groups")
@@ -27,6 +28,14 @@ public class IndicatorGroup {
 
     private String name;
 
+    @ManyToMany
+    @JoinTable(
+            name = "indicator_group_mappings",
+            joinColumns = @JoinColumn(name = "indicator_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private List<Indicator> indicators;
+
     public String getName() {
         return name;
     }
@@ -35,4 +44,19 @@ public class IndicatorGroup {
         this.name = name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Indicator> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(List<Indicator> indicators) {
+        this.indicators = indicators;
+    }
 }
