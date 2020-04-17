@@ -17,6 +17,7 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
@@ -62,7 +63,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public void importIndicatorGrouping(Table table) throws ApplicationError {
+    public void importIndicatorGrouping(Table table) throws DatasetIntegrityError {
 
     }
 

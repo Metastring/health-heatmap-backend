@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic.managers;
 
+import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroup;
@@ -74,7 +75,7 @@ public class IndicatorGroupingManager {
         // TODO: Implement later
     }
 
-    public static void importSimpleIndicatorGroups(Table importData) {
+    public static void importSimpleIndicatorGroups(Table importData) throws DatasetIntegrityError {
         List<List<String>> groupings = importData.getTable();
         groupings.remove(0); // which is the header row
         // we will assume that the columns are "group", "subgroup" and "indicator"
@@ -82,7 +83,11 @@ public class IndicatorGroupingManager {
             String groupName = row.get(0);
             String subGroupName = row.get(1);
             String indicatorName = row.get(2);
-            Indicator indicator = IndicatorManager.findByName(indicatorName).get(0);
+            List<Indicator> indicatorsFound = IndicatorManager.findByName(indicatorName);
+            if (indicatorsFound.size() < 1) {
+                throw new DatasetIntegrityError("Cannot find any indicator by that name");
+            }
+            Indicator indicator = indicatorsFound.get(0);
             indicator.setGroup(groupName);
             indicator.setSubGroup(subGroupName);
             persistenceManager.persist(indicator);

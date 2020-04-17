@@ -19,7 +19,9 @@ package org.metastringfoundation.healthheatmap.logic;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.hk2.api.PreDestroy;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
 import org.metastringfoundation.healthheatmap.entities.Geography;
@@ -48,7 +50,7 @@ import java.util.List;
  * One (and only) implementation of the application that acutally does the hard work of wiring everything together.
  * Brings everything else together to make web resources work, CLI, and anything else that needs to work.
  */
-public class DefaultApplication implements Application {
+public class DefaultApplication implements Application, PreDestroy {
 
     private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
 
@@ -157,7 +159,13 @@ public class DefaultApplication implements Application {
     }
 
     @Override
-    public void importIndicatorGrouping(Table table) throws ApplicationError {
+    public void importIndicatorGrouping(Table table) throws DatasetIntegrityError {
         IndicatorGroupUploadWorker.importIndicatorGroupSimple(table);
+    }
+
+    @Override
+    public void preDestroy() {
+        LOG.info("Being destroyed");
+        shutDown();
     }
 }

@@ -20,17 +20,11 @@ import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
-import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class IndicatorGroupUpload {
     public static void upload(String path) {
         CSVTable table = null;
 
-        Path basedir = Paths.get(path).getParent();
-        String fileName = Paths.get(path).getFileName().toString();
         try {
             table = CSVTable.fromPath(path);
         } catch (DatasetIntegrityError datasetIntegrityError) {
@@ -41,8 +35,8 @@ public class IndicatorGroupUpload {
         try {
             application.importIndicatorGrouping(table);
             application.shutDown();
-        } catch (ApplicationError applicationError) {
-            applicationError.printStackTrace();
+        } catch (DatasetIntegrityError e) {
+            e.printStackTrace();
             application.shutDown();
         }
     }

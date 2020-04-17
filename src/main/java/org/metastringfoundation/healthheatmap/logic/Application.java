@@ -17,6 +17,7 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
+import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
@@ -36,7 +37,7 @@ public interface Application {
 
     void saveTable(String name, Table table) throws ApplicationError;
 
-    void importIndicatorGrouping(Table table) throws ApplicationError;
+    void importIndicatorGrouping(Table table) throws DatasetIntegrityError;
 
     void shutDown();
 
