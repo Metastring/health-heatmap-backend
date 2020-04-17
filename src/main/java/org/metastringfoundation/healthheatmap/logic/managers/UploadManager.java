@@ -14,14 +14,18 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.logic.managers;
 
-import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedDataElement;
+import org.metastringfoundation.healthheatmap.entities.Report;
+import org.metastringfoundation.healthheatmap.entities.Source;
+import org.metastringfoundation.healthheatmap.entities.Upload;
 
-import java.util.Collection;
-
-public interface Dataset {
-    DatasetMetadata getMetadata();
-
-    Collection<UnmatchedDataElement> getData();
+public class UploadManager extends DimensionManager {
+    public static Upload newUpload(Report report, Source source) {
+        Upload upload = new Upload();
+        upload.setReport(report);
+        upload.setSource(source);
+        persistenceManager.persist(upload);
+        return upload;
+    }
 }

@@ -14,31 +14,27 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.dataset.entities;
 
-import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.dataset.table.TableCell;
 
-import java.util.Collection;
-import java.util.HashSet;
+public class UnprocessedDataElement {
+    private TableCell tableCell;
+    private String value;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+    public TableCell getTableCell() {
+        return tableCell;
+    }
 
-public class TableCellTest {
-    @Test
-    public void equalsAreEquals() {
-        TableCell cell1 = new TableCell(1, 1, "1");
-        TableCell cell2 = new TableCell(1, 1, "1");
-        assertEquals(cell1, cell2);
+    public void setTableCell(TableCell tableCell) {
+        this.tableCell = tableCell;
+    }
 
-        Collection<TableCell> set1 = new HashSet<>();
-        set1.add(cell1);
-        set1.add(cell2);
+    public String getValue() {
+        return value;
+    }
 
-        Collection<TableCell> set2 = new HashSet<>();
-        set2.add(cell2);
-        set2.add(cell1);
-
-        assertEquals(set1, set2);
+    public void setValue(String value) {
+        this.value = value;
     }
 }

@@ -14,14 +14,9 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.logic.errors;
 
-import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedDataElement;
-
-import java.util.Collection;
-
-public interface Dataset {
-    DatasetMetadata getMetadata();
-
-    Collection<UnmatchedDataElement> getData();
+public class UnknownEntityError extends Exception {
+    public UnknownEntityError(Exception e) { super("AmbigousEntityError", e); }
+    public UnknownEntityError(String msg) { super(msg); }
 }

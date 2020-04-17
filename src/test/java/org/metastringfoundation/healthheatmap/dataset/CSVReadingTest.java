@@ -19,8 +19,14 @@ package org.metastringfoundation.healthheatmap.dataset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.dataset.entities.*;
+import org.metastringfoundation.healthheatmap.dataset.table.TableRangeReference;
+import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVRangeDescription;
+import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTable;
+import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTableDescription;
+import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.entities.TimePeriod;
+import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -87,7 +93,7 @@ class CSVReadingTest {
         range3.setRange(new TableRangeReference("B2:AE"));
         range3.setPattern("#{data}");
 
-        List<CSVRangeDescription> rangeDescriptionList = Arrays.asList(range1, range2, range3);;
+        List<CSVRangeDescription> rangeDescriptionList = Arrays.asList(range1, range2, range3);
 
         UnmatchedSource source = new UnmatchedSource();
         source.setName("NFHS");

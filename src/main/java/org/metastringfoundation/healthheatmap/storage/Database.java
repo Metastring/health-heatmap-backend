@@ -16,13 +16,15 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.healthheatmap.dataset.Table;
-import org.metastringfoundation.healthheatmap.logic.ApplicationError;
+import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import java.sql.SQLException;
 
 public interface Database {
-    public String getHealth();
-    public void createArbitraryTable(String name, Table table) throws ApplicationError;
-    public void close() throws SQLException;
+    String getHealth();
+
+    void createArbitraryTable(String name, Table table) throws ApplicationError;
+
+    void close() throws SQLException;
 }

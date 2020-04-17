@@ -14,27 +14,14 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.logic.workers;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
-public interface Application {
-    String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
-
-    String addIndicator(String indicatorName) throws ApplicationError;
-
-    String saveEntity(String entityJSON);
-    String getDimension(String dimension);
-
-    String getHealth();
-
-    Long saveDataset(Dataset dataset) throws ApplicationError;
-    void saveTable(String name, Table table) throws ApplicationError;
-
-    void shutDown() throws ApplicationError;
-
-    String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError;
+public class TableBackup {
+    public static void backup(String name, Table table) throws ApplicationError {
+        DefaultApplication.psql.createArbitraryTable(name, table);
+    }
 }

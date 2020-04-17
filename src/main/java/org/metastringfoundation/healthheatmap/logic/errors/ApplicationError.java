@@ -14,14 +14,14 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.logic.errors;
 
-import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedDataElement;
+public class ApplicationError extends Exception {
 
-import java.util.Collection;
-
-public interface Dataset {
-    DatasetMetadata getMetadata();
-
-    Collection<UnmatchedDataElement> getData();
+    public ApplicationError(Exception e) {
+        super("ApplicationError", e);
+    }
+    public ApplicationError(String msg) {
+        super(msg);
+    }
 }

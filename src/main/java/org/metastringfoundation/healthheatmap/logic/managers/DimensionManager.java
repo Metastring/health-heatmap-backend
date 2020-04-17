@@ -14,14 +14,12 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.dataset;
+package org.metastringfoundation.healthheatmap.logic.managers;
 
-import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedDataElement;
+import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 
-import java.util.Collection;
+import javax.persistence.EntityManager;
 
-public interface Dataset {
-    DatasetMetadata getMetadata();
-
-    Collection<UnmatchedDataElement> getData();
+public abstract class DimensionManager {
+    protected static EntityManager persistenceManager = DefaultApplication.persistenceManager;
 }

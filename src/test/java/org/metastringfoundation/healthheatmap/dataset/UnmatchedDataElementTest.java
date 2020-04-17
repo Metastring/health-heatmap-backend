@@ -17,6 +17,9 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import org.junit.jupiter.api.Test;
+import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedDataElement;
+import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedGeography;
+import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedIndicator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

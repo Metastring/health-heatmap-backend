@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
-import org.metastringfoundation.healthheatmap.logic.TableUploader;
+import org.metastringfoundation.healthheatmap.logic.workers.TableUploader;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 public class Main {
@@ -34,15 +34,13 @@ public class Main {
             if (serverShouldStart) {
                 Server.startProductionServer();
             } else if (!path.isEmpty()) {
-                Runtime.getRuntime().addShutdownHook(new Thread() {
-                    public void run() {
-                        try {
-                            System.exit(1);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                    try {
+                        System.exit(1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
+                }));
                 TableUploader.upload(path);
             } else {
                 CLI.printHelp();

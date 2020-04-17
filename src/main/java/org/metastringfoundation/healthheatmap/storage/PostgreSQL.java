@@ -21,9 +21,9 @@ import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
-import org.metastringfoundation.healthheatmap.dataset.Table;
-import org.metastringfoundation.healthheatmap.dataset.TableCellReference;
-import org.metastringfoundation.healthheatmap.logic.ApplicationError;
+import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.dataset.table.TableCellReference;
+import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.json.Json;
 import java.sql.*;
@@ -34,8 +34,8 @@ import java.util.StringJoiner;
 public class PostgreSQL implements Database {
     private static final Logger LOG = LogManager.getLogger(PostgreSQL.class);
 
-    private Connection psqlConnection;
-    private DSLContext dslContext;
+    private final Connection psqlConnection;
+    private final DSLContext dslContext;
 
     public PostgreSQL() throws ApplicationError {
         //TODO: Make this loaded from configuration/environment
@@ -159,8 +159,8 @@ public class PostgreSQL implements Database {
         String result;
         try (
                 PreparedStatement statement = psqlConnection.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery();
-                ) {
+                ResultSet resultSet = statement.executeQuery()
+        ) {
             if (resultSet.next()) {
                 result = resultSet.getString(1);
             } else {

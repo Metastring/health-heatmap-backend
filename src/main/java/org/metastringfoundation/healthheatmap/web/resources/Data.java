@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap.web.resources;
 
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.ApplicationError;
+import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

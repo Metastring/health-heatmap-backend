@@ -17,7 +17,8 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
-import org.metastringfoundation.healthheatmap.dataset.Table;
+import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 public class MockApplication implements Application {
     @Override

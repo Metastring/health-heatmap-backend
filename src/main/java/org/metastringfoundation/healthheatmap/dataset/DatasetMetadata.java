@@ -17,6 +17,8 @@
 package org.metastringfoundation.healthheatmap.dataset;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedReport;
+import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedSource;
 import org.metastringfoundation.healthheatmap.entities.TimePeriod;
 
 import java.util.Objects;
