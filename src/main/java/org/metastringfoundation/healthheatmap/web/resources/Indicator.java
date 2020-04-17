@@ -14,35 +14,47 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web;
+package org.metastringfoundation.healthheatmap.web.resources;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("data")
-public class DataResource {
+@Path("indicators")
+public class Indicator {
+    private static final Logger LOG = LogManager.getLogger(Indicator.class);
+
+
     @Inject
     Application app;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getData(
-        @QueryParam("indicator") Long indicator,
-        @QueryParam("geography") Long geography,
-        @QueryParam("aggregation") String aggregation
+    public Response getIndicator(
     ) {
         try {
-            String response = app.getData(indicator, geography, aggregation);
-            return Response.ok().entity(response).build();
+            return Response.status(200).entity(app.getIndicators()).build();
         } catch (ApplicationError applicationError) {
+            LOG.error(applicationError);
+            return Response.status(503).entity(applicationError.toString()).build();
+        }
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addIndicator(
+            @QueryParam("name") String name
+    ) {
+        try {
+            return Response.status(200).entity(app.addIndicator(name)).build();
+        } catch (ApplicationError applicationError) {
+            LOG.error(applicationError);
             return Response.status(503).entity(applicationError.toString()).build();
         }
     }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web;
+package org.metastringfoundation.healthheatmap.web.resources;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,13 +22,21 @@ import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("indicators")
-public class IndicatorResource {
-    private static final Logger LOG = LogManager.getLogger(IndicatorResource.class);
+@Path("entities")
+public class Geography {
+    private static final Logger LOG = LogManager.getLogger(Geography.class);
+
+    private static final String ZOOM_LEVEL = "zoom";
+    private static final String LOAD_ENTITY_TYPE = "type";
+
+    private static final String DEFAULT_ZOOM_LEVEL = "0";
+    private static final String DEFAULT_LOAD_ENTITY_TYPE = "DISTRICT";
 
 
     @Inject
@@ -36,23 +44,10 @@ public class IndicatorResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getIndicator(
+    public Response getEntities(
     ) {
         try {
-            return Response.status(200).entity(app.getIndicators()).build();
-        } catch (ApplicationError applicationError) {
-            LOG.error(applicationError);
-            return Response.status(503).entity(applicationError.toString()).build();
-        }
-    }
-
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addIndicator(
-            @QueryParam("name") String name
-    ) {
-        try {
-            return Response.status(200).entity(app.addIndicator(name)).build();
+            return Response.status(200).entity(app.getEntities()).build();
         } catch (ApplicationError applicationError) {
             LOG.error(applicationError);
             return Response.status(503).entity(applicationError.toString()).build();

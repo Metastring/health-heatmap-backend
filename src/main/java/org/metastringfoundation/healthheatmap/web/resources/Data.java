@@ -14,25 +14,36 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web;
+package org.metastringfoundation.healthheatmap.web.resources;
 
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.ApplicationError;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("health")
-public class HealthResource {
+@Path("data")
+public class Data {
     @Inject
     Application app;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getHealth() {
-        return Response.status(200).entity(app.getHealth()).build();
+    public Response getData(
+            @QueryParam("indicator") Long indicator,
+            @QueryParam("geography") Long geography,
+            @QueryParam("aggregation") String aggregation
+    ) {
+        try {
+            String response = app.getData(indicator, geography, aggregation);
+            return Response.ok().entity(response).build();
+        } catch (ApplicationError applicationError) {
+            return Response.status(503).entity(applicationError.toString()).build();
+        }
     }
 }

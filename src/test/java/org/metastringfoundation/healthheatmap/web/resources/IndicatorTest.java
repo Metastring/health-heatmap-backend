@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web;
+package org.metastringfoundation.healthheatmap.web.resources;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.MockApplication;
+import org.metastringfoundation.healthheatmap.web.ApplicationConfig;
+import org.metastringfoundation.healthheatmap.web.Server;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -32,7 +34,7 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IndicatorResourceTest {
+public class IndicatorTest {
 
     private HttpServer server;
     private WebTarget target;

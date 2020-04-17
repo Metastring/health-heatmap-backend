@@ -24,6 +24,8 @@ import java.util.Map;
 public class CSVRangeDescription {
     private TableRangeReference range;
     private String pattern;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> replacements;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
