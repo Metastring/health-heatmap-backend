@@ -36,13 +36,14 @@ CREATE TABLE public.indicator_groups (
 );
 
 CREATE TABLE public.indicator_group_hierarchy (
+    id bigint NOT NULL,
     level_1 bigint,
     level_2 bigint,
     level_3 bigint,
     level_4 bigint,
     level_5 bigint,
     level_6 bigint
-)
+);
 
 CREATE TABLE public.reports (
     id bigint NOT NULL,
@@ -71,9 +72,16 @@ CREATE SEQUENCE public.hibernate_sequence
     NO MAXVALUE
     CACHE 1;
 
-CREATE SEQUENCE public.indicator_group_sequence
+CREATE SEQUENCE public.indicator_groups_sequence
     START WITH 1
-    INCREMENT BY 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE public.indicator_group_hierarchy_sequence
+    START WITH 1
+    INCREMENT BY 50
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
@@ -96,6 +104,12 @@ ALTER TABLE ONLY public.sources
 
 ALTER TABLE ONLY public.uploads
     ADD CONSTRAINT uploads_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.indicator_groups
+    ADD CONSTRAINT indicator_groups_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.indicator_group_hierarchy
+    ADD CONSTRAINT indicator_group_hierarchy_pkey PRIMARY KEY (id);
 
 
 ALTER TABLE ONLY public.dataelements
@@ -144,4 +158,5 @@ ALTER TABLE public.indicator_group_hierarchy OWNER TO metastring;
 
 
 ALTER TABLE public.hibernate_sequence OWNER TO metastring;
-ALTER TABLE public.indicator_group_sequence OWNER to metastring;
+ALTER TABLE public.indicator_groups_sequence OWNER TO metastring;
+ALTER TABLE public.indicator_group_hierarchy_sequence OWNER TO metastring;

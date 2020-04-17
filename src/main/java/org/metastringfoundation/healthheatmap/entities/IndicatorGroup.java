@@ -22,7 +22,7 @@ import javax.persistence.*;
 @Table(name = "indicator_groups")
 public class IndicatorGroup {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicator_group_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicator_groups_sequence")
     private Long id;
 
     private String name;

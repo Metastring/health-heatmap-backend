@@ -22,6 +22,10 @@ import javax.persistence.*;
 @Table(name = "indicator_group_hierarchy")
 public class IndicatorGroupHierarchy {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicator_group_hierarchy_sequence")
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "level_1",
             foreignKey = @ForeignKey(name = "indicator_group_level_1_fk")
@@ -57,6 +61,14 @@ public class IndicatorGroupHierarchy {
             foreignKey = @ForeignKey(name = "indicator_group_level_6_fk")
     )
     private IndicatorGroup level6;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public IndicatorGroup getLevel1() {
         return level1;
