@@ -25,8 +25,10 @@ import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.dataset.table.TableCellReference;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
-import javax.json.Json;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -62,6 +64,11 @@ public class PostgreSQL implements Database {
     public void close() throws SQLException {
         dslContext.close();
         psqlConnection.close();
+    }
+
+    @Override
+    public String getHealth() {
+        return "Maybe healthy";
     }
 
     public void createArbitraryTable(String name, Table table) throws ApplicationError {
@@ -155,39 +162,4 @@ public class PostgreSQL implements Database {
         psqlConnection.setAutoCommit(prevAutoCommit);
     }
 
-    private String returnQueryResult(String query) throws SQLException {
-        String result;
-        try (
-                PreparedStatement statement = psqlConnection.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery()
-        ) {
-            if (resultSet.next()) {
-                result = resultSet.getString(1);
-            } else {
-                result = Json.createObjectBuilder()
-                        .add("status", "error")
-                        .add("message", "No data returned")
-                        .build()
-                        .toString();
-            }
-        }
-        return result;
-    }
-
-    private static String genericInternalServerError(Exception ex) {
-        return Json.createObjectBuilder()
-                .add("status", "error")
-                .add("message", "Internal server error\n" + ex.toString())
-                .build()
-                .toString();
-    }
-
-    public String getHealth() {
-        String healthQuery = "SELECT json_build_object('tables', json_agg(schemaname)) AS names from pg_statio_all_tables;";
-        try {
-            return returnQueryResult(healthQuery);
-        } catch (SQLException ex) {
-            return genericInternalServerError(ex);
-        }
-    }
 }

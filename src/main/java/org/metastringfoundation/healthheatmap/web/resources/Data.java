@@ -36,8 +36,9 @@ public class Data {
     public AggregatedData getData(
             @QueryParam("indicator") Long indicator,
             @QueryParam("geography") Long geography,
+            @QueryParam("source") Long source,
             @QueryParam("aggregation") String aggregation
     ) {
-        return app.getData(indicator, geography, aggregation);
+        return app.getData(indicator, geography, source, aggregation);
     }
 }

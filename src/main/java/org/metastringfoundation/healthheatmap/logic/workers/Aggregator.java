@@ -34,7 +34,7 @@ public class Aggregator {
                     float parsed = Float.parseFloat(value);
                     sum = sum + parsed;
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    LOG.error("Parsed a non-float while aggreggating.", e);
                 }
             }
         }

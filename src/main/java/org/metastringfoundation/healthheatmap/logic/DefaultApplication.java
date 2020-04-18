@@ -129,8 +129,8 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     @Override
-    public AggregatedData getData(Long indicatorId, Long geographyId, String aggregation) {
-        List<DataElement> dataElements = DataManager.getAllData(indicatorId, geographyId);
+    public AggregatedData getData(Long indicatorId, Long geographyId, Long sourceId, String aggregation) {
+        List<DataElement> dataElements = DataManager.getAllData(indicatorId, geographyId, sourceId);
         AggregatedData result = new AggregatedData();
         result.setData(dataElements);
         result.setAggregation(Aggregator.getAverage(dataElements).toString());

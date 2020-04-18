@@ -74,7 +74,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public AggregatedData getData(Long indicatorId, Long geographyId, String aggregation) {
+    public AggregatedData getData(Long indicatorId, Long geographyId, Long sourceId, String aggregation) {
         return null;
     }
 

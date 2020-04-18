@@ -26,16 +26,19 @@ import java.util.List;
 public class DataManager extends DimensionManager {
     private static final Logger LOG = LogManager.getLogger(DataManager.class);
 
-    public static List<DataElement> getAllData(Long indicatorId, Long geographyId) {
+    public static List<DataElement> getAllData(Long indicatorId, Long geographyId, Long sourceId) {
         TypedQuery<DataElement> query = persistenceManager.createQuery("" +
                 "select d from DataElement d " +
                 "JOIN d.indicator i " +
                 "JOIN d.geography g " +
+                "JOIN d.source s " +
                 "WHERE i.id = :indicatorId " +
+                "AND s.id = :sourceId " +
                 "AND g.id = :geographyId", DataElement.class);
         return query
                 .setParameter("indicatorId", indicatorId)
                 .setParameter("geographyId", geographyId)
+                .setParameter("sourceId", sourceId)
                 .getResultList();
     }
 }

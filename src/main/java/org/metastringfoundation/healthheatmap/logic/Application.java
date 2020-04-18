@@ -42,7 +42,7 @@ public interface Application {
 
     void shutDown();
 
-    AggregatedData getData(Long indicatorId, Long geographyId, String aggregation);
+    AggregatedData getData(Long indicatorId, Long geographyId, Long sourceId, String aggregation);
 
     void exportIndicators(String path);
 }
