@@ -28,6 +28,7 @@ import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
+import org.metastringfoundation.healthheatmap.logic.errors.StorageError;
 import org.metastringfoundation.healthheatmap.logic.managers.DataManager;
 import org.metastringfoundation.healthheatmap.logic.managers.GeographyManager;
 import org.metastringfoundation.healthheatmap.logic.managers.IndicatorManager;
@@ -129,13 +130,12 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     @Override
-    public String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError {
-        LOG.info("fetching data from application");
+    public AggregatedData getData(Long indicatorId, Long geographyId, String aggregation) {
         List<DataElement> dataElements = DataManager.getAllData(indicatorId, geographyId);
         AggregatedData result = new AggregatedData();
         result.setData(dataElements);
         result.setAggregation(Aggregator.getAverage(dataElements).toString());
-        return jsonizeObject(result);
+        return result;
     }
 
     public String getHealth() {

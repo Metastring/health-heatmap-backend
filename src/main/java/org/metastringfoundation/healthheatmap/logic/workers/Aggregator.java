@@ -16,25 +16,38 @@
 
 package org.metastringfoundation.healthheatmap.logic.workers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
 
 import java.util.List;
 
 public class Aggregator {
-    public static Long getSum(List<DataElement> input) {
-        return input
-                .stream()
-                .map(DataElement::getValue)
-                .map(Long::parseLong).mapToLong(Long::longValue).sum();
+    private static final Logger LOG = LogManager.getLogger(Aggregator.class);
+
+    public static Float getSum(List<DataElement> input) {
+        float sum = (float) 0;
+        for (DataElement data: input) {
+            String value = data.getValue();
+            if (value != null) {
+                try {
+                    float parsed = Float.parseFloat(value);
+                    sum = sum + parsed;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return sum;
     }
 
-    public static Long getAverage(List<DataElement> input) {
-        Long sum = getSum(input);
+    public static Float getAverage(List<DataElement> input) {
+        float sum = getSum(input);
         Long length =  Long.valueOf(input.size());
         if (length > 0) {
             return sum/length;
         } else {
-            return 0L;
+            return 0f;
         }
     }
 }
