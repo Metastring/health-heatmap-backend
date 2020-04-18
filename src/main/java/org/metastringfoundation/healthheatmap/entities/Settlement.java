@@ -54,4 +54,11 @@ public class Settlement {
     public void setSettlement(SettlementType settlement) {
         this.settlement = settlement;
     }
+
+    @Override
+    public String toString() {
+        return "Settlement{" +
+                "settlement=" + settlement +
+                '}';
+    }
 }

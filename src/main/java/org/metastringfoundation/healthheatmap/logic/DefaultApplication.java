@@ -28,7 +28,6 @@ import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
-import org.metastringfoundation.healthheatmap.logic.errors.StorageError;
 import org.metastringfoundation.healthheatmap.logic.managers.DataManager;
 import org.metastringfoundation.healthheatmap.logic.managers.GeographyManager;
 import org.metastringfoundation.healthheatmap.logic.managers.IndicatorManager;

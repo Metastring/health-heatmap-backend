@@ -159,4 +159,19 @@ public class DataElement {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "DataElement{" +
+                "id=" + id +
+                ", indicator=" + indicator +
+                ", geography=" + geography +
+                ", upload=" + upload +
+                ", report=" + report +
+                ", source=" + source +
+                ", timePeriod=" + timePeriod +
+                ", settlement=" + settlement +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

@@ -19,7 +19,6 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
-import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
 public class DataManager extends DimensionManager {
     private static final Logger LOG = LogManager.getLogger(DataManager.class);
 
-    public static List<DataElement> getAllData(Long indicatorId, Long geographyId) throws ApplicationError {
+    public static List<DataElement> getAllData(Long indicatorId, Long geographyId) {
         TypedQuery<DataElement> query = persistenceManager.createQuery("" +
                 "select d from DataElement d " +
                 "JOIN d.indicator i " +

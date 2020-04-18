@@ -27,7 +27,7 @@ public class Aggregator {
 
     public static Float getSum(List<DataElement> input) {
         float sum = (float) 0;
-        for (DataElement data: input) {
+        for (DataElement data : input) {
             String value = data.getValue();
             if (value != null) {
                 try {
@@ -43,9 +43,9 @@ public class Aggregator {
 
     public static Float getAverage(List<DataElement> input) {
         float sum = getSum(input);
-        Long length =  Long.valueOf(input.size());
+        Long length = Long.valueOf(input.size());
         if (length > 0) {
-            return sum/length;
+            return sum / length;
         } else {
             return 0f;
         }

@@ -20,6 +20,7 @@ import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
+import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
 public interface Application {
     String getIndicators() throws ApplicationError;
@@ -41,7 +42,7 @@ public interface Application {
 
     void shutDown();
 
-    String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError;
+    AggregatedData getData(Long indicatorId, Long geographyId, String aggregation);
 
     void exportIndicators(String path);
 }

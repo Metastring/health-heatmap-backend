@@ -20,6 +20,7 @@ import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
+import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
 public class MockApplication implements Application {
     @Override
@@ -73,7 +74,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public String getData(Long indicatorId, Long geographyId, String aggregation) throws ApplicationError {
+    public AggregatedData getData(Long indicatorId, Long geographyId, String aggregation) {
         return null;
     }
 

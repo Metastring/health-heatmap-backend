@@ -16,28 +16,18 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
-
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
+import java.util.List;
 
-@Path("data")
-public class Data {
-    @Inject
-    Application app;
-
+@Path("dimensions")
+public class Dimensions {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public AggregatedData getData(
-            @QueryParam("indicator") Long indicator,
-            @QueryParam("geography") Long geography,
-            @QueryParam("aggregation") String aggregation
-    ) {
-        return app.getData(indicator, geography, aggregation);
+    public List<String> test() {
+        return Arrays.asList("Akshay", "is", "here");
     }
 }

@@ -126,4 +126,17 @@ public class IndicatorGroupHierarchy {
     public void setLevel6(IndicatorGroup level6) {
         this.level6 = level6;
     }
+
+    @Override
+    public String toString() {
+        return "IndicatorGroupHierarchy{" +
+                "id=" + id +
+                ", level1=" + level1 +
+                ", level2=" + level2 +
+                ", level3=" + level3 +
+                ", level4=" + level4 +
+                ", level5=" + level5 +
+                ", level6=" + level6 +
+                '}';
+    }
 }

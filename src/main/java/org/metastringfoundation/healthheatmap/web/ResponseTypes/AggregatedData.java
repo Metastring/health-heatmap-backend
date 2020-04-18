@@ -39,4 +39,12 @@ public class AggregatedData {
     public void setData(List<DataElement> data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "AggregatedData{" +
+                "aggregation='" + aggregation + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

@@ -65,4 +65,13 @@ public class IndicatorGroup {
     public void setIndicators(List<Indicator> indicators) {
         this.indicators = indicators;
     }
+
+    @Override
+    public String toString() {
+        return "IndicatorGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", indicators=" + indicators +
+                '}';
+    }
 }
