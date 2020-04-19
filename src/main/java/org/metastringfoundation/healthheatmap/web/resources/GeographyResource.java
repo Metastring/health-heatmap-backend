@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.web.resources;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.logic.Application;
 
 import javax.inject.Inject;
@@ -27,8 +28,8 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("geography")
-public class Geography {
-    private static final Logger LOG = LogManager.getLogger(Geography.class);
+public class GeographyResource {
+    private static final Logger LOG = LogManager.getLogger(GeographyResource.class);
 
     private static final String ZOOM_LEVEL = "zoom";
     private static final String LOAD_ENTITY_TYPE = "type";
@@ -42,7 +43,7 @@ public class Geography {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<org.metastringfoundation.healthheatmap.entities.Geography> getEntities(
+    public List<Geography> getEntities(
             @Parameter(description = "Either DISTRICT, STATE, or ANY")
             @DefaultValue("ANY")
             @QueryParam("type") String type

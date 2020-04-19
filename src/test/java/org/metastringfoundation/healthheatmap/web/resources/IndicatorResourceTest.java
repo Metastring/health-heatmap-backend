@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IndicatorTest {
+public class IndicatorResourceTest {
 
     private HttpServer server;
     private WebTarget target;

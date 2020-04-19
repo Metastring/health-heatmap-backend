@@ -27,8 +27,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("indicators")
-public class Indicator {
-    private static final Logger LOG = LogManager.getLogger(Indicator.class);
+public class IndicatorResource {
+    private static final Logger LOG = LogManager.getLogger(IndicatorResource.class);
 
 
     @Inject
