@@ -19,22 +19,19 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.entities.Geography;
+import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
-import org.metastringfoundation.healthheatmap.entities.Geography;
 
 import java.util.List;
 
 public interface Application {
-    String getIndicators() throws ApplicationError;
+    List<Indicator> getIndicators();
 
     List<Geography> getEntities(String type);
 
-    String addIndicator(String indicatorName) throws ApplicationError;
-
-    String saveEntity(String entityJSON);
-
-    String getDimension(String dimension);
+    Indicator addIndicator(String indicatorName);
 
     String getHealth();
 

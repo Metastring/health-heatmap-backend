@@ -18,18 +18,12 @@ package org.metastringfoundation.healthheatmap.logic.workers;
 
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
-import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 import org.metastringfoundation.healthheatmap.logic.managers.IndicatorGroupingManager;
 
-import javax.persistence.EntityManager;
-
 public class IndicatorsWorker {
-    private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
 
     public static void importIndicatorGroupSimple(Table table) throws DatasetIntegrityError {
-        persistenceManager.getTransaction().begin();
         IndicatorGroupingManager.importSimpleIndicatorGroups(table);
-        persistenceManager.getTransaction().commit();
     }
 
     public static void exportIndicators(String path) {

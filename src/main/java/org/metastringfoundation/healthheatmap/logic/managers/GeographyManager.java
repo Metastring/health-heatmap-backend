@@ -22,40 +22,54 @@ import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedGeograph
 import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
 import org.metastringfoundation.healthheatmap.logic.errors.UnknownEntityError;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
-import javax.persistence.TypedQuery;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GeographyManager extends DimensionManager {
     private static final Logger LOG = LogManager.getLogger(GeographyManager.class);
 
     public static List<Geography> getAllGeographies() {
-        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findAll", Geography.class);
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                Geography.class,
+                "Geography.findAll",
+                null
+        );
     }
 
     public static List<Geography> getGeographyByType(String type) {
         if (type.equals("ANY")) return getAllGeographies();
-        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findByType", Geography.class);
-        query.setParameter("type", Geography.GeographyType.valueOf(type));
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                Geography.class,
+                "Geography.findByType",
+                Collections.singletonMap("type", Geography.GeographyType.valueOf(type))
+        );
     }
 
     public static List<Geography> findByName(String name) {
-        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findByName", Geography.class);
-        query.setParameter("name", name);
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                Geography.class,
+                "Geography.findByName",
+                Collections.singletonMap("name", name)
+        );
     }
 
     public static List<Geography> findChildByName(String name, Geography belongsTo) {
-        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findChild", Geography.class);
-        query.setParameter("name", name);
-        query.setParameter("parent", belongsTo);
-        return query.getResultList();
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("parent", belongsTo);
+        return HibernateManager.namedQueryList(
+                Geography.class,
+                "Geography.findChild",
+                params
+        );
     }
 
     public static Geography findById(Long id) {
-        return persistenceManager.find(Geography.class, id);
+        return HibernateManager.find(Geography.class, id);
     }
 
     private static List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo) {
@@ -81,7 +95,7 @@ public class GeographyManager extends DimensionManager {
         geography.setCanonicalName(name);
         geography.setType(type);
         geography.setBelongsTo(belongsTo);
-        persistenceManager.persist(geography);
+        HibernateManager.persist(geography);
         return geography;
     }
 

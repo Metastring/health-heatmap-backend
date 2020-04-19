@@ -19,21 +19,27 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedSource;
 import org.metastringfoundation.healthheatmap.entities.Source;
 import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
-import javax.persistence.TypedQuery;
+import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
 
 public class SourceManager extends DimensionManager {
     private static List<Source> findByName(String name) {
-        TypedQuery<Source> query = persistenceManager.createNamedQuery("Source.findByName", Source.class);
-        query.setParameter("name", name);
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                Source.class,
+                "Source.findByName",
+                Collections.singletonMap("name", name)
+        );
     }
 
     public static Source addSource(String name) {
+        EntityManager entityManager = HibernateManager.openEntityManager();
         Source source = new Source();
         source.setName(name);
-        persistenceManager.persist(source);
+        entityManager.persist(source);
+        entityManager.close();
         return source;
     }
 

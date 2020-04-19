@@ -21,11 +21,11 @@ import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.entities.*;
 import org.metastringfoundation.healthheatmap.entities.*;
-import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.logic.errors.UnknownEntityError;
 import org.metastringfoundation.healthheatmap.logic.managers.*;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -34,15 +34,14 @@ import java.util.Map;
 public class DatasetUploader {
     private static final Logger LOG = LogManager.getLogger(DatasetUploader.class);
 
-    private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
-
     public static Long upload(Dataset dataset) throws ApplicationError {
         Long returnValue;
         Map<UnmatchedGeography, Geography> geographyEntityMap = new HashMap<>();
         Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
         Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
 
-        persistenceManager.getTransaction().begin();
+        EntityManager entityManager = HibernateManager.openEntityManager();
+        entityManager.getTransaction().begin();
 
         LOG.debug(dataset.getMetadata());
 
@@ -137,11 +136,11 @@ public class DatasetUploader {
 
             dataElement.setValue(unmatchedDataElement.getValue());
 
-            persistenceManager.persist(dataElement);
+            entityManager.persist(dataElement);
         }
 
-        persistenceManager.getTransaction().commit();
-        persistenceManager.close();
+        entityManager.getTransaction().commit();
+        entityManager.close();
         return returnValue;
     }
 }

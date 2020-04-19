@@ -16,7 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.hk2.api.PreDestroy;
@@ -26,7 +25,6 @@ import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
 import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
-import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.logic.managers.DataManager;
 import org.metastringfoundation.healthheatmap.logic.managers.GeographyManager;
@@ -41,69 +39,48 @@ import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * One (and only) implementation of the application that acutally does the hard work of wiring everything together.
+ * One (and only) implementation of the application that actually does the hard work of wiring everything together.
  * Brings everything else together to make web resources work, CLI, and anything else that needs to work.
  */
 public class DefaultApplication implements Application, PreDestroy {
 
     private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
 
-    public static final Database psql;
+    public static final Database DATABASE;
 
     static {
         try {
-            psql = new PostgreSQL();
+            DATABASE = new PostgreSQL();
         } catch (ApplicationError applicationError) {
             applicationError.printStackTrace();
             throw new RuntimeException();
         }
     }
 
-    public static final EntityManager persistenceManager = HibernateManager.openEntityManager();
-    public static final ElasticManager elastic = new ElasticManager();
+    public static final ElasticManager ELASTICMANAGER = new ElasticManager();
 
     public void shutDown() {
         try {
-            elastic.close();
+            ELASTICMANAGER.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         HibernateManager.closeEntityManagerFactory();
         try {
-            psql.close();
+            DATABASE.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    private String jsonizeList(List<?> objectList) throws ApplicationError{
-        try {
-            return Jsonizer.getJSONString(objectList);
-        } catch (JsonProcessingException e) {
-            LOG.error(e);
-            throw new ApplicationError(e);
-        }
-    }
-
-    private String jsonizeObject(Object object) throws ApplicationError {
-        try {
-            return Jsonizer.asJSON(object);
-        } catch (JsonProcessingException e) {
-            LOG.error(e);
-            throw new ApplicationError(e);
-        }
-    }
-
     @Override
-    public String getIndicators() throws ApplicationError {
-        List<Indicator> indicatorList = IndicatorManager.getAllIndicators();
-        return jsonizeList(indicatorList);
+    public List<Indicator> getIndicators() {
+        return IndicatorManager.getAllIndicators();
     }
 
     @Override
@@ -112,19 +89,8 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     @Override
-    public String addIndicator(String indicatorName) throws ApplicationError {
-        Indicator indicator = IndicatorManager.addIndicator(indicatorName);
-        return jsonizeObject(indicator);
-    }
-
-    @Override
-    public String saveEntity(String entityJSON) {
-        return null;
-    }
-
-    @Override
-    public String getDimension(String dimension) {
-        return null;
+    public Indicator addIndicator(String indicatorName) {
+        return IndicatorManager.addIndicator(indicatorName);
     }
 
     @Override
@@ -137,15 +103,7 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     public String getHealth() {
-        return psql.getHealth();
-    }
-
-    private void beginTransaction() {
-        persistenceManager.getTransaction().begin();
-    }
-
-    private void commitTransaction() {
-        persistenceManager.getTransaction().commit();
+        return DATABASE.getHealth();
     }
 
     public Long saveDataset(Dataset dataset) throws ApplicationError {

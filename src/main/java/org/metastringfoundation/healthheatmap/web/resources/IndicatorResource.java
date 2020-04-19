@@ -18,13 +18,13 @@ package org.metastringfoundation.healthheatmap.web.resources;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("indicators")
 public class IndicatorResource {
@@ -36,26 +36,15 @@ public class IndicatorResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getIndicator(
-    ) {
-        try {
-            return Response.status(200).entity(app.getIndicators()).build();
-        } catch (ApplicationError applicationError) {
-            LOG.error(applicationError);
-            return Response.status(503).entity(applicationError.toString()).build();
-        }
+    public List<Indicator> getIndicators() {
+            return app.getIndicators();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addIndicator(
+    public Indicator addIndicator(
             @QueryParam("name") String name
     ) {
-        try {
-            return Response.status(200).entity(app.addIndicator(name)).build();
-        } catch (ApplicationError applicationError) {
-            LOG.error(applicationError);
-            return Response.status(503).entity(applicationError.toString()).build();
-        }
+        return app.addIndicator(name);
     }
 }

@@ -20,40 +20,53 @@ import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedIndicato
 import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
 import org.metastringfoundation.healthheatmap.logic.errors.UnknownEntityError;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
 
 public class IndicatorManager extends DimensionManager {
     public static List<Indicator> getAllIndicators() {
-        TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findAll", Indicator.class);
-        return query.getResultList();
+        EntityManager entityManager = HibernateManager.openEntityManager();
+        TypedQuery<Indicator> query = entityManager.createNamedQuery("Indicator.findAll", Indicator.class);
+        List<Indicator> result = query.getResultList();
+        entityManager.close();
+        return result;
     }
 
     public static Indicator addIndicatorWithCommit(String name) {
-        persistenceManager.getTransaction().begin();
+        EntityManager entityManager = HibernateManager.openEntityManager();
+        entityManager.getTransaction().begin();
         Indicator indicator = addIndicator(name);
-        persistenceManager.getTransaction().commit();
+        entityManager.getTransaction().commit();
+        entityManager.close();
         return indicator;
     }
 
     public static Indicator addIndicator(String name) {
+        EntityManager entityManager = HibernateManager.openEntityManager();
         Indicator indicator = new Indicator();
         indicator.setCanonicalName(name);
-        persistenceManager.persist(indicator);
+        entityManager.persist(indicator);
         return indicator;
     }
 
     public static Indicator findById(Long id) {
-        TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findById", Indicator.class);
-        query.setParameter("id", id);
-        return query.getResultList().get(0);
+        return HibernateManager.namedQuerySingle(
+                Indicator.class,
+                "Indicator.findById",
+                Collections.singletonMap("id", id)
+        );
     }
 
     public static List<Indicator> findByName(String name) {
-        TypedQuery<Indicator> query = persistenceManager.createNamedQuery("Indicator.findByName", Indicator.class);
-        query.setParameter("name", name);
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                Indicator.class,
+                "Indicator.findByName",
+                Collections.singletonMap("name", name)
+                );
     }
 
     private static List<Indicator> findIndicatorByNameCreatingIfNotExists(String name) {

@@ -16,10 +16,5 @@
 
 package org.metastringfoundation.healthheatmap.logic.managers;
 
-import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
-
-import javax.persistence.EntityManager;
-
 public abstract class DimensionManager {
-    protected static EntityManager persistenceManager = DefaultApplication.persistenceManager;
 }

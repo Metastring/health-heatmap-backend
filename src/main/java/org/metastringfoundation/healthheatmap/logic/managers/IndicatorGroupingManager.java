@@ -16,28 +16,29 @@
 
 package org.metastringfoundation.healthheatmap.logic.managers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroup;
 import org.metastringfoundation.healthheatmap.entities.IndicatorGroupHierarchy;
 import org.metastringfoundation.healthheatmap.helpers.CSVUtils;
-import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class IndicatorGroupingManager {
-    private static final EntityManager persistenceManager = DefaultApplication.persistenceManager;
+    private static final Logger LOG = LogManager.getLogger(IndicatorGroupingManager.class);
 
     public static List<IndicatorGroup> findGroupsByName(String name) {
-        TypedQuery<IndicatorGroup> query = persistenceManager.createNamedQuery("IndicatorGroup.findByName", IndicatorGroup.class);
-        query.setParameter("name", name);
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                IndicatorGroup.class,
+                "IndicatorGroup.findByName",
+                Collections.singletonMap("name", name)
+        );
     }
 
     public static List<IndicatorGroupHierarchy> findGroupHierarchiesWithAddress(List<String> address) {
@@ -47,11 +48,16 @@ public class IndicatorGroupingManager {
         if (!(address.get(0).equals("") && (address.get(4).equals("")) && (address.get(5).equals("")))) {
             throw new IllegalArgumentException("We currently only support 3 level address of the type ['', 'SDG', 'SDG-n', 'cat', '', '']");
         }
-        TypedQuery<IndicatorGroupHierarchy> query = persistenceManager.createNamedQuery("IGHierarchy.findByAddress234", IndicatorGroupHierarchy.class);
-        query.setParameter("level2", address.get(1));
-        query.setParameter("level3", address.get(2));
-        query.setParameter("level4", address.get(3));
-        return query.getResultList();
+        Map<String, String> params = new HashMap<>();
+        params.put("level2", address.get(1));
+        params.put("level3", address.get(2));
+        params.put("level4", address.get(3));
+
+        return HibernateManager.namedQueryList(
+                IndicatorGroupHierarchy.class,
+                "IGHierarchy.findByAddress234",
+                params
+        );
     }
 
     public static List<IndicatorGroup> findGroupWithAddress(List<String> address) {
@@ -78,23 +84,34 @@ public class IndicatorGroupingManager {
     }
 
     public static void importSimpleIndicatorGroups(Table importData) throws DatasetIntegrityError {
-        List<List<String>> groupings = importData.getTable();
-        groupings.remove(0); // which is the header row
-        // we will assume that the columns are "group", "subgroup" and "indicator"
-        for (List<String> row : groupings) {
-            Long id = Long.parseLong(row.get(0));
-            String groupName = row.get(1);
-            String subGroupName = row.get(2);
-            String indicatorName = row.get(3);
-            Indicator indicator = IndicatorManager.findById(id);
-            if (indicator == null) {
-                indicator = new Indicator();
+        EntityManager entityManager = HibernateManager.openEntityManager();
+        entityManager.getTransaction().begin();
+        try {
+            List<List<String>> groupings = importData.getTable();
+            groupings.remove(0); // which is the header row
+            // we will assume that the columns are "group", "subgroup" and "indicator"
+            for (List<String> row : groupings) {
+                Long id = Long.parseLong(row.get(0));
+                String groupName = row.get(1);
+                String subGroupName = row.get(2);
+                String indicatorName = row.get(3);
+                Indicator indicator = IndicatorManager.findById(id);
+                if (indicator == null) {
+                    indicator = new Indicator();
+                }
+                indicator.setGroup(groupName);
+                indicator.setSubGroup(subGroupName);
+                indicator.setCanonicalName(indicatorName);
+                entityManager.persist(indicator);
             }
-            indicator.setGroup(groupName);
-            indicator.setSubGroup(subGroupName);
-            indicator.setCanonicalName(indicatorName);
-            persistenceManager.persist(indicator);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            LOG.error(e);
+            entityManager.getTransaction().rollback();
+        } finally {
+            entityManager.close();
         }
+
     }
 
     public static void exportIndicators(String path) {

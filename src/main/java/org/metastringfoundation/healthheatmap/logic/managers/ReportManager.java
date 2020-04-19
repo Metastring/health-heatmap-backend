@@ -19,22 +19,25 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.metastringfoundation.healthheatmap.dataset.entities.UnmatchedReport;
 import org.metastringfoundation.healthheatmap.entities.Report;
 import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
-import javax.persistence.TypedQuery;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 public class ReportManager extends DimensionManager {
     private static List<Report> findReportByUri(URI uri) {
-        TypedQuery<Report> query = persistenceManager.createNamedQuery("Report.findByUri", Report.class);
-        query.setParameter("uri", uri);
-        return query.getResultList();
+        return HibernateManager.namedQueryList(
+                Report.class,
+                "Report.findByUri",
+                Collections.singletonMap("uri", uri)
+        );
     }
 
     public static Report addReport(URI uri) {
         Report report = new Report();
         report.setUri(uri);
-        persistenceManager.persist(report);
+        HibernateManager.persist(report);
         return report;
     }
 

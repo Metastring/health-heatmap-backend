@@ -17,7 +17,10 @@
 package org.metastringfoundation.healthheatmap.helpers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListUtils <T> {
     public static <T> List<List<T>> transpose(List<List<T>> listToTranspose) {
@@ -40,4 +43,18 @@ public class ListUtils <T> {
 
         return tranposedList;
     }
+    public static List<String> splitStringToArray(String input, String delimitor) {
+        if (input.contains(delimitor)) {
+            return Arrays.asList(input.split(delimitor));
+        } else {
+            return Collections.singletonList(input);
+        }
+    }
+
+    public static List<Long> stringArrayToLong(List<String> input) {
+        return input.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+    }
+
 }

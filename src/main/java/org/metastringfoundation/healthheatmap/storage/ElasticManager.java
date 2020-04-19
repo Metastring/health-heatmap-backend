@@ -19,7 +19,6 @@ package org.metastringfoundation.healthheatmap.storage;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.search.aggregations.metrics.AvgAggregationBuilder;
 
 import java.io.IOException;
 

@@ -20,15 +20,21 @@ import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.entities.Geography;
+import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MockApplication implements Application {
     @Override
-    public String getIndicators() throws ApplicationError {
-        return "indicators";
+    public List<Indicator> getIndicators() {
+        List<Indicator> list = new ArrayList<>();
+        Indicator i = new Indicator();
+        i.setCanonicalName("Test Indicator");
+        list.add(i);
+        return list;
     }
 
     @Override
@@ -37,17 +43,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public String addIndicator(String indicatorName) throws ApplicationError {
-        return null;
-    }
-
-    @Override
-    public String saveEntity(String entityJSON) {
-        return null;
-    }
-
-    @Override
-    public String getDimension(String dimension) {
+    public Indicator addIndicator(String indicatorName)  {
         return null;
     }
 

@@ -24,6 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Map;
 
 public class HibernateManager {
 
@@ -50,5 +51,44 @@ public class HibernateManager {
 
         TypedQuery<C> allQuery = persistenceManager.createQuery(allEntities);
         return allQuery.getResultList();
+    }
+
+    public static <C> List<C> namedQueryList(Class<C> type, String queryName, Map<String, ?> params) {
+        EntityManager entityManager = openEntityManager();
+        TypedQuery<C> query = entityManager.createNamedQuery(queryName, type);
+        if (!(params == null || params.isEmpty())) {
+            for (String key: params.keySet()) {
+                query.setParameter(key, params.get(key));
+            }
+        }
+        List<C> result = query.getResultList();
+        entityManager.close();
+        return result;
+    }
+
+    public static <C> C namedQuerySingle(Class<C> type, String queryName, Map<String, ?> params) {
+        EntityManager entityManager = openEntityManager();
+        TypedQuery<C> query = entityManager.createNamedQuery(queryName, type);
+        if (!(params.isEmpty())) {
+            for (String key: params.keySet()) {
+                query.setParameter(key, params.get(key));
+            }
+        }
+        C result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
+    public static void persist(Object o) {
+        EntityManager entityManager = openEntityManager();
+        entityManager.persist(o);
+        entityManager.close();
+    }
+
+    public static <C> C find(Class<C> type, Long id) {
+        EntityManager entityManager = openEntityManager();
+        C result = entityManager.find(type, id);
+        entityManager.close();
+        return result;
     }
 }

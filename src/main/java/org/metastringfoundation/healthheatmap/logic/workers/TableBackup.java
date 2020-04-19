@@ -22,6 +22,6 @@ import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 public class TableBackup {
     public static void backup(String name, Table table) throws ApplicationError {
-        DefaultApplication.psql.createArbitraryTable(name, table);
+        DefaultApplication.DATABASE.createArbitraryTable(name, table);
     }
 }

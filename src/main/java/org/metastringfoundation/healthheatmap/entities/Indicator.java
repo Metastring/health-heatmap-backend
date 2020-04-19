@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.entities;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -109,5 +110,23 @@ public class Indicator {
                 ", group='" + group + '\'' +
                 ", subGroup='" + subGroup + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Indicator indicator = (Indicator) o;
+        return Objects.equals(id, indicator.id) &&
+                Objects.equals(shortCode, indicator.shortCode) &&
+                Objects.equals(canonicalName, indicator.canonicalName) &&
+                Objects.equals(derivation, indicator.derivation) &&
+                Objects.equals(group, indicator.group) &&
+                Objects.equals(subGroup, indicator.subGroup);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, shortCode, canonicalName, derivation, group, subGroup);
     }
 }

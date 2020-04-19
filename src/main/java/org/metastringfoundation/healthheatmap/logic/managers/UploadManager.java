@@ -19,13 +19,14 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.metastringfoundation.healthheatmap.entities.Report;
 import org.metastringfoundation.healthheatmap.entities.Source;
 import org.metastringfoundation.healthheatmap.entities.Upload;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
 public class UploadManager extends DimensionManager {
     public static Upload newUpload(Report report, Source source) {
         Upload upload = new Upload();
         upload.setReport(report);
         upload.setSource(source);
-        persistenceManager.persist(upload);
+        HibernateManager.persist(upload);
         return upload;
     }
 }

@@ -19,30 +19,19 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
+import org.metastringfoundation.healthheatmap.logic.transactionals.DimensionsFilter;
+import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.metastringfoundation.healthheatmap.helpers.ListUtils.splitStringToArray;
+import static org.metastringfoundation.healthheatmap.helpers.ListUtils.stringArrayToLong;
 
 public class DataManager extends DimensionManager {
     private static final Logger LOG = LogManager.getLogger(DataManager.class);
-
-    public static List<String> splitStringToArray(String input, String delimitor) {
-        if (input.contains(delimitor)) {
-            return Arrays.asList(input.split(delimitor));
-        } else {
-            return Collections.singletonList(input);
-        }
-    }
-
-    public static List<Long> stringArrayToLong(List<String> input) {
-        return input.stream()
-                .map(Long::parseLong)
-                .collect(Collectors.toList());
-    }
 
     public static List<DataElement> getAllData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources) {
         List<String> indicatorGroupNames;
@@ -82,7 +71,8 @@ public class DataManager extends DimensionManager {
             queryString = queryString + String.join(" AND ", wheres);
             LOG.debug("Query formed is: " + queryString);
         }
-        TypedQuery<DataElement> query = persistenceManager.createQuery(queryString, DataElement.class);
+        EntityManager entityManager = HibernateManager.openEntityManager();
+        TypedQuery<DataElement> query = entityManager.createQuery(queryString, DataElement.class);
         if (indicatorIds != null) {
             query.setParameter("indicatorIds", indicatorIds);
         }
@@ -92,6 +82,11 @@ public class DataManager extends DimensionManager {
         if (sourceIds != null) {
             query.setParameter("sourceIds", sourceIds);
         }
-        return query.getResultList();
+        List<DataElement> result = query.getResultList();
+        entityManager.close();
+        return result;
+    }
+    public static List<DataElement> getDataBySearch(DimensionsFilter dimensionsFilter) {
+        return null;
     }
 }

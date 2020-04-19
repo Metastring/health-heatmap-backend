@@ -22,6 +22,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.MockApplication;
 import org.metastringfoundation.healthheatmap.web.ApplicationConfig;
@@ -30,7 +31,11 @@ import org.metastringfoundation.healthheatmap.web.Server;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -70,6 +75,10 @@ public class IndicatorResourceTest {
     public void testIndicator() {
         Response response = target.path("indicators").request().build("GET").invoke();
         assertEquals(200, response.getStatus());
-        assertEquals("indicators", response.readEntity(String.class));
+        List<Indicator> expected = new ArrayList<>();
+        Indicator expectedIndicator = new Indicator();
+        expectedIndicator.setCanonicalName("Test Indicator");
+        expected.add(expectedIndicator);
+        assertEquals(expected, response.readEntity(new GenericType<List<Indicator>>(){}));
     }
 }
