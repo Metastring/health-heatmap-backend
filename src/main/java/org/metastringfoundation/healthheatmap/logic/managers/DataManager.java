@@ -19,7 +19,6 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
-import org.metastringfoundation.healthheatmap.entities.IndicatorGroup;
 
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -62,18 +61,37 @@ public class DataManager extends DimensionManager {
         if (sources != null) {
             sourceIds = stringArrayToLong(splitStringToArray(sources, ","));
         }
-        TypedQuery<DataElement> query = persistenceManager.createQuery("" +
-                "select d from DataElement d " +
-                "JOIN d.indicator i " +
-                "JOIN d.geography g " +
-                "JOIN d.source s " +
-                "WHERE i.id IN :indicatorIds " +
-                "AND s.id IN :sourceIds " +
-                "AND g.id IN :geographyIds", DataElement.class);
-        return query
-                .setParameter("indicatorIds", indicatorIds)
-                .setParameter("geographyIds", geographyIds)
-                .setParameter("sourceIds", sourceIds)
-                .getResultList();
+        List<String> joins = new ArrayList<>();
+        List<String> wheres = new ArrayList<>();
+        if (indicatorIds != null) {
+            joins.add("JOIN d.indicator i");
+            wheres.add("i.id IN :indicatorIds");
+        }
+        if (geographyIds != null) {
+            joins.add("JOIN d.geography g");
+            wheres.add("g.id IN :geographyIds");
+        }
+        if (sourceIds != null) {
+            joins.add("JOIN d.source s");
+            wheres.add("s.id IN :sourceIds");
+        }
+        String queryString = "SELECT d from DataElement d ";
+        if (joins.size() > 0) {
+            queryString = queryString + String.join(" ", joins);
+            queryString = queryString + " WHERE ";
+            queryString = queryString + String.join(" AND ", wheres);
+            LOG.debug("Query formed is: " + queryString);
+        }
+        TypedQuery<DataElement> query = persistenceManager.createQuery(queryString, DataElement.class);
+        if (indicatorIds != null) {
+            query.setParameter("indicatorIds", indicatorIds);
+        }
+        if (geographyIds != null) {
+            query.setParameter("geographyIds", geographyIds);
+        }
+        if (sourceIds != null) {
+            query.setParameter("sourceIds", sourceIds);
+        }
+        return query.getResultList();
     }
 }

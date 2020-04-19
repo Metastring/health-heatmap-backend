@@ -39,16 +39,16 @@ public class Data {
 //            @Parameter(description = "Name of the sub-group from which to fetch all indicators (optional)")
 //            @QueryParam("indicatorSubGroups") String indicatorSubGroups,
 
-            @Parameter(description = "Comma-separated IDs of the indicators to fetch data of (if indicatorGroup is given, that takes precedence)")
+            @Parameter(description = "Comma-separated IDs of the indicators to fetch data of (empty means everything)")
             @QueryParam("indicator") String indicators,
 
-            @Parameter(description = "Comma-seaprated IDs of geographies to fetch data of")
+            @Parameter(description = "Comma-separated IDs of geographies to fetch data of (empty means everything)")
             @QueryParam("geography") String geographies,
 
 //            @Parameter(description = "Use DISTRICT or STATE to get info about only districts or states")
 //            @QueryParam("geographyTypes") String geographyTypes,
 
-            @Parameter(description = "Comma-separated IDs of sources to fetch data of")
+            @Parameter(description = "Comma-separated IDs of sources to fetch data of (empty means everything)")
             @QueryParam("source") String sources,
 
             @QueryParam("aggregation") String aggregation
