@@ -16,19 +16,19 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
-@Path("entities")
+@Path("geography")
 public class Geography {
     private static final Logger LOG = LogManager.getLogger(Geography.class);
 
@@ -44,13 +44,11 @@ public class Geography {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEntities(
+    public List<org.metastringfoundation.healthheatmap.entities.Geography> getEntities(
+            @Parameter(description = "Either DISTRICT, STATE, or ANY")
+            @DefaultValue("ANY")
+            @QueryParam("type") String type
     ) {
-        try {
-            return Response.status(200).entity(app.getEntities()).build();
-        } catch (ApplicationError applicationError) {
-            LOG.error(applicationError);
-            return Response.status(503).entity(applicationError.toString()).build();
-        }
+        return app.getEntities(type);
     }
 }

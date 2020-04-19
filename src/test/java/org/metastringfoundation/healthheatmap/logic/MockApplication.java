@@ -19,8 +19,11 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.metastringfoundation.healthheatmap.dataset.Dataset;
 import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
+import org.metastringfoundation.healthheatmap.entities.Geography;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
+
+import java.util.List;
 
 public class MockApplication implements Application {
     @Override
@@ -29,7 +32,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public String getEntities() throws ApplicationError {
+    public List<Geography> getEntities(String type) {
         return null;
     }
 
@@ -74,7 +77,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public AggregatedData getData(Long indicatorId, Long geographyId, Long sourceId, String aggregation) {
+    public AggregatedData getData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources, String aggregation) {
         return null;
     }
 

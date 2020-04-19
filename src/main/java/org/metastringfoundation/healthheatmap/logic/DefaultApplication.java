@@ -107,9 +107,8 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     @Override
-    public String getEntities() throws ApplicationError {
-        List<Geography> geographyList = GeographyManager.getAllGeographies();
-        return jsonizeList(geographyList);
+    public List<Geography> getEntities(String type) {
+        return GeographyManager.getGeographyByType(type);
     }
 
     @Override
@@ -129,8 +128,8 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     @Override
-    public AggregatedData getData(Long indicatorId, Long geographyId, Long sourceId, String aggregation) {
-        List<DataElement> dataElements = DataManager.getAllData(indicatorId, geographyId, sourceId);
+    public AggregatedData getData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources, String aggregation) {
+        List<DataElement> dataElements = DataManager.getAllData(indicatorGroups, indicatorSubGroups, indicators, geographies, geographyTypes, sources);
         AggregatedData result = new AggregatedData();
         result.setData(dataElements);
         result.setAggregation(Aggregator.getAverage(dataElements).toString());

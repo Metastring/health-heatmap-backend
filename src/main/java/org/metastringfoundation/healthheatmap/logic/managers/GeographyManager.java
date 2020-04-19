@@ -34,6 +34,13 @@ public class GeographyManager extends DimensionManager {
         return query.getResultList();
     }
 
+    public static List<Geography> getGeographyByType(String type) {
+        if (type.equals("ANY")) return getAllGeographies();
+        TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findByType", Geography.class);
+        query.setParameter("type", Geography.GeographyType.valueOf(type));
+        return query.getResultList();
+    }
+
     public static List<Geography> findByName(String name) {
         TypedQuery<Geography> query = persistenceManager.createNamedQuery("Geography.findByName", Geography.class);
         query.setParameter("name", name);

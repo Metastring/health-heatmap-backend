@@ -19,26 +19,61 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
+import org.metastringfoundation.healthheatmap.entities.IndicatorGroup;
 
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataManager extends DimensionManager {
     private static final Logger LOG = LogManager.getLogger(DataManager.class);
 
-    public static List<DataElement> getAllData(Long indicatorId, Long geographyId, Long sourceId) {
+    public static List<String> splitStringToArray(String input, String delimitor) {
+        if (input.contains(delimitor)) {
+            return Arrays.asList(input.split(delimitor));
+        } else {
+            return Collections.singletonList(input);
+        }
+    }
+
+    public static List<Long> stringArrayToLong(List<String> input) {
+        return input.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+    }
+
+    public static List<DataElement> getAllData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources) {
+        List<String> indicatorGroupNames;
+        if (indicatorGroups != null) {
+            indicatorGroupNames = splitStringToArray(indicatorGroups, ",");
+        }
+        List<Long> indicatorIds = null;
+        if (indicators != null) {
+            indicatorIds = stringArrayToLong(splitStringToArray(indicators, ","));
+        }
+        List<Long> geographyIds = null;
+        if (geographies != null) {
+            geographyIds = stringArrayToLong(splitStringToArray(geographies, ","));
+        }
+        List<Long> sourceIds = null;
+        if (sources != null) {
+            sourceIds = stringArrayToLong(splitStringToArray(sources, ","));
+        }
         TypedQuery<DataElement> query = persistenceManager.createQuery("" +
                 "select d from DataElement d " +
                 "JOIN d.indicator i " +
                 "JOIN d.geography g " +
                 "JOIN d.source s " +
-                "WHERE i.id = :indicatorId " +
-                "AND s.id = :sourceId " +
-                "AND g.id = :geographyId", DataElement.class);
+                "WHERE i.id IN :indicatorIds " +
+                "AND s.id IN :sourceIds " +
+                "AND g.id IN :geographyIds", DataElement.class);
         return query
-                .setParameter("indicatorId", indicatorId)
-                .setParameter("geographyId", geographyId)
-                .setParameter("sourceId", sourceId)
+                .setParameter("indicatorIds", indicatorIds)
+                .setParameter("geographyIds", geographyIds)
+                .setParameter("sourceIds", sourceIds)
                 .getResultList();
     }
 }

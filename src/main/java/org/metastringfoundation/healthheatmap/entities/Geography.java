@@ -26,6 +26,8 @@ import java.time.LocalDate;
 @NamedQueries({
         @NamedQuery(name = "Geography.findAll",
                 query = "SELECT g FROM Geography g"),
+        @NamedQuery(name = "Geography.findByType",
+                query = "SELECT g FROM Geography g WHERE g.type = :type"),
         @NamedQuery(name = "Geography.findByName",
                 query = "SELECT g FROM Geography g WHERE g.canonicalName = :name"),
         @NamedQuery(name = "Geography.findChild",

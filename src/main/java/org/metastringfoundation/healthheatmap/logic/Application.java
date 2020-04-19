@@ -21,10 +21,14 @@ import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.dataset.table.Table;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
+import org.metastringfoundation.healthheatmap.entities.Geography;
+
+import java.util.List;
 
 public interface Application {
     String getIndicators() throws ApplicationError;
-    String getEntities() throws ApplicationError;
+
+    List<Geography> getEntities(String type);
 
     String addIndicator(String indicatorName) throws ApplicationError;
 
@@ -42,7 +46,7 @@ public interface Application {
 
     void shutDown();
 
-    AggregatedData getData(Long indicatorId, Long geographyId, Long sourceId, String aggregation);
+    AggregatedData getData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources, String aggregation);
 
     void exportIndicators(String path);
 }
