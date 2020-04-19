@@ -80,6 +80,7 @@ public class GeographyManager extends DimensionManager {
         Geography geography = new Geography();
         geography.setCanonicalName(name);
         geography.setType(type);
+        geography.setBelongsTo(belongsTo);
         persistenceManager.persist(geography);
         return geography;
     }
