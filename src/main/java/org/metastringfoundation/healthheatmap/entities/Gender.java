@@ -36,7 +36,7 @@ public class Gender {
     private GenderType gender;
 
     public static GenderType getGenderTypeFromString(String genderType) throws IllegalArgumentException {
-        List<String> anyList = new ArrayList<>(Arrays.asList("any", "total", "all"));
+        List<String> anyList = new ArrayList<>(Arrays.asList("any", "total", "all", ""));
         if (anyList.contains(genderType.toLowerCase())) return GenderType.ANY;
 
         List<String> maleList = new ArrayList<>(Arrays.asList("male", "m"));
@@ -49,6 +49,12 @@ public class Gender {
         if (otherList.contains(genderType.toLowerCase())) return GenderType.OTHER;
 
         throw new IllegalArgumentException("Unknown gender type: " + genderType);
+    }
+
+    public static Gender getDefault() {
+        Gender gender = new Gender();
+        gender.setGender(GenderType.ANY);
+        return gender;
     }
 
     public GenderType getGender() {

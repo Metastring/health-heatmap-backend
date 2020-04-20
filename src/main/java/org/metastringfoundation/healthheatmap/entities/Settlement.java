@@ -35,7 +35,7 @@ public class Settlement {
     private SettlementType settlement;
 
     public static SettlementType getSettlementTypeFromString(String settlementType) throws IllegalArgumentException {
-        List<String> anyList = new ArrayList<>(Arrays.asList("any", "total", "all"));
+        List<String> anyList = new ArrayList<>(Arrays.asList("any", "total", "all", ""));
         if (anyList.contains(settlementType.toLowerCase())) return SettlementType.ANY;
 
         List<String> ruralList = new ArrayList<>(Arrays.asList("rural", "r"));
@@ -45,6 +45,12 @@ public class Settlement {
         if (urbanList.contains(settlementType.toLowerCase())) return SettlementType.URBAN;
 
         throw new IllegalArgumentException("Unknown settlement type: " + settlementType);
+    }
+
+    public static Settlement getDefault() {
+        Settlement settlement = new Settlement();
+        settlement.setSettlement(SettlementType.ANY);
+        return settlement;
     }
 
     public SettlementType getSettlement() {

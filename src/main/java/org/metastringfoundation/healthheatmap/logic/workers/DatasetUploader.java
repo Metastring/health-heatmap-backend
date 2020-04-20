@@ -124,6 +124,8 @@ public class DatasetUploader {
                         LOG.error(ex);
                     }
                 }
+            } else {
+                settlement = Settlement.getDefault();
             }
 
             UnmatchedGender unmatchedGender = unmatchedDataElement.getGender();
@@ -141,6 +143,8 @@ public class DatasetUploader {
                         LOG.error(ex);
                     }
                 }
+            } else {
+                gender = Gender.getDefault();
             }
 
 
