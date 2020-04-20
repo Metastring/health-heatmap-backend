@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
 import org.metastringfoundation.healthheatmap.logic.errors.UnknownEntityError;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
+import javax.persistence.EntityManager;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,22 +50,24 @@ public class GeographyManager extends DimensionManager {
         );
     }
 
-    public static List<Geography> findByName(String name) {
+    public static List<Geography> findByName(String name, EntityManager entityManager) {
         return HibernateManager.namedQueryList(
                 Geography.class,
                 "Geography.findByName",
-                Collections.singletonMap("name", name)
+                Collections.singletonMap("name", name),
+                entityManager
         );
     }
 
-    public static List<Geography> findChildByName(String name, Geography belongsTo) {
+    public static List<Geography> findChildByName(String name, Geography belongsTo, EntityManager entityManager) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("parent", belongsTo);
         return HibernateManager.namedQueryList(
                 Geography.class,
                 "Geography.findChild",
-                params
+                params,
+                entityManager
         );
     }
 
@@ -72,36 +75,36 @@ public class GeographyManager extends DimensionManager {
         return HibernateManager.find(Geography.class, id);
     }
 
-    private static List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo) {
-        List<Geography> geographies = findChildByName(name, belongsTo);
+    private static List<Geography> findDistrictByNameCreatingIfNotExists(String name, Geography belongsTo, EntityManager entityManager) {
+        List<Geography> geographies = findChildByName(name, belongsTo, entityManager);
         if (geographies.size() == 0) {
-            Geography geography = createGeography(name, belongsTo, Geography.GeographyType.DISTRICT);
+            Geography geography = createGeography(name, belongsTo, Geography.GeographyType.DISTRICT, entityManager);
             geographies.add(geography);
         }
         return geographies;
     }
 
-    private static List<Geography> findStateByNameCreatingIfNotExists(String name) {
-        List<Geography> geographies = findByName(name);
+    private static List<Geography> findStateByNameCreatingIfNotExists(String name, EntityManager entityManager) {
+        List<Geography> geographies = findByName(name, entityManager);
         if (geographies.size() == 0) {
-            Geography geography = createGeography(name, null, Geography.GeographyType.STATE);
+            Geography geography = createGeography(name, null, Geography.GeographyType.STATE, entityManager);
             geographies.add(geography);
         }
         return geographies;
     }
 
-    public static Geography createGeography(String name, Geography belongsTo, Geography.GeographyType type) {
+    public static Geography createGeography(String name, Geography belongsTo, Geography.GeographyType type, EntityManager entityManager) {
         Geography geography = new Geography();
         geography.setCanonicalName(name);
         geography.setType(type);
         geography.setBelongsTo(belongsTo);
-        HibernateManager.persist(geography);
+        entityManager.persist(geography);
         return geography;
     }
 
-    public static Geography findGeographyFromUnmatchedGeography(UnmatchedGeography geography) throws UnknownEntityError, AmbiguousEntityError {
+    public static Geography findGeographyFromUnmatchedGeography(UnmatchedGeography geography, EntityManager entityManager) throws UnknownEntityError, AmbiguousEntityError {
         String state = geography.getState();
-        List<Geography> stateGeographyList = findStateByNameCreatingIfNotExists(state);
+        List<Geography> stateGeographyList = findStateByNameCreatingIfNotExists(state, entityManager);
         if (stateGeographyList.size() > 1) {
             LOG.debug(stateGeographyList);
             throw new AmbiguousEntityError("More than one state by the name " + state + ". Please pass more specificiers");
@@ -110,7 +113,7 @@ public class GeographyManager extends DimensionManager {
 
         String district = geography.getDistrict();
         if (district != null) {
-            List<Geography> districtGeographyList = findDistrictByNameCreatingIfNotExists(district, stateGeography);
+            List<Geography> districtGeographyList = findDistrictByNameCreatingIfNotExists(district, stateGeography, entityManager);
             if (districtGeographyList.size() > 1) {
                 throw new AmbiguousEntityError("More than one district in state " + state + " by name " + district);
             }

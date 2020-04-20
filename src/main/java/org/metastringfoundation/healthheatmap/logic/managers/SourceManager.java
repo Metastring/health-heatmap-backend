@@ -26,43 +26,42 @@ import java.util.Collections;
 import java.util.List;
 
 public class SourceManager extends DimensionManager {
-    private static List<Source> findByName(String name) {
+    private static List<Source> findByName(String name, EntityManager entityManager) {
         return HibernateManager.namedQueryList(
                 Source.class,
                 "Source.findByName",
-                Collections.singletonMap("name", name)
+                Collections.singletonMap("name", name),
+                entityManager
         );
     }
 
-    public static Source addSource(String name) {
-        EntityManager entityManager = HibernateManager.openEntityManager();
+    public static Source addSource(String name, EntityManager entityManager) {
         Source source = new Source();
         source.setName(name);
         entityManager.persist(source);
-        entityManager.close();
         return source;
     }
 
-    private static List<Source> findSourceByNameCreatingIfNotExists(String name) {
-        List<Source> sources = findByName(name);
+    private static List<Source> findSourceByNameCreatingIfNotExists(String name, EntityManager entityManager) {
+        List<Source> sources = findByName(name, entityManager);
         if (sources.size() == 0) {
-            Source source = addSource(name);
+            Source source = addSource(name, entityManager);
             sources.add(source);
         }
         return sources;
     }
 
 
-    public static Source findSourceFromUnmatchedSource(UnmatchedSource source) throws AmbiguousEntityError {
+    public static Source findSourceFromUnmatchedSource(UnmatchedSource source, EntityManager entityManager) throws AmbiguousEntityError {
         String name = source.getName();
-        List<Source> sourceList = findByName(name);
+        List<Source> sourceList = findByName(name, entityManager);
 
         if (sourceList.size() > 1) {
             throw new AmbiguousEntityError("More than one indicator found by name " + name);
         }
 
         if (sourceList.size() == 0) {
-                Source createdSource = addSource(name);
+                Source createdSource = addSource(name, entityManager);
                 sourceList.add(createdSource);
         }
 

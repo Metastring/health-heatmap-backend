@@ -95,7 +95,7 @@ public class IndicatorGroupingManager {
                 String groupName = row.get(1);
                 String subGroupName = row.get(2);
                 String indicatorName = row.get(3);
-                Indicator indicator = IndicatorManager.findById(id);
+                Indicator indicator = IndicatorManager.findById(id, entityManager);
                 if (indicator == null) {
                     indicator = new Indicator();
                 }

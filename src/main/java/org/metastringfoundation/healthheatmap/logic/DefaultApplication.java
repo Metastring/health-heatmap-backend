@@ -39,6 +39,7 @@ import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -89,8 +90,8 @@ public class DefaultApplication implements Application, PreDestroy {
     }
 
     @Override
-    public Indicator addIndicator(String indicatorName) {
-        return IndicatorManager.addIndicator(indicatorName);
+    public Indicator addIndicator(String indicatorName, EntityManager entityManager) {
+        return IndicatorManager.addIndicator(indicatorName, entityManager);
     }
 
     @Override

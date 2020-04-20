@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public interface Application {
@@ -31,7 +32,7 @@ public interface Application {
 
     List<Geography> getEntities(String type);
 
-    Indicator addIndicator(String indicatorName);
+    Indicator addIndicator(String indicatorName, EntityManager entityManager);
 
     String getHealth();
 

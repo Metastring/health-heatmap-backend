@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.entities.Indicator;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class MockApplication implements Application {
     }
 
     @Override
-    public Indicator addIndicator(String indicatorName)  {
+    public Indicator addIndicator(String indicatorName, EntityManager entityManager)  {
         return null;
     }
 

@@ -55,29 +55,38 @@ public class HibernateManager {
 
     public static <C> List<C> namedQueryList(Class<C> type, String queryName, Map<String, ?> params) {
         EntityManager entityManager = openEntityManager();
+        List<C> result = namedQueryList(type, queryName, params, entityManager);
+        entityManager.close();
+        return result;
+    }
+
+    public static <C> List<C> namedQueryList(Class<C> type, String queryName, Map<String, ?> params, EntityManager entityManager) {
         TypedQuery<C> query = entityManager.createNamedQuery(queryName, type);
         if (!(params == null || params.isEmpty())) {
             for (String key: params.keySet()) {
                 query.setParameter(key, params.get(key));
             }
         }
-        List<C> result = query.getResultList();
-        entityManager.close();
-        return result;
+        return query.getResultList();
     }
 
     public static <C> C namedQuerySingle(Class<C> type, String queryName, Map<String, ?> params) {
         EntityManager entityManager = openEntityManager();
+        C result = namedQuerySingle(type, queryName, params, entityManager);
+        entityManager.close();
+        return result;
+    }
+
+    public static <C> C namedQuerySingle(Class<C> type, String queryName, Map<String, ?> params, EntityManager entityManager) {
         TypedQuery<C> query = entityManager.createNamedQuery(queryName, type);
         if (!(params.isEmpty())) {
             for (String key: params.keySet()) {
                 query.setParameter(key, params.get(key));
             }
         }
-        C result = query.getSingleResult();
-        entityManager.close();
-        return result;
+        return query.getSingleResult();
     }
+
 
     public static void persist(Object o) {
         EntityManager entityManager = openEntityManager();

@@ -55,7 +55,7 @@ public class DatasetUploader {
         Upload upload;
 
         try {
-            source = SourceManager.findSourceFromUnmatchedSource(unmatchedSource);
+            source = SourceManager.findSourceFromUnmatchedSource(unmatchedSource, entityManager);
         } catch (AmbiguousEntityError ex) {
             throw new ApplicationError("Impossible to find source");
         }
@@ -63,12 +63,12 @@ public class DatasetUploader {
         source.setTimePeriod(timePeriod);
 
         try {
-            report = ReportManager.findReportFromUnmatchedReport(unmatchedReport);
+            report = ReportManager.findReportFromUnmatchedReport(unmatchedReport, entityManager);
         } catch (AmbiguousEntityError ambiguousEntityError) {
             throw new ApplicationError("No report");
         }
 
-        upload = UploadManager.newUpload(report, source);
+        upload = UploadManager.newUpload(report, source, entityManager);
         returnValue = upload.getId();
 
         for (UnmatchedDataElement unmatchedDataElement: dataset.getData()) {
@@ -84,7 +84,7 @@ public class DatasetUploader {
                     geography = geographyFromMap;
                 } else {
                     try {
-                        geography = GeographyManager.findGeographyFromUnmatchedGeography(unmatchedGeography);
+                        geography = GeographyManager.findGeographyFromUnmatchedGeography(unmatchedGeography, entityManager);
                         geographyEntityMap.put(unmatchedGeography, geography);
                     } catch (AmbiguousEntityError | UnknownEntityError ex) {
                         LOG.error(ex);
@@ -99,7 +99,7 @@ public class DatasetUploader {
                     indicator = indicatorFromMap;
                 } else {
                     try {
-                        indicator = IndicatorManager.findIndicatorFromUnmatchedIndicator(unmatchedIndicator);
+                        indicator = IndicatorManager.findIndicatorFromUnmatchedIndicator(unmatchedIndicator, entityManager);
                         indicatorMap.put(unmatchedIndicator, indicator);
                     } catch (AmbiguousEntityError | UnknownEntityError ex) {
                         LOG.error(ex);

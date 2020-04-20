@@ -21,36 +21,38 @@ import org.metastringfoundation.healthheatmap.entities.Report;
 import org.metastringfoundation.healthheatmap.logic.errors.AmbiguousEntityError;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
+import javax.persistence.EntityManager;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
 public class ReportManager extends DimensionManager {
-    private static List<Report> findReportByUri(URI uri) {
+    private static List<Report> findReportByUri(URI uri, EntityManager entityManager) {
         return HibernateManager.namedQueryList(
                 Report.class,
                 "Report.findByUri",
-                Collections.singletonMap("uri", uri)
+                Collections.singletonMap("uri", uri),
+                entityManager
         );
     }
 
-    public static Report addReport(URI uri) {
+    public static Report addReport(URI uri, EntityManager entityManager) {
         Report report = new Report();
         report.setUri(uri);
-        HibernateManager.persist(report);
+        entityManager.persist(report);
         return report;
     }
 
-    public static Report findReportFromUnmatchedReport(UnmatchedReport report) throws AmbiguousEntityError {
+    public static Report findReportFromUnmatchedReport(UnmatchedReport report, EntityManager entityManager) throws AmbiguousEntityError {
         URI uri = report.getUri();
-        List<Report> reportList = findReportByUri(uri);
+        List<Report> reportList = findReportByUri(uri, entityManager);
 
         if (reportList.size() > 1) {
             throw new AmbiguousEntityError("More than one report added at that uri:  " + uri);
         }
 
         if (reportList.size() == 0) {
-            Report createdReport = addReport(uri);
+            Report createdReport = addReport(uri, entityManager);
             reportList.add(createdReport);
         }
 

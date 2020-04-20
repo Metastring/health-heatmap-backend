@@ -21,12 +21,14 @@ import org.metastringfoundation.healthheatmap.entities.Source;
 import org.metastringfoundation.healthheatmap.entities.Upload;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
+import javax.persistence.EntityManager;
+
 public class UploadManager extends DimensionManager {
-    public static Upload newUpload(Report report, Source source) {
+    public static Upload newUpload(Report report, Source source, EntityManager entityManager) {
         Upload upload = new Upload();
         upload.setReport(report);
         upload.setSource(source);
-        HibernateManager.persist(upload);
+        entityManager.persist(upload);
         return upload;
     }
 }

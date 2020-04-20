@@ -36,51 +36,43 @@ public class IndicatorManager extends DimensionManager {
         return result;
     }
 
-    public static Indicator addIndicatorWithCommit(String name) {
-        EntityManager entityManager = HibernateManager.openEntityManager();
-        entityManager.getTransaction().begin();
-        Indicator indicator = addIndicator(name);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-        return indicator;
-    }
-
-    public static Indicator addIndicator(String name) {
-        EntityManager entityManager = HibernateManager.openEntityManager();
+    public static Indicator addIndicator(String name, EntityManager entityManager) {
         Indicator indicator = new Indicator();
         indicator.setCanonicalName(name);
         entityManager.persist(indicator);
         return indicator;
     }
 
-    public static Indicator findById(Long id) {
+    public static Indicator findById(Long id, EntityManager entityManager) {
         return HibernateManager.namedQuerySingle(
                 Indicator.class,
                 "Indicator.findById",
-                Collections.singletonMap("id", id)
+                Collections.singletonMap("id", id),
+                entityManager
         );
     }
 
-    public static List<Indicator> findByName(String name) {
+    public static List<Indicator> findByName(String name, EntityManager entityManager) {
         return HibernateManager.namedQueryList(
                 Indicator.class,
                 "Indicator.findByName",
-                Collections.singletonMap("name", name)
+                Collections.singletonMap("name", name),
+                entityManager
                 );
     }
 
-    private static List<Indicator> findIndicatorByNameCreatingIfNotExists(String name) {
-        List<Indicator> indicators = findByName(name);
+    private static List<Indicator> findIndicatorByNameCreatingIfNotExists(String name, EntityManager entityManager) {
+        List<Indicator> indicators = findByName(name, entityManager);
         if (indicators.size() == 0) {
-            Indicator indicator = addIndicator(name);
+            Indicator indicator = addIndicator(name, entityManager);
             indicators.add(indicator);
         }
         return indicators;
     }
 
-    public static Indicator findIndicatorFromUnmatchedIndicator(UnmatchedIndicator indicator) throws UnknownEntityError, AmbiguousEntityError {
+    public static Indicator findIndicatorFromUnmatchedIndicator(UnmatchedIndicator indicator, EntityManager entityManager) throws UnknownEntityError, AmbiguousEntityError {
         String name = indicator.getName();
-        List<Indicator> indicatorList = findIndicatorByNameCreatingIfNotExists(name);
+        List<Indicator> indicatorList = findIndicatorByNameCreatingIfNotExists(name, entityManager);
 
         if (indicatorList.size() > 1) {
             throw new AmbiguousEntityError("More than one indicator found by name " + name);

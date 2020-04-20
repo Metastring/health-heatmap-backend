@@ -39,12 +39,4 @@ public class IndicatorResource {
     public List<Indicator> getIndicators() {
             return app.getIndicators();
     }
-
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Indicator addIndicator(
-            @QueryParam("name") String name
-    ) {
-        return app.addIndicator(name);
-    }
 }
