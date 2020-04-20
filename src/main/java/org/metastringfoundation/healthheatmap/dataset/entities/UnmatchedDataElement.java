@@ -22,6 +22,7 @@ public class UnmatchedDataElement {
     private UnmatchedGeography geography;
     private UnmatchedIndicator indicator;
     private UnmatchedSettlement settlement;
+    private UnmatchedGender gender;
     private String value;
 
     public UnmatchedGeography getGeography() {
@@ -48,6 +49,14 @@ public class UnmatchedDataElement {
         this.settlement = settlement;
     }
 
+    public UnmatchedGender getGender() {
+        return gender;
+    }
+
+    public void setGender(UnmatchedGender gender) {
+        this.gender = gender;
+    }
+
     public String getValue() {
         return value;
     }
@@ -65,7 +74,8 @@ public class UnmatchedDataElement {
         return (Objects.deepEquals(other.getValue(), this.getValue()) &&
                 Objects.deepEquals(other.getGeography(), this.getGeography()) &&
                 Objects.deepEquals(other.getIndicator(), this.getIndicator()) &&
-                Objects.deepEquals(other.getSettlement(), this.getSettlement())
+                Objects.deepEquals(other.getSettlement(), this.getSettlement()) &&
+                Objects.deepEquals(other.getGender(), this.getGender())
         );
     }
 
@@ -75,11 +85,12 @@ public class UnmatchedDataElement {
                 "geography " + getGeography() + "\n" +
                 "indicator " + getIndicator() + "\n" +
                 "settlement " + getSettlement() + "\n" +
+                "gender " + getGender() + "\n" +
                 "value " + getValue();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(geography, indicator, settlement, value);
+        return Objects.hash(geography, indicator, settlement, gender, value);
     }
 }

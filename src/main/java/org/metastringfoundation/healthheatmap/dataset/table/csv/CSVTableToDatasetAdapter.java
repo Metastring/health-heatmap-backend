@@ -37,6 +37,7 @@ public class CSVTableToDatasetAdapter implements Dataset {
         regexMapOfDimensions.put(quotedDimension("entity.district"), "(.+)");
         regexMapOfDimensions.put(quotedDimension("entity.state"), "(.+)");
         regexMapOfDimensions.put(quotedDimension("settlement"), "(.+)");
+        regexMapOfDimensions.put(quotedDimension("gender"), "(.+)");
         regexMapOfDimensions.put(quotedDimension("indicator"), "(.+)");
         regexMapOfDimensions.put(quotedDimension("data"), "(.+)");
     }
@@ -175,6 +176,14 @@ public class CSVTableToDatasetAdapter implements Dataset {
             if (!unmatchedSettlements.isEmpty()) dimensionsAvailableInDataset.put("settlement", "column");
         }
 
+        Map<Integer, UnmatchedGender> unmatchedGenders = UnmatchedGender.getGender(rowDimensions);
+        if (!unmatchedGenders.isEmpty()) {
+            dimensionsAvailableInDataset.put("gender", "row");
+        } else {
+            unmatchedGenders = UnmatchedGender.getGender(columnDimensions);
+            if (!unmatchedGenders.isEmpty()) dimensionsAvailableInDataset.put("gender", "column");
+        }
+
         LOG.debug("Dimensions available in dataset are " + dimensionsAvailableInDataset);
 
         for (UnprocessedDataElement unprocessedDataElement: unprocessedDataElements) {
@@ -203,6 +212,15 @@ public class CSVTableToDatasetAdapter implements Dataset {
                 dataElement.setSettlement(
                         unmatchedSettlements.get(
                                 unprocessedDataElement.getTableCell().get(settlementDimension)
+                        )
+                );
+            }
+
+            String genderDimension = dimensionsAvailableInDataset.get("gender");
+            if (genderDimension != null) {
+                dataElement.setGender(
+                        unmatchedGenders.get(
+                                unprocessedDataElement.getTableCell().get(genderDimension)
                         )
                 );
             }

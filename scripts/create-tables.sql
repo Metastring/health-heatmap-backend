@@ -3,6 +3,7 @@
 CREATE TABLE public.dataelements (
     id bigint NOT NULL,
     settlement character varying(255),
+    gender character varying(255),
     end_time date,
     start_time date,
     value character varying(255),

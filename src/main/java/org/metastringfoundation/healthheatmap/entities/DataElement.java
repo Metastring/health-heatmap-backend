@@ -20,6 +20,7 @@ import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
+import org.metastringfoundation.healthheatmap.storage.bridges.GenderValueBridge;
 import org.metastringfoundation.healthheatmap.storage.bridges.SettlementValueBridge;
 import org.metastringfoundation.healthheatmap.storage.bridges.TimePeriodDatesBinder;
 import org.metastringfoundation.healthheatmap.storage.bridges.UploadIdBridge;
@@ -84,6 +85,12 @@ public class DataElement {
             valueBridge = @ValueBridgeRef(type = SettlementValueBridge.class)
     )
     private Settlement settlement;
+
+    @Embedded
+    @GenericField(
+            valueBridge = @ValueBridgeRef(type = GenderValueBridge.class)
+    )
+    private Gender gender;
 
     @GenericField
     private String value;
@@ -152,6 +159,14 @@ public class DataElement {
         this.settlement = settlement;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public String getValue() {
         return value;
     }
@@ -171,6 +186,7 @@ public class DataElement {
                 ", source=" + source +
                 ", timePeriod=" + timePeriod +
                 ", settlement=" + settlement +
+                ", gender=" + gender +
                 ", value='" + value + '\'' +
                 '}';
     }
