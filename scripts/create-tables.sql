@@ -61,6 +61,20 @@ CREATE TABLE public.sources (
     belongs_to bigint
 );
 
+CREATE TABLE public.source_geographies (
+    id bigint NOT NULL,
+    name character varying(255),
+    source bigint,
+    original bigint
+);
+
+CREATE TABLE public.source_indicators (
+    id bigint NOT NULL,
+    name character varying(255),
+    source bigint,
+    original bigint
+);
+
 CREATE TABLE public.uploads (
     id bigint NOT NULL,
     report_id bigint,
@@ -124,6 +138,20 @@ CREATE SEQUENCE public.sources_sequence
     NO MAXVALUE
     CACHE 1;
 
+CREATE SEQUENCE public.source_geographies_sequence
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE public.source_indicators_sequence
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 CREATE SEQUENCE public.uploads_sequence
     START WITH 1
     INCREMENT BY 50
@@ -147,6 +175,12 @@ ALTER TABLE ONLY public.reports
 
 ALTER TABLE ONLY public.sources
     ADD CONSTRAINT sources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.source_geographies
+    ADD CONSTRAINT source_geographies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.source_indicators
+    ADD CONSTRAINT source_indicators_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.uploads
     ADD CONSTRAINT uploads_pkey PRIMARY KEY (id);
@@ -180,6 +214,14 @@ ALTER TABLE ONLY public.geographies
 ALTER TABLE ONLY public.sources
     ADD CONSTRAINT source_belongs_to_fk FOREIGN KEY (belongs_to) REFERENCES public.sources(id);
 
+ALTER TABLE ONLY public.source_geographies
+    ADD CONSTRAINT source_geography_source_fk FOREIGN KEY (source) REFERENCES public.sources(id),
+    ADD CONSTRAINT source_geography_original_fk FOREIGN KEY (original) REFERENCES public.geographies(id);
+
+ALTER TABLE ONLY public.source_indicators
+    ADD CONSTRAINT source_indicator_source_fk FOREIGN KEY (source) REFERENCES public.sources(id),
+    ADD CONSTRAINT source_indicator_original_fk FOREIGN KEY (original) REFERENCES public.indicators(id);
+
 ALTER TABLE ONLY public.uploads
     ADD CONSTRAINT upload_report_id_fk FOREIGN KEY (report_id) REFERENCES public.reports(id);
 
@@ -206,6 +248,8 @@ ALTER TABLE public.indicators OWNER TO metastring;
 ALTER TABLE public.reports OWNER TO metastring;
 ALTER TABLE public.uploads OWNER TO metastring;
 ALTER TABLE public.sources OWNER TO metastring;
+ALTER TABLE public.source_geographies OWNER TO metastring;
+ALTER TABLE public.source_indicators OWNER TO metastring;
 ALTER TABLE public.indicator_groups OWNER TO metastring;
 ALTER TABLE public.indicator_group_hierarchy OWNER TO metastring;
 
@@ -217,6 +261,8 @@ ALTER TABLE public.indicator_groups_sequence OWNER TO metastring;
 ALTER TABLE public.indicator_group_hierarchy_sequence OWNER TO metastring;
 ALTER TABLE public.reports_sequence OWNER TO metastring;
 ALTER TABLE public.sources_sequence OWNER TO metastring;
+ALTER TABLE public.source_geographies_sequence OWNER TO metastring;
+ALTER TABLE public.source_indicators_sequence OWNER TO metastring;
 ALTER TABLE public.uploads_sequence OWNER TO metastring;
 
 -- Finished creating database structure successfully
