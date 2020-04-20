@@ -19,7 +19,6 @@ package org.metastringfoundation.healthheatmap.logic.managers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.entities.DataElement;
-import org.metastringfoundation.healthheatmap.logic.transactionals.DimensionsFilter;
 import org.metastringfoundation.healthheatmap.storage.HibernateManager;
 
 import javax.persistence.EntityManager;
@@ -85,8 +84,5 @@ public class DataManager extends DimensionManager {
         List<DataElement> result = query.getResultList();
         entityManager.close();
         return result;
-    }
-    public static List<DataElement> getDataBySearch(DimensionsFilter dimensionsFilter) {
-        return null;
     }
 }
