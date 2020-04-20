@@ -91,17 +91,19 @@ public class IndicatorGroupingManager {
             groupings.remove(0); // which is the header row
             // we will assume that the columns are "group", "subgroup" and "indicator"
             for (List<String> row : groupings) {
-                Long id = Long.parseLong(row.get(0));
                 String groupName = row.get(1);
                 String subGroupName = row.get(2);
                 String indicatorName = row.get(3);
-                Indicator indicator = IndicatorManager.findById(id, entityManager);
-                if (indicator == null) {
-                    indicator = new Indicator();
+                List<Indicator> indicatorsMatchingName = IndicatorManager.findByName(indicatorName, entityManager);
+                if (indicatorsMatchingName.size() == 0) {
+                    throw new DatasetIntegrityError("indicator by name " + indicatorName + " not present in DB");
                 }
+                if (indicatorsMatchingName.size() > 1) {
+                    throw new DatasetIntegrityError("Multiple indicators by name " + indicatorName);
+                }
+                Indicator indicator = indicatorsMatchingName.get(0);
                 indicator.setGroup(groupName);
                 indicator.setSubGroup(subGroupName);
-                indicator.setCanonicalName(indicatorName);
                 entityManager.persist(indicator);
             }
             entityManager.getTransaction().commit();
