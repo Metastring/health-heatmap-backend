@@ -31,7 +31,7 @@ rm scripts/dropcommand*.sql
 
 ## DROP elastic index
 set -x
-curl -X DELETE http://localhost:9200/dataelement-write
+curl -X DELETE http://localhost:9200/dataelement-000001
 
 { set +x; } 2>/dev/null
 echo ""

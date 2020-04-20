@@ -39,6 +39,7 @@ public class DatasetUploader {
         Map<UnmatchedGeography, Geography> geographyEntityMap = new HashMap<>();
         Map<UnmatchedIndicator, Indicator> indicatorMap = new HashMap<>();
         Map<UnmatchedSettlement, Settlement> settlementMap = new HashMap<>();
+        Map<UnmatchedGender, Gender> genderMap = new HashMap<>();
 
         EntityManager entityManager = HibernateManager.openEntityManager();
         entityManager.getTransaction().begin();
@@ -76,6 +77,7 @@ public class DatasetUploader {
             Geography geography = null;
             Indicator indicator = null;
             Settlement settlement = null;
+            Gender gender = null;
 
             UnmatchedGeography unmatchedGeography = unmatchedDataElement.getGeography();
             if (unmatchedGeography != null) {
@@ -124,10 +126,28 @@ public class DatasetUploader {
                 }
             }
 
+            UnmatchedGender unmatchedGender = unmatchedDataElement.getGender();
+            if (unmatchedGender != null) {
+                Gender genderFromMap = genderMap.get(unmatchedGender);
+                if (genderFromMap != null) {
+                    gender = genderFromMap;
+                } else {
+                    try {
+                        gender = new Gender();
+                        Gender.GenderType genderType = Gender.getGenderTypeFromString(unmatchedGender.getType());
+                        gender.setGender(genderType);
+                        genderMap.put(unmatchedGender, gender);
+                    } catch (IllegalArgumentException ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+
 
             dataElement.setGeography(geography);
             dataElement.setIndicator(indicator);
             dataElement.setSettlement(settlement);
+            dataElement.setGender(gender);
 
             dataElement.setUpload(upload);
             dataElement.setSource(source);

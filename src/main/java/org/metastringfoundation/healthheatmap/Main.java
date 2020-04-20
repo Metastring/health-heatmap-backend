@@ -34,6 +34,7 @@ public class Main {
 
             String path = commandLine.getOptionValue("path");
             String type = commandLine.getOptionValue("type");
+            boolean batch = commandLine.hasOption("batch");
             String direction = commandLine.getOptionValue("direction");
             boolean serverShouldStart = commandLine.hasOption("server");
 
@@ -48,7 +49,11 @@ public class Main {
                     }
                 }));
                 if (type == null || type.equals("data")) {
-                    TableUploader.upload(path);
+                    if (batch) {
+                        TableUploader.uploadMultiple(path);
+                    } else {
+                        TableUploader.uploadSingle(path);
+                    }
                 }
                 if (type != null && type.equals("indicators")) {
                     if (direction == null || direction.equals("in")) {

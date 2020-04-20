@@ -29,21 +29,25 @@ import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 /**
  * This is a utility that helps upload data directly from command line
  */
 public class TableUploader {
     private static final Logger LOG = LogManager.getLogger(TableUploader.class);
+    private static final Application application = new DefaultApplication();
+
 
     /**
      * Uploads the data into the database of the application.
      *
      * @param path - path to the CSV file that contains data
      */
-    public static void upload(String path) {
+    public static void upload(String path) throws IOException, ApplicationError, DatasetIntegrityError {
         CSVTable table = null;
         CSVTableDescription tableDescription = null;
         Dataset dataset;
@@ -59,6 +63,7 @@ public class TableUploader {
             LOG.debug("table is " + table.getTable().toString());
         } catch (DatasetIntegrityError datasetIntegrityError) {
             datasetIntegrityError.printStackTrace();
+            throw datasetIntegrityError;
         }
 
         try {
@@ -66,19 +71,45 @@ public class TableUploader {
             LOG.debug("Metadata is " + tableDescription);
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
 
-        Application application = new DefaultApplication();
         dataset = new CSVTableToDatasetAdapter(table, tableDescription);
         try {
             Long uploadId = application.saveDataset(dataset);
             String tableName = "upload_" + uploadId.toString();
             application.saveTable(tableName, table);
             LOG.info("Done persisting dataset");
-            application.shutDown();
         } catch (ApplicationError applicationError) {
             applicationError.printStackTrace();
+            throw applicationError;
+        }
+    }
+
+    public static void uploadSingle(String path) {
+        try {
+            upload(path);
+        } catch (IOException | ApplicationError | DatasetIntegrityError e) {
+            e.printStackTrace();
+        } finally {
             application.shutDown();
         }
     }
+
+    public static void uploadMultiple(String path) {
+        try (Stream<String> stream = Files.lines(Paths.get(path))) {
+            stream.forEach(line -> {
+                try {
+                    upload(line);
+                } catch (IOException | ApplicationError | DatasetIntegrityError e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            application.shutDown();
+        }
+    }
+
 }

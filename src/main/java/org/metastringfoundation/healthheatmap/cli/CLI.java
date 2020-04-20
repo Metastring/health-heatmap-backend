@@ -37,6 +37,11 @@ public class CLI {
             .desc("Type of the file in path")
             .build();
 
+    final static Option batch = Option.builder("b")
+            .longOpt("batch")
+            .desc("Whether the data is a batch file")
+            .build();
+
     final static Option direction = Option.builder("d")
             .hasArg()
             .longOpt("direction")
@@ -51,6 +56,7 @@ public class CLI {
     public final static Options options = new Options()
             .addOption(path)
             .addOption(type)
+            .addOption(batch)
             .addOption(direction)
             .addOption(server);
 
