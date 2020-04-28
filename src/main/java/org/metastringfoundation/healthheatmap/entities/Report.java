@@ -16,7 +16,11 @@
 
 package org.metastringfoundation.healthheatmap.entities;
 
+import org.hibernate.search.engine.backend.types.Aggregable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.metastringfoundation.healthheatmap.helpers.URIStringConverter;
+import org.metastringfoundation.healthheatmap.storage.bridges.LongStringBridge;
 
 import javax.persistence.*;
 import java.net.URI;
@@ -42,6 +46,10 @@ import java.net.URI;
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reports_sequence")
+    @KeywordField(
+            valueBridge = @ValueBridgeRef(type = LongStringBridge.class),
+            aggregable = Aggregable.YES
+    )
     private Long id;
 
     @Convert(converter = URIStringConverter.class)

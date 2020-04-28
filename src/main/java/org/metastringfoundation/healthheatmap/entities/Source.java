@@ -16,7 +16,10 @@
 
 package org.metastringfoundation.healthheatmap.entities;
 
+import org.hibernate.search.engine.backend.types.Aggregable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.metastringfoundation.healthheatmap.storage.bridges.LongStringBridge;
 
 import javax.persistence.*;
 
@@ -31,6 +34,10 @@ import javax.persistence.*;
 public class Source {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sources_sequence")
+    @KeywordField(
+            valueBridge = @ValueBridgeRef(type = LongStringBridge.class),
+            aggregable = Aggregable.YES
+    )
     private Long id;
 
     @KeywordField

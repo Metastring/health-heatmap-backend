@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.entities;
 
+import org.hibernate.search.engine.backend.types.Aggregable;
+import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
@@ -55,9 +57,8 @@ public class DataElement {
     @JoinColumn(name = "upload_id",
                 foreignKey = @ForeignKey(name = "data_element_upload_id_fk")
     )
-    @GenericField(
-            valueBridge = @ValueBridgeRef(type = UploadIdBridge.class)
-    )
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.NO)
     private Upload upload;
 
     @ManyToOne
@@ -92,7 +93,7 @@ public class DataElement {
     )
     private Gender gender;
 
-    @GenericField
+    @GenericField(aggregable = Aggregable.YES)
     private String value;
 
     public Long getId() {
