@@ -16,35 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
-import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.dataset.table.Table;
-import org.metastringfoundation.healthheatmap.entities.Geography;
-import org.metastringfoundation.healthheatmap.entities.Indicator;
-import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
-import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
+import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-
-public interface Application {
-    List<Indicator> getIndicators();
-
-    List<Geography> getEntities(String type);
-
-    Indicator addIndicator(String indicatorName, EntityManager entityManager);
-
-    String getHealth();
-
-    Long saveDataset(Dataset dataset) throws ApplicationError;
-
-    void saveTable(String name, Table table) throws ApplicationError;
-
-    void importIndicatorGrouping(Table table) throws DatasetIntegrityError;
-
-    void shutDown();
-
-    AggregatedData getData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources, String aggregation);
-
-    void exportIndicators(String path);
+public interface Application extends DatasetStore {
+    void shutdown();
 }

@@ -14,20 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.resources;
+package org.metastringfoundation.healthheatmap.storage;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.Arrays;
-import java.util.List;
+import javax.inject.Qualifier;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-@Path("dimensions")
-public class Dimensions {
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<String> test() {
-        return Arrays.asList("Akshay", "is", "here");
-    }
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface ElasticDatasetStore {
 }

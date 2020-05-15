@@ -3,7 +3,18 @@
     <groupId>org.metastringfoundation.org.healthheatmap</groupId>
     <artifactId>data-reader</artifactId>
     <version>0.0.1</version>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <jersey.version>2.30</jersey.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jackson.version>2.10.3</jackson.version>
+        <cdi.api.version>2.0</cdi.api.version>
+        <weld.servlet.core.version>3.1.4.Final</weld.servlet.core.version>
+        <weld.se.core.version>3.1.1.Final</weld.se.core.version>
+    </properties>
     <build>
+        <finalName>hhm-api</finalName>
         <resources>
             <resource>
                 <!-- project.properties in here need to get picked up and variables replaced -->
@@ -129,13 +140,6 @@
         </plugins>
     </build>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <jersey.version>2.30</jersey.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jackson.version>2.10.3</jackson.version>
-    </properties>
 
 
     <dependencyManagement>
@@ -156,12 +160,6 @@
     <dependencies>
 
         <!-- interface -->
-        <!-- used by CSV table reader -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
-            <version>1.8</version>
-        </dependency>
 
         <!-- for the main cli -->
         <dependency>
@@ -170,41 +168,11 @@
             <version>1.4</version>
         </dependency>
 
-        <!-- Database-->
-        <!-- Used only in profiler -->
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver</artifactId>
-            <version>3.12.0</version>
-        </dependency>
-
         <!-- postgres accessed through hibernate -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.9</version>
-        </dependency>
-
-        <!-- hibernate is the ORM and persistence tool -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.4.13.Final</version>
-        </dependency>
-
-        <!-- hibernate search for interacting with elastic search -->
-        <dependency>
-            <groupId>org.hibernate.search</groupId>
-            <artifactId>hibernate-search-mapper-orm</artifactId>
-            <!-- this is the latest version, but still depends on 5.4 of ORM -->
-            <version>6.0.0.Beta6</version>
-        </dependency>
-
-        <!-- hibernate-search allows for either lucene or elastic to be backend -->
-        <dependency>
-            <groupId>org.hibernate.search</groupId>
-            <artifactId>hibernate-search-backend-elasticsearch</artifactId>
-            <version>6.0.0.Beta6</version>
         </dependency>
 
         <!-- Used for its DSL to generate safe SQL (when required) -->
@@ -234,6 +202,7 @@
             <artifactId>jersey-container-grizzly2-servlet</artifactId>
         </dependency>
 
+        <!-- make jersey act like a servlet -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
@@ -252,6 +221,28 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- for CDI -->
+        <!-- https://github.com/eclipse-ee4j/jersey/blob/master/examples/cdi-webapp/pom.xml -->
+        <!-- https://hradecek.github.io/posts/cdi-in-tomcat -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>${cdi.api.version}</version>
+            <scope>provided</scope> <!-- by weld servlet core -->
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-core</artifactId>
+            <version>${weld.servlet.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.metastringfoundation</groupId>
+            <artifactId>data-reader</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+
         <!-- internal -->
         <!-- for directly interacting with elastic without hibernate search -->
         <dependency>
@@ -268,13 +259,7 @@
         </dependency>
 
 
-        <!-- test -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.6.0</version>
-            <scope>test</scope>
-        </dependency>
+
 
         <!-- for some utility functions -->
         <dependency>
@@ -285,6 +270,50 @@
 
 
         <!-- dev -->
+
+        <!-- these are all dependencies required to make unit testing work -->
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework</groupId>
+            <artifactId>jersey-test-framework-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-bundle</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- these are dependencies that allow CDI to work in SE, whether for tests or for deployment -->
+        <!-- but jersey-cdi2-se causes conflicts if deployed to tomcat. So we will put it in provided scope now -->
+        <!-- and later add it in a profile that packages it, if needed -->
+        <!-- We will do the same for weld-se-core -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-cdi2-se</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${weld.se.core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -295,17 +324,49 @@
             <artifactId>log4j-core</artifactId>
             <version>2.13.0</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2</artifactId>
             <version>2.1.1</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>tomcat</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.glassfish.jersey.ext.cdi</groupId>
+                    <artifactId>jersey-cdi1x</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>se</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.glassfish.jersey.inject</groupId>
+                    <artifactId>jersey-cdi2-se</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.weld.se</groupId>
+                    <artifactId>weld-se-core</artifactId>
+                    <version>${weld.se.core.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Metastring Foundation-snapshots</name>
+            <url>http://206.189.142.241/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

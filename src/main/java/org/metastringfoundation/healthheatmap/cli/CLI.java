@@ -23,41 +23,11 @@ import org.apache.commons.cli.*;
  */
 public class CLI {
     /**
-     * Path to a file that needs to be uploaded to the dataset
-     */
-    final static Option path = Option.builder("p")
-            .hasArg()
-            .longOpt("path")
-            .desc("Path to the file")
-            .build();
-
-    final static Option type = Option.builder("t")
-            .hasArg()
-            .longOpt("type")
-            .desc("Type of the file in path")
-            .build();
-
-    final static Option batch = Option.builder("b")
-            .longOpt("batch")
-            .desc("Whether the data is a batch file")
-            .build();
-
-    final static Option direction = Option.builder("d")
-            .hasArg()
-            .longOpt("direction")
-            .desc("Direction of movement. Out exports. In imports (default)")
-            .build();
-
-    /**
      * Option to start the server
      */
     final static Option server = new Option("s", "server", false, "Run server");
 
     public final static Options options = new Options()
-            .addOption(path)
-            .addOption(type)
-            .addOption(batch)
-            .addOption(direction)
             .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {

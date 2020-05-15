@@ -14,15 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage.bridges;
+package org.metastringfoundation.healthheatmap.storage;
 
-import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
-import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
-import org.metastringfoundation.healthheatmap.entities.Upload;
+import org.metastringfoundation.data.Dataset;
 
-public class LongStringBridge implements ValueBridge<Long, String> {
-    @Override
-    public String toIndexedValue(Long longId, ValueBridgeToIndexedValueContext valueBridgeToIndexedValueContext) {
-        return longId == null ? null : longId.toString();
-    }
+public interface DatasetStore {
+    void save(Dataset dataset);
 }

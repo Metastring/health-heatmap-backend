@@ -33,6 +33,6 @@ public class Health {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getHealth() {
-        return Response.status(200).entity(app.getHealth()).build();
+        return Response.status(200).entity("").build();
     }
 }

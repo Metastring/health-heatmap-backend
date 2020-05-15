@@ -1,5 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Server" type="Application" factoryName="Application">
+    <envs>
+      <env name="ENV" value="SE" />
+    </envs>
+    <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.metastringfoundation.healthheatmap.Main" />
     <module name="data-reader" />
     <option name="PROGRAM_PARAMETERS" value="--server" />
