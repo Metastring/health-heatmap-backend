@@ -20,15 +20,19 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.cli.CLI;
-import org.metastringfoundation.healthheatmap.cli.Indicators;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
+import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
+import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 import org.metastringfoundation.healthheatmap.web.Server;
+
+import java.io.IOException;
 
 public class Main {
     private static final Logger LOG = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) throws IllegalArgumentException {
+    public static void main(String[] args) throws IllegalArgumentException, ApplicationError, IOException, DatasetIntegrityError {
         try {
             CommandLine commandLine = new CLI().parse(args);
 
@@ -49,18 +53,11 @@ public class Main {
                     }
                 }));
                 if (type == null || type.equals("data")) {
+                    TableUploader tableUploader = new TableUploader(DefaultApplication.getDefaultDefaultApplication());
                     if (batch) {
-                        TableUploader.uploadMultiple(path);
+                        tableUploader.uploadMultiple(path);
                     } else {
-                        TableUploader.uploadSingle(path);
-                    }
-                }
-                if (type != null && type.equals("indicators")) {
-                    if (direction == null || direction.equals("in")) {
-                        Indicators.upload(path);
-                    }
-                    if (direction != null && direction.equals("out")) {
-                        Indicators.download(path);
+                        tableUploader.uploadSingle(path);
                     }
                 }
             } else {

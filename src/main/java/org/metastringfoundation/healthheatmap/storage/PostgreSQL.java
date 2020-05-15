@@ -19,10 +19,11 @@ package org.metastringfoundation.healthheatmap.storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
+import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
-import org.metastringfoundation.healthheatmap.dataset.table.Table;
-import org.metastringfoundation.healthheatmap.dataset.table.TableCellReference;
+import org.metastringfoundation.datareader.dataset.table.Table;
+import org.metastringfoundation.datareader.dataset.table.TableCellReference;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import java.sql.Connection;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class PostgreSQL implements Database {
+public class PostgreSQL {
     private static final Logger LOG = LogManager.getLogger(PostgreSQL.class);
 
     private final Connection psqlConnection;
@@ -66,7 +67,6 @@ public class PostgreSQL implements Database {
         psqlConnection.close();
     }
 
-    @Override
     public String getHealth() {
         return "Maybe healthy";
     }

@@ -18,116 +18,40 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.glassfish.hk2.api.PreDestroy;
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
-import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.dataset.table.Table;
-import org.metastringfoundation.healthheatmap.entities.DataElement;
-import org.metastringfoundation.healthheatmap.entities.Geography;
-import org.metastringfoundation.healthheatmap.entities.Indicator;
-import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
-import org.metastringfoundation.healthheatmap.logic.managers.DataManager;
-import org.metastringfoundation.healthheatmap.logic.managers.GeographyManager;
-import org.metastringfoundation.healthheatmap.logic.managers.IndicatorManager;
-import org.metastringfoundation.healthheatmap.logic.workers.Aggregator;
-import org.metastringfoundation.healthheatmap.logic.workers.DatasetUploader;
-import org.metastringfoundation.healthheatmap.logic.workers.IndicatorsWorker;
-import org.metastringfoundation.healthheatmap.logic.workers.TableBackup;
-import org.metastringfoundation.healthheatmap.storage.Database;
+import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import org.metastringfoundation.healthheatmap.storage.ElasticDatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
-import org.metastringfoundation.healthheatmap.storage.HibernateManager;
-import org.metastringfoundation.healthheatmap.storage.PostgreSQL;
-import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
-import javax.persistence.EntityManager;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
+import javax.inject.Inject;
 
 /**
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
  * Brings everything else together to make web resources work, CLI, and anything else that needs to work.
  */
-public class DefaultApplication implements Application, PreDestroy {
+public class DefaultApplication implements Application {
 
     private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
 
-    public static final Database DATABASE;
+    public final DatasetStore datasetStore;
 
-    static {
-        try {
-            DATABASE = new PostgreSQL();
-        } catch (ApplicationError applicationError) {
-            applicationError.printStackTrace();
-            throw new RuntimeException();
-        }
+    public static Application getDefaultDefaultApplication() {
+        DatasetStore datasetStore = new ElasticManager();
+        return new DefaultApplication(datasetStore);
     }
 
-    public static final ElasticManager ELASTICMANAGER = new ElasticManager();
-
-    public void shutDown() {
-        try {
-            ELASTICMANAGER.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        HibernateManager.closeEntityManagerFactory();
-        try {
-            DATABASE.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    @Inject
+    public DefaultApplication(@ElasticDatasetStore DatasetStore datasetStore) {
+        this.datasetStore = datasetStore;
     }
 
     @Override
-    public List<Indicator> getIndicators() {
-        return IndicatorManager.getAllIndicators();
+    public void save(Dataset dataset) {
+        datasetStore.save(dataset);
     }
 
     @Override
-    public List<Geography> getEntities(String type) {
-        return GeographyManager.getGeographyByType(type);
-    }
+    public void shutdown() {
 
-    @Override
-    public Indicator addIndicator(String indicatorName, EntityManager entityManager) {
-        return IndicatorManager.addIndicator(indicatorName, entityManager);
-    }
-
-    @Override
-    public AggregatedData getData(String indicatorGroups, String indicatorSubGroups, String indicators, String geographies, String geographyTypes, String sources, String aggregation) {
-        List<DataElement> dataElements = DataManager.getAllData(indicatorGroups, indicatorSubGroups, indicators, geographies, geographyTypes, sources);
-        AggregatedData result = new AggregatedData();
-        result.setData(dataElements);
-        result.setAggregation(Aggregator.getAverage(dataElements).toString());
-        return result;
-    }
-
-    public String getHealth() {
-        return DATABASE.getHealth();
-    }
-
-    public Long saveDataset(Dataset dataset) throws ApplicationError {
-        return DatasetUploader.upload(dataset);
-    }
-
-    public void saveTable(String name, Table table) throws ApplicationError {
-        TableBackup.backup(name, table);
-    }
-
-    @Override
-    public void importIndicatorGrouping(Table table) throws DatasetIntegrityError {
-        IndicatorsWorker.importIndicatorGroupSimple(table);
-    }
-
-    @Override
-    public void exportIndicators(String path) {
-        IndicatorsWorker.exportIndicators(path);
-    }
-
-    @Override
-    public void preDestroy() {
-        LOG.info("Being destroyed");
-        shutDown();
     }
 }

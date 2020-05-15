@@ -14,10 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import javax.inject.Qualifier;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public interface Application extends DatasetStore {
-    void shutdown();
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface ElasticDatasetStore {
 }

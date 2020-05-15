@@ -49,7 +49,11 @@ public class Server {
     }
 
     public static void startProductionServer() {
-        ResourceConfig productionApp = new ApplicationConfig();
+        ResourceConfig productionApp = new ResourceConfig();
+        productionApp.packages(
+                "org.metastringfoundation.healthheatmap;" +
+                        "io.swagger.v3.jaxrs2.integration.resources"
+        );
         server = getServer(productionApp);
         startServer();
     }

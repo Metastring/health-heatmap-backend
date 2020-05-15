@@ -16,8 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import org.metastringfoundation.datareader.dataset.table.Table;
 
-public interface Application extends DatasetStore {
-    void shutdown();
+public interface TableSavable {
+    void save(Table table);
 }

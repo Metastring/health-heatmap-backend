@@ -19,15 +19,16 @@ package org.metastringfoundation.healthheatmap.cli;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.metastringfoundation.healthheatmap.dataset.Dataset;
-import org.metastringfoundation.healthheatmap.dataset.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTable;
-import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTableDescription;
-import org.metastringfoundation.healthheatmap.dataset.table.csv.CSVTableToDatasetAdapter;
+import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.data.DatasetIntegrityError;
+import org.metastringfoundation.datareader.dataset.table.Table;
+import org.metastringfoundation.datareader.dataset.table.TableDescription;
+import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
+import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.DefaultApplication;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,17 +40,22 @@ import java.util.stream.Stream;
  */
 public class TableUploader {
     private static final Logger LOG = LogManager.getLogger(TableUploader.class);
-    private static final Application application = new DefaultApplication();
 
+    private final Application application;
+
+    @Inject
+    public TableUploader(Application application) {
+        this.application = application;
+    }
 
     /**
      * Uploads the data into the database of the application.
      *
      * @param path - path to the CSV file that contains data
      */
-    public static void upload(String path) throws IOException, ApplicationError, DatasetIntegrityError {
-        CSVTable table = null;
-        CSVTableDescription tableDescription = null;
+    public void upload(String path) throws IOException, ApplicationError, DatasetIntegrityError {
+        Table table = null;
+        TableDescription tableDescription = null;
         Dataset dataset;
 
         Path basedir = Paths.get(path).getParent();
@@ -67,36 +73,23 @@ public class TableUploader {
         }
 
         try {
-            tableDescription = CSVTableDescription.fromPath(metadataPath);
+            tableDescription = TableDescription.fromPath(metadataPath);
             LOG.debug("Metadata is " + tableDescription);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
 
-        dataset = new CSVTableToDatasetAdapter(table, tableDescription);
-        try {
-            Long uploadId = application.saveDataset(dataset);
-            String tableName = "upload_" + uploadId.toString();
-            application.saveTable(tableName, table);
-            LOG.info("Done persisting dataset");
-        } catch (ApplicationError applicationError) {
-            applicationError.printStackTrace();
-            throw applicationError;
-        }
+        dataset = new TableToDatasetAdapter(table, tableDescription);
+        application.save(dataset);
+        LOG.info("Done persisting dataset");
     }
 
-    public static void uploadSingle(String path) {
-        try {
-            upload(path);
-        } catch (IOException | ApplicationError | DatasetIntegrityError e) {
-            e.printStackTrace();
-        } finally {
-            application.shutDown();
-        }
+    public void uploadSingle(String path) throws ApplicationError, IOException, DatasetIntegrityError {
+        upload(path);
     }
 
-    public static void uploadMultiple(String path) {
+    public void uploadMultiple(String path) {
         try (Stream<String> stream = Files.lines(Paths.get(path))) {
             stream.forEach(line -> {
                 try {
@@ -107,8 +100,6 @@ public class TableUploader {
             });
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            application.shutDown();
         }
     }
 

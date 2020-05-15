@@ -18,7 +18,6 @@ package org.metastringfoundation.healthheatmap.web.resources;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.web.ResponseTypes.AggregatedData;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -29,12 +28,16 @@ import javax.ws.rs.core.MediaType;
 
 @Path("data")
 public class DataResource {
+    private final Application app;
+
     @Inject
-    Application app;
+    public DataResource(Application app) {
+        this.app = app;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public AggregatedData getData(
+    public void getData(
 //            @Parameter(description = "Name of the group from which to fetch all indicators (optional)")
 //            @QueryParam("indicatorGroups") String indicatorGroups,
 //
@@ -58,6 +61,6 @@ public class DataResource {
         String indicatorGroups = null;
         String indicatorSubGroups = null;
         String geographyTypes = null;
-        return app.getData(indicatorGroups, indicatorSubGroups, indicators, geographies, geographyTypes, sources, aggregation);
+//        return app.getData(indicatorGroups, indicatorSubGroups, indicators, geographies, geographyTypes, sources, aggregation);
     }
 }

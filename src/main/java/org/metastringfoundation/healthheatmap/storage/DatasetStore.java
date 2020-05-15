@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import org.metastringfoundation.data.Dataset;
 
-public interface Application extends DatasetStore {
-    void shutdown();
+public interface DatasetStore {
+    void save(Dataset dataset);
 }
