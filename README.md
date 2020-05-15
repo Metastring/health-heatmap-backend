@@ -1,6 +1,7 @@
-# Data Reader
-
+# Health Heat Map API
 This software can handle multitudes of spreadsheets and upload into a multi-dimensional database which allows querying by various dimensions.
+
+**This README is outdated** //TODO: Update readme
 
 ## Setup
 * Install java 8
