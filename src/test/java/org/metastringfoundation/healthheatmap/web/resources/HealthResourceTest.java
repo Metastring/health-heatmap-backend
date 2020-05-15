@@ -16,23 +16,24 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import org.metastringfoundation.healthheatmap.logic.Application;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Test;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import static org.junit.Assert.assertEquals;
 
-@Path("health")
-public class Health {
-    @Inject
-    Application app;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getHealth() {
-        return Response.status(200).entity("healthyenough").build();
+public class HealthResourceTest extends JerseyTest {
+    @Override
+    protected ResourceConfig configure() {
+        final ResourceConfig resourceConfig
+                = new ResourceConfig(Health.class);
+        return resourceConfig;
     }
+
+    @Test
+    public void testRequestCounter() throws InterruptedException {
+        String response = target().path("/health").request().get(String.class);
+        assertEquals("healthyenough", response);
+    }
+
 }
