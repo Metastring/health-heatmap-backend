@@ -26,6 +26,7 @@ import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.TableSaver;
 import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.inject.Inject;
@@ -79,9 +80,7 @@ public class TableUploader {
             e.printStackTrace();
             throw e;
         }
-
-        dataset = new TableToDatasetAdapter(table, tableDescription);
-        application.save(dataset);
+        TableSaver.saveTable(application, table, tableDescription);
         LOG.info("Done persisting dataset");
     }
 
