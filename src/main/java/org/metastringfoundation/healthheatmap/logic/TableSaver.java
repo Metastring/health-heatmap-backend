@@ -16,8 +16,15 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
+import org.metastringfoundation.datareader.dataset.table.TableDescription;
+import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 
-public interface TableSavable {
-    void save(Table table);
+public class TableSaver {
+    public static void saveTable(Application application, Table table, TableDescription tableDescription) throws DatasetIntegrityError {
+        Dataset dataset = new TableToDatasetAdapter(table, tableDescription);
+        application.save(dataset);
+    }
 }

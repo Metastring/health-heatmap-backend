@@ -37,9 +37,7 @@ public class Main {
             CommandLine commandLine = new CLI().parse(args);
 
             String path = commandLine.getOptionValue("path");
-            String type = commandLine.getOptionValue("type");
             boolean batch = commandLine.hasOption("batch");
-            String direction = commandLine.getOptionValue("direction");
             boolean serverShouldStart = commandLine.hasOption("server");
 
             if (serverShouldStart) {
@@ -52,13 +50,11 @@ public class Main {
                         e.printStackTrace();
                     }
                 }));
-                if (type == null || type.equals("data")) {
-                    TableUploader tableUploader = new TableUploader(DefaultApplication.getDefaultDefaultApplication());
-                    if (batch) {
-                        tableUploader.uploadMultiple(path);
-                    } else {
-                        tableUploader.uploadSingle(path);
-                    }
+                TableUploader tableUploader = new TableUploader(DefaultApplication.getDefaultDefaultApplication());
+                if (batch) {
+                    tableUploader.uploadMultiple(path);
+                } else {
+                    tableUploader.uploadSingle(path);
                 }
             } else {
                 CLI.printHelp();

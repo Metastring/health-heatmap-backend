@@ -27,7 +27,24 @@ public class CLI {
      */
     final static Option server = new Option("s", "server", false, "Run server");
 
+    /**
+     * Path to a file that needs to be uploaded to the dataset
+     */
+    final static Option path = Option.builder("p")
+            .hasArg()
+            .longOpt("path")
+            .desc("Path to the file")
+            .build();
+
+    final static Option batch = Option.builder("b")
+            .longOpt("batch")
+            .desc("Whether the data is a batch file")
+            .build();
+
+
     public final static Options options = new Options()
+            .addOption(path)
+            .addOption(batch)
             .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {
