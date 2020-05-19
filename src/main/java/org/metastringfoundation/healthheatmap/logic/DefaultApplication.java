@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.storage.ElasticDatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 /**
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
@@ -46,7 +47,7 @@ public class DefaultApplication implements Application {
     }
 
     @Override
-    public void save(Dataset dataset) {
+    public void save(Dataset dataset) throws IOException {
         datasetStore.save(dataset);
     }
 

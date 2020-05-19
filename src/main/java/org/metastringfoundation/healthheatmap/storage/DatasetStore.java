@@ -18,6 +18,8 @@ package org.metastringfoundation.healthheatmap.storage;
 
 import org.metastringfoundation.data.Dataset;
 
+import java.io.IOException;
+
 public interface DatasetStore {
-    void save(Dataset dataset);
+    void save(Dataset dataset) throws IOException;
 }
