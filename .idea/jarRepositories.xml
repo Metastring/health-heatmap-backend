@@ -22,6 +22,11 @@
       <option name="url" value="http://206.189.142.241/artifactory/libs-snapshot" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="metastringfoundation.datareader" />
+      <option name="name" value="metastringfoundation.datareader" />
+      <option name="url" value="http://jenkins.staging.metastringfoundation.free.gen.in/plugin/repository/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />

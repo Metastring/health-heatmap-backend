@@ -22,8 +22,10 @@ import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 
+import java.io.IOException;
+
 public class TableSaver {
-    public static void saveTable(Application application, Table table, TableDescription tableDescription) throws DatasetIntegrityError {
+    public static void saveTable(Application application, Table table, TableDescription tableDescription) throws DatasetIntegrityError, IOException {
         Dataset dataset = new TableToDatasetAdapter(table, tableDescription);
         application.save(dataset);
     }

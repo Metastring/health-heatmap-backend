@@ -16,15 +16,21 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHost;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 
 import java.io.IOException;
 
 @ElasticDatasetStore
 public class ElasticManager implements DatasetStore {
+    public static ObjectMapper objectMapper = new ObjectMapper();
     public static final RestHighLevelClient elastic = new RestHighLevelClient(RestClient.builder(
             new HttpHost("localhost", 9200, "http")
     ));
@@ -34,7 +40,11 @@ public class ElasticManager implements DatasetStore {
     }
 
     @Override
-    public void save(Dataset dataset) {
-        System.out.println("Dataset to be saved, but not yet implemented");
+    public void save(Dataset dataset) throws IOException {
+        BulkRequest request = new BulkRequest();
+        for (DataPoint dataPoint: dataset.getData()) {
+            request.add(new IndexRequest("data").source(dataPoint.getAsMap()));
+        }
+        elastic.bulk(request, RequestOptions.DEFAULT);
     }
 }

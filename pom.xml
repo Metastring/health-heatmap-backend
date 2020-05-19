@@ -361,12 +361,10 @@
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Metastring Foundation-snapshots</name>
-            <url>http://206.189.142.241/artifactory/libs-snapshot</url>
-        </snapshotRepository>
-    </distributionManagement>
-
+    <repositories>
+        <repository>
+            <id>metastringfoundation.datareader</id>
+            <url>http://jenkins.staging.metastringfoundation.free.gen.in/plugin/repository/</url>
+        </repository>
+    </repositories>
 </project>
