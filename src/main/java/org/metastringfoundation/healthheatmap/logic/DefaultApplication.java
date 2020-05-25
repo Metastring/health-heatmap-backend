@@ -22,6 +22,8 @@ import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticDatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
+import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
+import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -49,6 +51,11 @@ public class DefaultApplication implements Application {
     @Override
     public void save(Dataset dataset) throws IOException {
         datasetStore.save(dataset);
+    }
+
+    @Override
+    public DataQueryResult query(DataQuery dataQuery) throws IOException {
+        return datasetStore.query(dataQuery);
     }
 
     @Override

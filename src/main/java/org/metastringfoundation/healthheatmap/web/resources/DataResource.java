@@ -16,15 +16,20 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.beanconverters.DataQueryResultToDataResponse;
+import org.metastringfoundation.healthheatmap.logic.beanconverters.DataRequestToDataQuery;
+import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
+import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
 
 import javax.inject.Inject;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 
 @Path("data")
 public class DataResource {
@@ -37,30 +42,10 @@ public class DataResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void getData(
-//            @Parameter(description = "Name of the group from which to fetch all indicators (optional)")
-//            @QueryParam("indicatorGroups") String indicatorGroups,
-//
-//            @Parameter(description = "Name of the sub-group from which to fetch all indicators (optional)")
-//            @QueryParam("indicatorSubGroups") String indicatorSubGroups,
-
-            @Parameter(description = "Comma-separated IDs of the indicators to fetch data of (empty means everything)")
-            @QueryParam("indicator") String indicators,
-
-            @Parameter(description = "Comma-separated IDs of geographies to fetch data of (empty means everything)")
-            @QueryParam("geography") String geographies,
-
-//            @Parameter(description = "Use DISTRICT or STATE to get info about only districts or states")
-//            @QueryParam("geographyTypes") String geographyTypes,
-
-            @Parameter(description = "Comma-separated IDs of sources to fetch data of (empty means everything)")
-            @QueryParam("source") String sources,
-
-            @QueryParam("aggregation") String aggregation
-    ) {
-        String indicatorGroups = null;
-        String indicatorSubGroups = null;
-        String geographyTypes = null;
-//        return app.getData(indicatorGroups, indicatorSubGroups, indicators, geographies, geographyTypes, sources, aggregation);
+    public DataResponse getData(
+            @BeanParam DataRequest dataRequest
+            ) throws IOException {
+        DataQueryResult queryResult = app.query(DataRequestToDataQuery.convert(dataRequest));
+        return DataQueryResultToDataResponse.convert(queryResult);
     }
 }

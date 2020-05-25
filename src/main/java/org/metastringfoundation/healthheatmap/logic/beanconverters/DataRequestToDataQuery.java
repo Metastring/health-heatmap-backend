@@ -14,24 +14,12 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.resources;
+package org.metastringfoundation.healthheatmap.logic.beanconverters;
 
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.jupiter.api.Test;
+import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
 
-import static org.junit.Assert.assertEquals;
-
-public class HealthResourceTest extends JerseyTest {
-    @Override
-    protected ResourceConfig configure() {
-        return new ResourceConfig(Health.class);
+public class DataRequestToDataQuery {
+    public static org.metastringfoundation.healthheatmap.storage.beans.DataQuery convert(DataRequest dataRequest) {
+        return null;
     }
-
-    @Test
-    public void testRequestCounter() throws InterruptedException {
-        String response = target().path("/health").request().get(String.class);
-        assertEquals("healthyenough", response);
-    }
-
 }
