@@ -14,24 +14,23 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.resources;
+package org.metastringfoundation.healthheatmap.web.beans;
 
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.jupiter.api.Test;
+import io.swagger.v3.oas.annotations.Parameter;
 
-import static org.junit.Assert.assertEquals;
+import javax.ws.rs.QueryParam;
+import java.util.List;
 
-public class HealthResourceTest extends JerseyTest {
-    @Override
-    protected ResourceConfig configure() {
-        return new ResourceConfig(Health.class);
+public class DataRequest {
+    private List<String> indicators;
+
+    @Parameter(description = "List of indicators")
+    @QueryParam("indicators")
+    public void setIndicators(List<String> indicators) {
+        this.indicators = indicators;
     }
 
-    @Test
-    public void testRequestCounter() throws InterruptedException {
-        String response = target().path("/health").request().get(String.class);
-        assertEquals("healthyenough", response);
+    public List<String> getIndicators() {
+        return indicators;
     }
-
 }
