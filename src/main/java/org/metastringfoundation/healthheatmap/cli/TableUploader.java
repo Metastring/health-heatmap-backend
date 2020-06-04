@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.cli;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
@@ -27,7 +28,6 @@ import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.TableSaver;
-import org.metastringfoundation.healthheatmap.logic.errors.ApplicationError;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -54,37 +54,39 @@ public class TableUploader {
      *
      * @param path - path to the CSV file that contains data
      */
-    public void upload(String path) throws IOException, ApplicationError, DatasetIntegrityError {
-        Table table = null;
-        TableDescription tableDescription = null;
-        Dataset dataset;
-
-        Path basedir = Paths.get(path).getParent();
-        String fileName = Paths.get(path).getFileName().toString();
-        String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
-        String metadataPath = Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
-        LOG.info("basedir is " + basedir);
+    public void upload(String path) throws IOException, DatasetIntegrityError {
+        String metadataPath = guessMetadataPath(path);
         LOG.info("Assuming metadata is at " + metadataPath);
-        try {
-            table = CSVTable.fromPath(path);
-            LOG.debug("table is " + table.getTable().toString());
-        } catch (DatasetIntegrityError datasetIntegrityError) {
-            datasetIntegrityError.printStackTrace();
-            throw datasetIntegrityError;
-        }
 
-        try {
-            tableDescription = TableDescription.fromPath(metadataPath);
-            LOG.debug("Metadata is " + tableDescription);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        final Table table = CSVTable.fromPath(path);
+        LOG.debug("table is " + table.getTable().toString());
+
+        final TableDescription tableDescription = TableDescription.fromPath(metadataPath);
+        LOG.debug("Metadata is " + tableDescription);
+
         TableSaver.saveTable(application, table, tableDescription);
         LOG.info("Done persisting dataset");
     }
 
-    public void uploadSingle(String path) throws ApplicationError, IOException, DatasetIntegrityError {
+    public void print(String path) throws IOException, DatasetIntegrityError {
+        String metadataPath = guessMetadataPath(path);
+        final Table table = CSVTable.fromPath(path);
+        final TableDescription tableDescription = TableDescription.fromPath(metadataPath);
+        Dataset dataset = new TableToDatasetAdapter(table, tableDescription);
+        for (DataPoint dataPoint: dataset.getData()) {
+            System.out.println(dataPoint);
+        }
+    }
+
+    private String guessMetadataPath(String path) {
+        Path basedir = Paths.get(path).getParent();
+        LOG.info("basedir is " + basedir);
+        String fileName = Paths.get(path).getFileName().toString();
+        String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
+        return Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
+    }
+
+    public void uploadSingle(String path) throws IOException, DatasetIntegrityError {
         upload(path);
     }
 
@@ -93,7 +95,7 @@ public class TableUploader {
             stream.forEach(line -> {
                 try {
                     upload(line);
-                } catch (IOException | ApplicationError | DatasetIntegrityError e) {
+                } catch (IOException | DatasetIntegrityError e) {
                     e.printStackTrace();
                 }
             });

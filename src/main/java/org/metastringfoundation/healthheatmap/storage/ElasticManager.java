@@ -16,32 +16,27 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
 
-@ElasticDatasetStore
+@ElasticStore
 public class ElasticManager implements DatasetStore {
-    public static ObjectMapper objectMapper = new ObjectMapper();
     private final RestHighLevelClient elastic;
     public final String dataIndex = "data";
 
@@ -55,7 +50,7 @@ public class ElasticManager implements DatasetStore {
         ));
     }
 
-    public void close() throws IOException {
+    public void shutdown() throws IOException {
         elastic.close();
     }
 
@@ -74,27 +69,13 @@ public class ElasticManager implements DatasetStore {
 
     @Override
     public DataQueryResult query(DataQuery dataQuery) throws IOException {
-        QueryBuilder query = getElasticQuery(dataQuery);
-        SearchRequest searchRequest = getElasticSearchRequest(query);
-        SearchResponse searchResponse = elastic.search(searchRequest, RequestOptions.DEFAULT);
         DataQueryResult searchResult = new DataQueryResult();
-        searchResult.setResult(searchResponse.toString());
+        SearchResponse searchResponse = doSearch(elastic, dataQuery);
+        searchResult.setResult(Arrays.stream(searchResponse.getHits().getHits())
+                .map(SearchHit::getSourceAsMap)
+                .map(ElasticQueryHelpers::convertToStringOnlyMap)
+                .collect(Collectors.toList())
+        );
         return searchResult;
-    }
-
-    private QueryBuilder getElasticQuery(DataQuery dataQuery) {
-        BoolQueryBuilder query = boolQuery();
-        for (Map.Entry<String, Collection<String>> mustMatchTerm: dataQuery.getMust().entrySet()) {
-            query.must(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
-        }
-        return query;
-    }
-
-    private SearchRequest getElasticSearchRequest(QueryBuilder query) {
-        SearchRequest searchRequest = new SearchRequest();
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(query);
-        searchRequest.source(searchSourceBuilder);
-        return searchRequest;
     }
 }

@@ -14,15 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic.beanconverters;
+package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
+import javax.inject.Qualifier;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public class DataQueryResultToDataResponse {
-    public static DataResponse convert(DataQueryResult queryResult) {
-        DataResponse dataResponse = new DataResponse();
-        dataResponse.setData(queryResult.getResult());
-        return dataResponse;
-    }
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface ElasticStore {
 }

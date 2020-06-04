@@ -14,15 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic.beanconverters;
+package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
-
-public class DataQueryResultToDataResponse {
-    public static DataResponse convert(DataQueryResult queryResult) {
-        DataResponse dataResponse = new DataResponse();
-        dataResponse.setData(queryResult.getResult());
-        return dataResponse;
-    }
+public enum DimensionType {
+    LIST,
+    HIERARCHY,
+    ORDERED_INFINITE_LIST
 }

@@ -20,8 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
-import org.metastringfoundation.healthheatmap.storage.ElasticDatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
+import org.metastringfoundation.healthheatmap.storage.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
@@ -32,19 +32,17 @@ import java.io.IOException;
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
  * Brings everything else together to make web resources work, CLI, and anything else that needs to work.
  */
-public class DefaultApplication implements Application {
-
-    private static final Logger LOG = LogManager.getLogger(DefaultApplication.class);
-
+public class ApplicationDefault implements Application {
+    private static final Logger LOG = LogManager.getLogger(ApplicationDefault.class);
     public final DatasetStore datasetStore;
 
-    public static Application getDefaultDefaultApplication() {
+    public static Application createPreconfiguredApplicationDefault() {
         DatasetStore datasetStore = new ElasticManager();
-        return new DefaultApplication(datasetStore);
+        return new ApplicationDefault(datasetStore);
     }
 
     @Inject
-    public DefaultApplication(@ElasticDatasetStore DatasetStore datasetStore) {
+    public ApplicationDefault(@ElasticStore DatasetStore datasetStore) {
         this.datasetStore = datasetStore;
     }
 
@@ -59,7 +57,7 @@ public class DefaultApplication implements Application {
     }
 
     @Override
-    public void shutdown() {
-
+    public void shutdown() throws IOException {
+        datasetStore.shutdown();
     }
 }

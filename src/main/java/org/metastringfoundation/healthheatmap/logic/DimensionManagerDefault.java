@@ -14,15 +14,29 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic.beanconverters;
+package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
+import java.util.List;
 
-public class DataQueryResultToDataResponse {
-    public static DataResponse convert(DataQueryResult queryResult) {
-        DataResponse dataResponse = new DataResponse();
-        dataResponse.setData(queryResult.getResult());
-        return dataResponse;
+public class DimensionManagerDefault implements DimensionManager {
+
+    @Override
+    public List<Dimension> getDimensions() {
+        return null;
+    }
+
+    @Override
+    public void setDimensions(List<Dimension> dimensions) {
+
+    }
+
+    @Override
+    public void addDimensions(List<Dimension> dimensions) {
+
+    }
+
+    @Override
+    public void addSingleDimension(Dimension dimension) {
+
     }
 }
