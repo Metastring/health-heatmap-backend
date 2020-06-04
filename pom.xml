@@ -6,7 +6,7 @@
     <properties>
         <maven.compiler.source>1.9</maven.compiler.source>
         <maven.compiler.target>1.9</maven.compiler.target>
-        <jersey.version>2.30</jersey.version>
+        <jersey.version>2.31</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.10.3</jackson.version>
         <cdi.api.version>2.0</cdi.api.version>
