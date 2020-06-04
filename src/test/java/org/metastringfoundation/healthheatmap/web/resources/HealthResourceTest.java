@@ -1,3 +1,4 @@
+
 /*
  *    Copyright 2020 Metastring Foundation
  *
@@ -18,7 +19,7 @@ package org.metastringfoundation.healthheatmap.web.resources;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.jupiter.api.Test;
+import org.junit.Test; // JerseyTest doesn't work with Junit5, https://github.com/eclipse-ee4j/jersey/issues/3662
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,5 +34,4 @@ public class HealthResourceTest extends JerseyTest {
         String response = target().path("/health").request().get(String.class);
         assertEquals("healthyenough", response);
     }
-
 }
