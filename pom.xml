@@ -312,6 +312,12 @@
             <artifactId>elasticsearch</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- these are dependencies that allow CDI to work in SE, whether for tests or for deployment -->
         <!-- but jersey-cdi2-se causes conflicts if deployed to tomcat. So we will put it in provided scope now -->

@@ -16,10 +16,26 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import javax.json.JsonObject;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-import java.io.IOException;
+public interface Dimension {
+    String getName();
+    void setName(String name);
 
-public interface Application extends DatasetStore {
-    void shutdown() throws IOException;
+    String getShortCode();
+    void setShortCode(String shortCode);
+
+    String getDescription();
+    void setDescription(String description);
+
+    Optional<Collection<JsonObject>> getCanonicalValues();
+    Optional<Collection<JsonObject>> getRawValues();
+    DimensionType getType();
+    List<JsonObject> validateValues(List<JsonObject> values);
+    default JsonObject validateValue(JsonObject value) {
+        return validateValues(List.of(value)).get(0);
+    }
 }

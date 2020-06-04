@@ -24,5 +24,6 @@ import java.io.IOException;
 
 public interface DatasetStore {
     void save(Dataset dataset) throws IOException;
+    void shutdown() throws IOException;
     DataQueryResult query(DataQuery dataQuery) throws IOException;
 }

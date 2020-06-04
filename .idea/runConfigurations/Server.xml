@@ -5,7 +5,7 @@
     </envs>
     <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.metastringfoundation.healthheatmap.Main" />
-    <module name="data-reader" />
+    <module name="healthheatmap-api" />
     <option name="PROGRAM_PARAMETERS" value="--server" />
     <method v="2">
       <option name="Make" enabled="true" />

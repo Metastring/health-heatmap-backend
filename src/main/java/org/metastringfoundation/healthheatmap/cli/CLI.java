@@ -41,10 +41,16 @@ public class CLI {
             .desc("Whether the data is a batch file")
             .build();
 
+    final static Option dry = Option.builder("d")
+            .longOpt("dry")
+            .desc("Whether to do a dry run")
+            .build();
+
 
     public final static Options options = new Options()
             .addOption(path)
             .addOption(batch)
+            .addOption(dry)
             .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {

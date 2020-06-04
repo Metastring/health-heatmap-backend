@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @Testcontainers
 class ElasticTest {
     @Container
@@ -40,25 +42,25 @@ class ElasticTest {
     }
     private static final ElasticManager elasticManager = new ElasticManager(ELASTICSEARCH_CONTAINER.getHost(), ELASTICSEARCH_CONTAINER.getFirstMappedPort());
 
-    @Test
-    public void testSaveData() throws IOException {
-        List<Map<String, String>> data = List.of(
-                Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1"),
-                Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2")
-        );
-        elasticManager.save(new MapDataset(data));
-    }
-
     private void refreshIndex() throws IOException {
         elasticManager.getElastic().indices().refresh(new RefreshRequest(elasticManager.dataIndex), RequestOptions.DEFAULT);
     }
 
     @Test
     public void querySavedData() throws IOException {
+        List<Map<String, String>> data = List.of(
+                Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1"),
+                Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2"),
+                Map.of("indicator", "u5mr", "entity.district", "kozhikkode", "value", "1")
+        );
+        elasticManager.save(new MapDataset(data));
         DataQuery dataQuery = new DataQuery();
         dataQuery.setMust(Map.of("indicator", List.of("mmr")));
         refreshIndex();
         DataQueryResult actual = elasticManager.query(dataQuery);
-        System.out.println(actual.getResult());
+        assertEquals(List.of(
+                Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2"),
+                Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1")
+            ), actual.getResult());
     }
 }

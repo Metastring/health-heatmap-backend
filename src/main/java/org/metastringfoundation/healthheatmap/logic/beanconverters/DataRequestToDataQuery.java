@@ -16,10 +16,21 @@
 
 package org.metastringfoundation.healthheatmap.logic.beanconverters;
 
+import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataRequestToDataQuery {
     public static org.metastringfoundation.healthheatmap.storage.beans.DataQuery convert(DataRequest dataRequest) {
-        return null;
+        DataQuery dataQuery = new DataQuery();
+        Map<String, Collection<String>> must = new HashMap<>();
+        if (dataRequest.getIndicators() != null) {
+            must.put("indicator", dataRequest.getIndicators());
+        }
+        dataQuery.setMust(must);
+        return dataQuery;
     }
 }

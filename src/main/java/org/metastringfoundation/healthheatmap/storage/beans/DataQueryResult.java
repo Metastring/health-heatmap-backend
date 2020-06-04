@@ -16,14 +16,19 @@
 
 package org.metastringfoundation.healthheatmap.storage.beans;
 
-public class DataQueryResult {
-    private String result;
+import org.metastringfoundation.data.DataPoint;
 
-    public String getResult() {
+import java.util.List;
+import java.util.Map;
+
+public class DataQueryResult {
+    private List<Map<String, String>> result;
+
+    public List<Map<String, String>> getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(List<Map<String, String>> result) {
         this.result = result;
     }
 }
