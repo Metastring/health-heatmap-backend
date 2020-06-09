@@ -35,6 +35,17 @@ import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 public class ElasticQueryHelpers {
+
+    public static @NotNull SearchResponse doSearch(
+            @NotNull RestHighLevelClient elastic,
+            @NotNull DataQuery dataQuery,
+            @NotNull String index
+    ) throws IOException {
+        QueryBuilder query = getElasticQuery(dataQuery);
+        SearchRequest searchRequest = getElasticSearchRequest(query, index);
+        return elastic.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
     public static @NotNull QueryBuilder getElasticQuery(@NotNull DataQuery dataQuery) {
         BoolQueryBuilder query = boolQuery();
         for (Map.Entry<String, Collection<String>> mustMatchTerm : dataQuery.getMust().entrySet()) {
@@ -43,18 +54,12 @@ public class ElasticQueryHelpers {
         return query;
     }
 
-    public static @NotNull SearchRequest getElasticSearchRequest(@NotNull QueryBuilder query) {
-        SearchRequest searchRequest = new SearchRequest();
+    public static @NotNull SearchRequest getElasticSearchRequest(@NotNull QueryBuilder query, @NotNull String index) {
+        SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(query);
         searchRequest.source(searchSourceBuilder);
         return searchRequest;
-    }
-
-    public static @NotNull SearchResponse doSearch(@NotNull RestHighLevelClient elastic, @NotNull DataQuery dataQuery) throws IOException {
-        QueryBuilder query = getElasticQuery(dataQuery);
-        SearchRequest searchRequest = getElasticSearchRequest(query);
-        return elastic.search(searchRequest, RequestOptions.DEFAULT);
     }
 
     public static Map<String, String> convertToStringOnlyMap(Map<String, Object> input) {

@@ -17,6 +17,8 @@
 package org.metastringfoundation.healthheatmap.storage;
 
 import org.apache.http.HttpHost;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -37,6 +39,7 @@ import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers
 
 @ElasticStore
 public class ElasticManager implements DatasetStore {
+    private static final Logger LOG = LogManager.getLogger(ElasticManager.class);
     private final RestHighLevelClient elastic;
     public final String dataIndex = "data";
 
@@ -70,7 +73,8 @@ public class ElasticManager implements DatasetStore {
     @Override
     public DataQueryResult query(DataQuery dataQuery) throws IOException {
         DataQueryResult searchResult = new DataQueryResult();
-        SearchResponse searchResponse = doSearch(elastic, dataQuery);
+        SearchResponse searchResponse = doSearch(elastic, dataQuery, dataIndex);
+        LOG.debug(searchResponse.toString());
         searchResult.setResult(Arrays.stream(searchResponse.getHits().getHits())
                 .map(SearchHit::getSourceAsMap)
                 .map(ElasticQueryHelpers::convertToStringOnlyMap)
