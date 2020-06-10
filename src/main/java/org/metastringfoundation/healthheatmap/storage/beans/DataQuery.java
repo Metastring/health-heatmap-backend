@@ -29,4 +29,11 @@ public class DataQuery {
     public void setMust(Map<String, Collection<String>> must) {
         this.must = must;
     }
+
+    @Override
+    public String toString() {
+        return "DataQuery{" +
+                "must=" + must +
+                '}';
+    }
 }

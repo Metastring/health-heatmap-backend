@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.logic.beanconverters;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -25,10 +27,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MultiMapToDataQuery {
+    private static final Logger LOG = LogManager.getLogger(MultiMapToDataQuery.class);
 
     public static DataQuery convert(MultivaluedMap<String, String> dataRequest) {
         DataQuery dataQuery = new DataQuery();
         Map<String, Collection<String>> must = normalizeParams(dataRequest);
+        LOG.debug(dataRequest + " normalized to " + must);
         dataQuery.setMust(must);
         return dataQuery;
     }

@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -35,6 +37,7 @@ import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 public class ElasticQueryHelpers {
+    private static final Logger LOG = LogManager.getLogger(ElasticQueryHelpers.class);
 
     public static @NotNull SearchResponse doSearch(
             @NotNull RestHighLevelClient elastic,
@@ -42,14 +45,17 @@ public class ElasticQueryHelpers {
             @NotNull String index
     ) throws IOException {
         QueryBuilder query = getElasticQuery(dataQuery);
+        LOG.debug(query.toString());
         SearchRequest searchRequest = getElasticSearchRequest(query, index);
         return elastic.search(searchRequest, RequestOptions.DEFAULT);
     }
 
     public static @NotNull QueryBuilder getElasticQuery(@NotNull DataQuery dataQuery) {
         BoolQueryBuilder query = boolQuery();
+        LOG.debug("Incoming query: " + dataQuery);
         for (Map.Entry<String, Collection<String>> mustMatchTerm : dataQuery.getMust().entrySet()) {
-            query.must(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
+            LOG.debug("Adding must match term: " + mustMatchTerm.getKey());
+            query.must(termsQuery(mustMatchTerm.getKey() + ".keyword", mustMatchTerm.getValue()));
         }
         return query;
     }
