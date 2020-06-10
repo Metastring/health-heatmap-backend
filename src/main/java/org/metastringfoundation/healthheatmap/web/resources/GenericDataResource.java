@@ -16,9 +16,10 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.DataQueryResultToDataResponse;
-import org.metastringfoundation.healthheatmap.logic.beanconverters.DataRequestToDataQuery;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.MultiMapToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
@@ -35,6 +36,7 @@ import java.io.IOException;
 
 @Path("multidata")
 public class GenericDataResource {
+    private static final Logger LOG = LogManager.getLogger(GenericDataResource.class);
     private final Application app;
 
     @Inject
@@ -47,7 +49,8 @@ public class GenericDataResource {
     public DataResponse getData(
             @Context UriInfo uriInfo
             ) throws IOException {
-        MultivaluedMap<String, String> params = uriInfo.getPathParameters();
+        MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
+        LOG.debug(params);
         DataQueryResult queryResult = app.query(MultiMapToDataQuery.convert(params));
         return DataQueryResultToDataResponse.convert(queryResult);
     }
