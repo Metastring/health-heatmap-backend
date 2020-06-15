@@ -43,7 +43,7 @@ public class Main {
 
             if (serverShouldStart) {
                 Server.startProductionServer();
-            } else if (!path.isEmpty()) {
+            } else if (path != null && !path.isEmpty()) {
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
                         LOG.info("Shutting down");

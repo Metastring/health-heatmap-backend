@@ -48,6 +48,7 @@ public class ElasticManager implements DatasetStore {
     }
 
     public ElasticManager(String hostname, int port) {
+        LOG.debug("Creating new elasticmanager instance");
         elastic = new RestHighLevelClient(RestClient.builder(
                 new HttpHost(hostname, port, "http")
         ));

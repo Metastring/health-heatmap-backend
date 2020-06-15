@@ -22,6 +22,8 @@ import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
+import org.metastringfoundation.healthheatmap.helpers.BatchInputFolderTree;
+import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.TableSaver;
@@ -29,6 +31,7 @@ import org.metastringfoundation.healthheatmap.logic.TableSaver;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
@@ -52,6 +55,10 @@ public class TableUploader {
      */
     public void upload(String path) throws IOException, DatasetIntegrityError {
         TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
+        upload(tableAndDescription);
+    }
+
+    public void upload(TableAndDescriptionPair tableAndDescription) throws IOException, DatasetIntegrityError {
         TableSaver.saveTable(
                 application,
                 tableAndDescription.getTable(),
@@ -75,8 +82,31 @@ public class TableUploader {
         upload(path);
     }
 
-    public void uploadMultiple(String path) {
-        try (Stream<String> stream = Files.lines(Paths.get(path))) {
+    public void uploadMultiple(String inputPath) throws IOException {
+        Path path = Paths.get(inputPath);
+        if (Files.isRegularFile(path)) {
+            uploadMultipleFromList(path);
+        } else {
+            uploadDirectory(path);
+        }
+    }
+
+    private void uploadDirectory(Path path) throws IOException {
+        BatchInputFolderTree folderTree = FileManager.createBatchInputFolderTreeFrom(path);
+        folderTree.getDataFiles()
+                .stream()
+                .peek(file -> LOG.info("Uploading: " + file.toString()))
+                .forEach(file -> {
+                    try {
+                        upload(file.toString());
+                    } catch (IOException | DatasetIntegrityError e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    public void uploadMultipleFromList(Path path) {
+        try (Stream<String> stream = Files.lines(path)) {
             stream.forEach(line -> {
                 try {
                     upload(line);
@@ -88,5 +118,4 @@ public class TableUploader {
             e.printStackTrace();
         }
     }
-
 }
