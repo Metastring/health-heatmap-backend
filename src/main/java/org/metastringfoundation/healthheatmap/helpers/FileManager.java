@@ -17,6 +17,8 @@
 package org.metastringfoundation.healthheatmap.helpers;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -30,6 +32,8 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class FileManager {
+    private static final Logger LOG = LogManager.getLogger(FileManager.class);
+
     public static Reader getFileReader(Path nioPath) throws Exception {
         String path = nioPath.toString();
         return new FileReader(path);
@@ -44,12 +48,19 @@ public class FileManager {
     }
 
     public static BatchInputFolderTree createBatchInputFolderTreeFrom(String path) throws IOException {
-        BatchInputFolderTree folderTree = new BatchInputFolderTree();
         Path startingDir = getPathFromString(path);
+        return createBatchInputFolderTreeFrom(startingDir);
+    }
+
+    public static BatchInputFolderTree createBatchInputFolderTreeFrom(Path startingDir) throws IOException {
+        BatchInputFolderTree folderTree = new BatchInputFolderTree();
         Collection<Path> files = Files.walk(startingDir)
+                .peek(file -> LOG.debug("Evaluating: " + file.toString()))
                 .filter(Files::isRegularFile)
-                .filter(file -> file.endsWith(".csv"))
-                .map(Path::getFileName)
+                .peek(file -> LOG.debug("Regular file: " + file.toString()))
+                .filter(file -> file.toString().endsWith(".csv"))
+                .peek(file -> LOG.debug("Selected: " + file.toString()))
+                .map(Path::toAbsolutePath)
                 .collect(Collectors.toSet());
         folderTree.addDataFiles(files);
         return folderTree;
