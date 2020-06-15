@@ -16,20 +16,25 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PathManager {
-    private String inputPath;
+    private static final Logger LOG = LogManager.getLogger(PathManager.class);
 
-    public PathManager(String inputPath) {
-        this.inputPath = inputPath;
+    public static String guessMetadataPath(Path path) {
+        Path basedir = path.getParent();
+        LOG.info("basedir is " + basedir);
+        String fileName = path.getFileName().toString();
+        String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
+        return Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
     }
 
-    public String getAbsolutePath() {
-        String userDir = System.getProperty("user.dir");
-        Path absolutePath = Paths.get(userDir, inputPath);
-        String canonicalPath = absolutePath.normalize().toString();
-        return canonicalPath;
+    public static String guessMetadataPath(String path) {
+        return guessMetadataPath(Paths.get(path));
     }
 }

@@ -16,23 +16,19 @@
 
 package org.metastringfoundation.healthheatmap.cli;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
-import org.metastringfoundation.datareader.dataset.table.Table;
-import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
-import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
+import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.TableSaver;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
@@ -55,35 +51,24 @@ public class TableUploader {
      * @param path - path to the CSV file that contains data
      */
     public void upload(String path) throws IOException, DatasetIntegrityError {
-        String metadataPath = guessMetadataPath(path);
-        LOG.info("Assuming metadata is at " + metadataPath);
-
-        final Table table = CSVTable.fromPath(path);
-        LOG.debug("table is " + table.getTable().toString());
-
-        final TableDescription tableDescription = TableDescription.fromPath(metadataPath);
-        LOG.debug("Metadata is " + tableDescription);
-
-        TableSaver.saveTable(application, table, tableDescription);
+        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
+        TableSaver.saveTable(
+                application,
+                tableAndDescription.getTable(),
+                tableAndDescription.getTableDescription()
+        );
         LOG.info("Done persisting dataset");
     }
 
     public void print(String path) throws IOException, DatasetIntegrityError {
-        String metadataPath = guessMetadataPath(path);
-        final Table table = CSVTable.fromPath(path);
-        final TableDescription tableDescription = TableDescription.fromPath(metadataPath);
-        Dataset dataset = new TableToDatasetAdapter(table, tableDescription);
-        for (DataPoint dataPoint: dataset.getData()) {
+        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
+        Dataset dataset = new TableToDatasetAdapter(
+                tableAndDescription.getTable(),
+                tableAndDescription.getTableDescription()
+        );
+        for (DataPoint dataPoint : dataset.getData()) {
             System.out.println(dataPoint);
         }
-    }
-
-    private String guessMetadataPath(String path) {
-        Path basedir = Paths.get(path).getParent();
-        LOG.info("basedir is " + basedir);
-        String fileName = Paths.get(path).getFileName().toString();
-        String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
-        return Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
     }
 
     public void uploadSingle(String path) throws IOException, DatasetIntegrityError {
