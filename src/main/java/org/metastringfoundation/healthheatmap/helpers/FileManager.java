@@ -23,8 +23,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class FileManager {
     public static Reader getFileReader(Path nioPath) throws Exception {
@@ -38,5 +41,17 @@ public class FileManager {
 
     public static String getFileContentsAsString(String path) throws IOException {
         return IOUtils.toString(new FileInputStream(path), StandardCharsets.UTF_8);
+    }
+
+    public static BatchInputFolderTree createBatchInputFolderTreeFrom(String path) throws IOException {
+        BatchInputFolderTree folderTree = new BatchInputFolderTree();
+        Path startingDir = getPathFromString(path);
+        Collection<Path> files = Files.walk(startingDir)
+                .filter(Files::isRegularFile)
+                .filter(file -> file.endsWith(".csv"))
+                .map(Path::getFileName)
+                .collect(Collectors.toSet());
+        folderTree.addDataFiles(files);
+        return folderTree;
     }
 }
