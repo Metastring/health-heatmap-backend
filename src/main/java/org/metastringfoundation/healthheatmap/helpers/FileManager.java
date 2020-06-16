@@ -47,14 +47,8 @@ public class FileManager {
         return IOUtils.toString(new FileInputStream(path), StandardCharsets.UTF_8);
     }
 
-    public static BatchInputFolderTree createBatchInputFolderTreeFrom(String path) throws IOException {
-        Path startingDir = getPathFromString(path);
-        return createBatchInputFolderTreeFrom(startingDir);
-    }
-
-    public static BatchInputFolderTree createBatchInputFolderTreeFrom(Path startingDir) throws IOException {
-        BatchInputFolderTree folderTree = new BatchInputFolderTree();
-        Collection<Path> files = Files.walk(startingDir)
+    public static Collection<Path> getDataFilesInDirectory(Path startingDir) throws IOException {
+        return Files.walk(startingDir)
                 .peek(file -> LOG.debug("Evaluating: " + file.toString()))
                 .filter(Files::isRegularFile)
                 .peek(file -> LOG.debug("Regular file: " + file.toString()))
@@ -62,7 +56,5 @@ public class FileManager {
                 .peek(file -> LOG.debug("Selected: " + file.toString()))
                 .map(Path::toAbsolutePath)
                 .collect(Collectors.toSet());
-        folderTree.addDataFiles(files);
-        return folderTree;
     }
 }
