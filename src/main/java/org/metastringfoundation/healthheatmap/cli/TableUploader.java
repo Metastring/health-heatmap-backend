@@ -22,7 +22,6 @@ import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
-import org.metastringfoundation.healthheatmap.helpers.BatchInputFolderTree;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.Application;
@@ -33,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 /**
@@ -92,9 +92,8 @@ public class TableUploader {
     }
 
     private void uploadDirectory(Path path) throws IOException {
-        BatchInputFolderTree folderTree = FileManager.createBatchInputFolderTreeFrom(path);
-        folderTree.getDataFiles()
-                .stream()
+        Collection<Path> dataFiles = FileManager.getDataFilesInDirectory(path);
+        dataFiles.stream()
                 .peek(file -> LOG.info("Uploading: " + file.toString()))
                 .forEach(file -> {
                     try {
