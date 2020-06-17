@@ -37,4 +37,13 @@ public class PathManager {
     public static String guessMetadataPath(String path) {
         return guessMetadataPath(Paths.get(path));
     }
+
+    public static String guessRootMetadataPath(String path) {
+        return guessRootMetadataPath(Paths.get(path));
+    }
+
+    public static String guessRootMetadataPath(Path path) {
+        Path basedir = path.getParent();
+        return Paths.get(basedir.toString(), "metadata.json").toString();
+    }
 }
