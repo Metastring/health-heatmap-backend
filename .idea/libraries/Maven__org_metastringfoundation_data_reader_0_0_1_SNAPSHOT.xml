@@ -1,13 +1,14 @@
 <component name="libraryTable">
   <library name="Maven: org.metastringfoundation:data-reader:0.0.1-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/metastringfoundation/data-reader/0.0.1-SNAPSHOT/data-reader-0.0.1-20200525.095402-6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/metastringfoundation/data-reader/0.0.1-SNAPSHOT/data-reader-0.0.1-20200617.154918-14.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/metastringfoundation/data-reader/0.0.1-SNAPSHOT/data-reader-0.0.1-20200525.095402-6-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/metastringfoundation/data-reader/0.0.1-SNAPSHOT/data-reader-0.0.1-20200617.154918-14-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/metastringfoundation/data-reader/0.0.1-SNAPSHOT/data-reader-0.0.1-20200525.095402-6-sources.jar!/" />
+      <root url="file://$PROJECT_DIR$/../data-reader/src/main/java" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/metastringfoundation/data-reader/0.0.1-SNAPSHOT/data-reader-0.0.1-20200617.154918-14-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

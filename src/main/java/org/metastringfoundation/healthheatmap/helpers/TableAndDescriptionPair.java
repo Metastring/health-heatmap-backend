@@ -26,6 +26,7 @@ import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import java.io.IOException;
 
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
+import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
 
 public class TableAndDescriptionPair {
     private static final Logger LOG = LogManager.getLogger(TableAndDescriptionPair.class);
@@ -34,15 +35,28 @@ public class TableAndDescriptionPair {
     private final TableDescription tableDescription;
 
     public TableAndDescriptionPair(String tablePath) throws IOException, DatasetIntegrityError {
-        String metadataPath = guessMetadataPath(tablePath);
-        LOG.info("Assuming metadata is at " + metadataPath);
-
         table = CSVTable.fromPath(tablePath);
         LOG.debug("table is " + table.getTable().toString());
 
-        tableDescription = TableDescription.fromPath(metadataPath);
+        tableDescription = readIndividualTableDescription(tablePath);
+        addOptionalRootMetadataToTableDescription(tablePath);
         LOG.debug("Metadata is " + tableDescription);
+    }
 
+    private TableDescription readIndividualTableDescription(String tablePath) throws IOException {
+        String metadataPath = guessMetadataPath(tablePath);
+        LOG.info("Assuming metadata is at " + metadataPath);
+        return TableDescription.fromPath(metadataPath);
+    }
+
+    private void addOptionalRootMetadataToTableDescription(String tablePath) {
+        String rootMetadataPath = guessRootMetadataPath(tablePath);
+        try {
+            TableDescription rootMetadata = TableDescription.fromPath(rootMetadataPath);
+            tableDescription.getFieldDescriptionList().addAll(rootMetadata.getFieldDescriptionList());
+        } catch (IOException ex) {
+            LOG.info("Ignoring optional rootMetadata's error");
+        }
     }
 
     public Table getTable() {
