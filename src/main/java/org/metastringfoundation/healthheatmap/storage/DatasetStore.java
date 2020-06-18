@@ -16,14 +16,15 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import java.io.IOException;
 
 public interface DatasetStore {
-    void save(Dataset dataset) throws IOException;
+    void save(HealthDataset dataset) throws IOException;
+
     void shutdown() throws IOException;
     DataQueryResult query(DataQuery dataQuery) throws IOException;
 }

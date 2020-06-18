@@ -20,6 +20,7 @@ import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.datareader.dataset.map.MapDataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -53,7 +54,7 @@ class ElasticTest {
                 Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2"),
                 Map.of("indicator", "u5mr", "entity.district", "kozhikkode", "value", "1")
         );
-        elasticManager.save(new MapDataset(data));
+        elasticManager.save(new HealthDatasetFromDataset(new MapDataset(data)));
         DataQuery dataQuery = new DataQuery();
         dataQuery.setMust(Map.of("indicator", List.of("mmr")));
         refreshIndex();

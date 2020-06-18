@@ -14,19 +14,22 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.helpers;
 
 import org.metastringfoundation.data.Dataset;
-import org.metastringfoundation.data.DatasetIntegrityError;
-import org.metastringfoundation.datareader.dataset.table.Table;
-import org.metastringfoundation.datareader.dataset.table.TableDescription;
-import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 
-import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
-public class TableSaver {
-    public static void saveTable(Application application, Table table, TableDescription tableDescription) throws DatasetIntegrityError, IOException {
-        Dataset dataset = new TableToDatasetAdapter(table, tableDescription);
-        application.save(dataset);
+public class HealthDatasetFromDataset implements HealthDataset {
+    private final Dataset dataset;
+
+    public HealthDatasetFromDataset(Dataset dataset) {
+        this.dataset = dataset;
+    }
+
+    @Override
+    public Collection<? extends Map<String, String>> getData() {
+        return dataset.getData();
     }
 }

@@ -14,18 +14,11 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.helpers;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
-public interface DimensionManager {
-    List<Dimension> getDimensions();
-
-    void setDimensions(List<Dimension> dimensions);
-
-    void addDimensions(List<Dimension> dimensions);
-
-    default void addSingleDimension(Dimension dimension) {
-        addDimensions(List.of(dimension));
-    }
+public interface HealthDataset {
+    Collection<? extends Map<String, String>> getData();
 }
