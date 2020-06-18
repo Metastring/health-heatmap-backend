@@ -26,13 +26,13 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.search.SearchHit;
-import org.metastringfoundation.data.DataPoint;
-import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
@@ -63,10 +63,10 @@ public class ElasticManager implements DatasetStore {
     }
 
     @Override
-    public void save(Dataset dataset) throws IOException {
+    public void save(HealthDataset dataset) throws IOException {
         BulkRequest request = new BulkRequest();
-        for (DataPoint dataPoint : dataset.getData()) {
-            request.add(new IndexRequest(dataIndex).source(dataPoint.getAsMap()));
+        for (Map<String, String> dataPoint : dataset.getData()) {
+            request.add(new IndexRequest(dataIndex).source(dataPoint));
         }
         elastic.bulk(request, RequestOptions.DEFAULT);
     }

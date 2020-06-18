@@ -23,9 +23,10 @@ import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.TableSaver;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -55,15 +56,12 @@ public class TableUploader {
      */
     public void upload(String path) throws IOException, DatasetIntegrityError {
         TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
-        upload(tableAndDescription);
-    }
-
-    public void upload(TableAndDescriptionPair tableAndDescription) throws IOException, DatasetIntegrityError {
-        TableSaver.saveTable(
-                application,
+        Dataset dataset = new TableToDatasetAdapter(
                 tableAndDescription.getTable(),
                 tableAndDescription.getTableDescription()
         );
+        HealthDataset healthDataset = new HealthDatasetFromDataset(dataset);
+        application.save(healthDataset);
         LOG.info("Done persisting dataset");
     }
 

@@ -16,8 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.storage.beans;
 
-import org.metastringfoundation.data.DataPoint;
-
 import java.util.List;
 import java.util.Map;
 

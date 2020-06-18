@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.ElasticStore;
@@ -47,7 +47,7 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public void save(Dataset dataset) throws IOException {
+    public void save(HealthDataset dataset) throws IOException {
         datasetStore.save(dataset);
     }
 
