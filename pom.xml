@@ -91,7 +91,7 @@
                 <!-- for swagger-ui -->
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>download-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
                         <id>swagger-ui</id>
@@ -395,4 +395,17 @@
             <url>http://jenkins.staging.metastringfoundation.free.gen.in/plugin/repository/everything/</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <!-- added for the download-maven-plugin version 1.6.0 which was for some reason not being fetched from central -->
+            <id>sonatype-public-repository</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
