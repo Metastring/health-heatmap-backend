@@ -39,7 +39,7 @@ public class ExportResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public String exportAnyFieldsAsCSV(@QueryParam("fields") List<String> fields) throws IOException {
         List<Map<String, Object>> fieldCombos = app.getAllTermsOfFields(fields);
         return KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(fieldCombos);
