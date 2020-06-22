@@ -69,17 +69,17 @@ class ElasticTest {
     @Test
     public void correctlyGetsAllTermsOfAField() throws IOException {
         List<Map<String, String>> data = List.of(
-                Map.of("indicator", "mmr1"),
-                Map.of("indicator", "mmr2"),
-                Map.of("indicator", "mmr3"),
-                Map.of("indicator", "mmr4"),
-                Map.of("indicator", "mmr5"),
-                Map.of("indicator", "u5mr1"),
-                Map.of("indicator", "u5mr2"),
-                Map.of("indicator", "u5mr3"),
-                Map.of("indicator", "u5mr4"),
-                Map.of("indicator", "u5mr5"),
-                Map.of("indicator", "something_else")
+                Map.of("indicator", "mmr1", "source", "NFHS"),
+                Map.of("indicator", "mmr2", "source", "NFHS"),
+                Map.of("indicator", "mmr3", "source", "NFHS"),
+                Map.of("indicator", "mmr4", "source", "NFHS"),
+                Map.of("indicator", "mmr5", "source", "NFHS"),
+                Map.of("indicator", "u5mr1", "source", "NFHS"),
+                Map.of("indicator", "u5mr2", "source", "NFHS"),
+                Map.of("indicator", "u5mr3", "source", "NFHS"),
+                Map.of("indicator", "u5mr4", "source", "NFHS"),
+                Map.of("indicator", "u5mr5", "source", "NFHS"),
+                Map.of("indicator", "something_else", "source", "NFHS1")
         );
         elasticManager.save(new HealthDatasetFromDataset(new MapDataset(data)));
 
