@@ -98,6 +98,21 @@ public class ElasticQueryCompositeAggregation {
         return new TermsValuesSourceBuilder(fieldName).field(fieldName).order("asc");
     }
 
+    /**
+     * Gives you the result like this
+     * [
+     * {"key1": "value1", "key2": "value2"},
+     * {"key1": "value3", "key2": "value4"}
+     * ]
+     * <p>
+     * which is equivalent to a CSV
+     * <p>
+     * key1, key2
+     * value1, value2
+     * value3, value4
+     *
+     * @return a list of records where each record is key-value pairs
+     */
     public List<Map<String, Object>> getResult() {
         return result;
     }
