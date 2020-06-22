@@ -32,6 +32,7 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -82,5 +83,10 @@ public class ElasticManager implements DatasetStore {
                 .collect(Collectors.toList())
         );
         return searchResult;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllTermsOfFields(List<String> fields) throws IOException {
+        return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, fields);
     }
 }

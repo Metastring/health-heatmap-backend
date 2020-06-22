@@ -24,12 +24,15 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -61,9 +64,29 @@ public class ElasticQueryHelpers {
     }
 
     public static @NotNull SearchRequest getElasticSearchRequest(@NotNull QueryBuilder query, @NotNull String index) {
+        return getAnySearchRequest(query, null, index);
+    }
+
+    public static @NotNull SearchRequest getAggregationRequest(
+            @NotNull AggregationBuilder aggregation,
+            @NotNull String index
+    ) {
+        return getAnySearchRequest(null, aggregation, index);
+    }
+
+    public static @NotNull SearchRequest getAnySearchRequest(
+            @Nullable QueryBuilder query,
+            @Nullable AggregationBuilder aggregation,
+            @NotNull String index
+    ) {
         SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(query);
+        if (query != null) {
+            searchSourceBuilder.query(query);
+        }
+        if (aggregation != null) {
+            searchSourceBuilder.aggregation(aggregation);
+        }
         searchRequest.source(searchSourceBuilder);
         return searchRequest;
     }
@@ -72,5 +95,22 @@ public class ElasticQueryHelpers {
         return input.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().toString()));
+    }
+
+    public static List<Map<String, Object>> getAllTermsOfFields(RestHighLevelClient elastic, String index, List<String> fields) throws IOException {
+        ElasticQueryCompositeAggregation query = new ElasticQueryCompositeAggregation(
+                elastic,
+                index,
+                fields
+        );
+        return query.getResult();
+    }
+
+
+    public static SearchResponse doSearch(
+            RestHighLevelClient elastic,
+            SearchRequest searchRequest
+    ) throws IOException {
+        return elastic.search(searchRequest, RequestOptions.DEFAULT);
     }
 }

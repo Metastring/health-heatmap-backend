@@ -30,6 +30,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -62,6 +63,34 @@ class ElasticTest {
         assertEquals(List.of(
                 Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2"),
                 Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1")
-            ), actual.getResult());
+        ), actual.getResult());
+    }
+
+    @Test
+    public void correctlyGetsAllTermsOfAField() throws IOException {
+        List<Map<String, String>> data = List.of(
+                Map.of("indicator", "mmr1"),
+                Map.of("indicator", "mmr2"),
+                Map.of("indicator", "mmr3"),
+                Map.of("indicator", "mmr4"),
+                Map.of("indicator", "mmr5"),
+                Map.of("indicator", "u5mr1"),
+                Map.of("indicator", "u5mr2"),
+                Map.of("indicator", "u5mr3"),
+                Map.of("indicator", "u5mr4"),
+                Map.of("indicator", "u5mr5"),
+                Map.of("indicator", "something_else")
+        );
+        elasticManager.save(new HealthDatasetFromDataset(new MapDataset(data)));
+
+        refreshIndex();
+
+        List<String> expected = List.of("mmr1", "mmr2", "mmr3", "mmr4", "mmr5", "something_else",
+                "u5mr1", "u5mr2", "u5mr3", "u5mr4", "u5mr5");
+        List<String> actual = elasticManager.getAllTermsOfFields(List.of("indicator.keyword")).stream()
+                .map(m -> m.get("indicator.keyword"))
+                .map(String.class::cast)
+                .collect(Collectors.toList());
+        assertEquals(expected, actual);
     }
 }

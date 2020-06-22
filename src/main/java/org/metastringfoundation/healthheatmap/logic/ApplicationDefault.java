@@ -27,6 +27,8 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
@@ -54,6 +56,11 @@ public class ApplicationDefault implements Application {
     @Override
     public DataQueryResult query(DataQuery dataQuery) throws IOException {
         return datasetStore.query(dataQuery);
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllTermsOfFields(List<String> fields) throws IOException {
+        return datasetStore.getAllTermsOfFields(fields);
     }
 
     @Override
