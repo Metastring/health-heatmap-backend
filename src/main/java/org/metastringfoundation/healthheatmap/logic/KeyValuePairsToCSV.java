@@ -19,9 +19,11 @@ package org.metastringfoundation.healthheatmap.logic;
 import com.google.common.collect.Iterables;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.metastringfoundation.healthheatmap.helpers.ListAndMapUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,4 +60,15 @@ public class KeyValuePairsToCSV {
         csvPrinter.flush();
         return stringWriter.toString();
     }
+
+    public static String convertToCSVWithFirstElementKeysAsHeaders(List<Map<String, Object>> inputMaps) throws IOException {
+        if (inputMaps.size() < 1) {
+            throw new IllegalArgumentException("At least one item must be present in the input");
+        }
+        List<String> headers = new ArrayList<>(inputMaps.get(0).keySet());
+        List<Map<String, String>> stringOnlyMaps = ListAndMapUtils.getListOfStringOnlyMaps(inputMaps);
+        return new KeyValuePairsToCSV(stringOnlyMaps, headers).getCSV();
+    }
+
+
 }
