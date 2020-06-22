@@ -21,10 +21,15 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public interface DatasetStore {
     void save(HealthDataset dataset) throws IOException;
 
     void shutdown() throws IOException;
+
     DataQueryResult query(DataQuery dataQuery) throws IOException;
+
+    List<Map<String, Object>> getAllTermsOfFields(List<String> field) throws IOException;
 }
