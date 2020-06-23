@@ -25,7 +25,7 @@ public class CLI {
     /**
      * Option to start the server
      */
-    final static Option server = new Option("s", "server", false, "Run server");
+    final static Option server = new Option("s", "server", false, "Run the API server");
 
     /**
      * Path to a file that needs to be uploaded to the dataset
@@ -33,23 +33,23 @@ public class CLI {
     final static Option path = Option.builder("p")
             .hasArg()
             .longOpt("path")
-            .desc("Path to the file")
+            .desc("Path to the file/directory to be uploaded")
             .build();
 
     final static Option batch = Option.builder("b")
             .longOpt("batch")
-            .desc("Whether the data is a batch file")
+            .desc("Whether the path specified requires a bulk upload (i.e., is a directory) (only use with -p)")
             .build();
 
     final static Option dry = Option.builder("d")
             .longOpt("dry")
-            .desc("Whether to do a dry run")
+            .desc("When used, prints the dataset instead of uploading. Only supported when -b is not given.")
             .build();
 
     final static Option transformersDirectory = Option.builder("t")
             .longOpt("transformers")
             .hasArg()
-            .desc("Directory which contains the data transformers")
+            .desc("Directory which contains the data transformers that need to run on the data before it gets uploaded")
             .build();
 
 
