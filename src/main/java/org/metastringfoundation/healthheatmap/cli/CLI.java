@@ -46,11 +46,18 @@ public class CLI {
             .desc("Whether to do a dry run")
             .build();
 
+    final static Option transformersDirectory = Option.builder("t")
+            .longOpt("transformers")
+            .hasArg()
+            .desc("Directory which contains the data transformers")
+            .build();
+
 
     public final static Options options = new Options()
             .addOption(path)
             .addOption(batch)
             .addOption(dry)
+            .addOption(transformersDirectory)
             .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {

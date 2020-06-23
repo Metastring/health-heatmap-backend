@@ -27,6 +27,7 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -43,10 +45,17 @@ public class TableUploader {
     private static final Logger LOG = LogManager.getLogger(TableUploader.class);
 
     private final Application application;
+    private final List<DataTransformer> transformers;
 
     @Inject
     public TableUploader(Application application) {
         this.application = application;
+        this.transformers = null;
+    }
+
+    public TableUploader(Application application, List<DataTransformer> transformers) {
+        this.application = application;
+        this.transformers = transformers;
     }
 
     /**
@@ -60,7 +69,12 @@ public class TableUploader {
                 tableAndDescription.getTable(),
                 tableAndDescription.getTableDescription()
         );
-        HealthDataset healthDataset = new HealthDatasetFromDataset(dataset);
+        HealthDataset healthDataset;
+        if (transformers == null) {
+            healthDataset = new HealthDatasetFromDataset(dataset);
+        } else {
+            healthDataset = new HealthDatasetFromDataset(dataset, transformers);
+        }
         application.save(healthDataset);
         LOG.info("Done persisting dataset");
     }

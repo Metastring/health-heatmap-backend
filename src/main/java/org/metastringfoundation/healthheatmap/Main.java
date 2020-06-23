@@ -22,12 +22,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.cli.CLI;
+import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.ApplicationDefault;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class Main {
     private static final Logger LOG = LogManager.getLogger(Main.class);
@@ -37,6 +39,7 @@ public class Main {
             CommandLine commandLine = new CLI().parse(args);
 
             String path = commandLine.getOptionValue("path");
+            String transformersDir = commandLine.getOptionValue("transformers");
             boolean batch = commandLine.hasOption("batch");
             boolean dry = commandLine.hasOption("dry");
             boolean serverShouldStart = commandLine.hasOption("server");
@@ -52,9 +55,21 @@ public class Main {
                     }
                 }));
                 Application application = ApplicationDefault.createPreconfiguredApplicationDefault();
-                TableUploader tableUploader = new TableUploader(application);
+                TableUploader tableUploader;
+                if (transformersDir != null && !transformersDir.isEmpty()) {
+                    tableUploader = new TableUploader(
+                            application,
+                            DataTransformersReader.getFromPath(Paths.get(transformersDir)).getTransformers()
+                    );
+                } else {
+                    tableUploader = new TableUploader(application);
+                }
                 if (dry) {
-                    tableUploader.print(path);
+                    if (batch) {
+                        System.out.println("Printing in batch not yet supported");
+                    } else {
+                        tableUploader.print(path);
+                    }
                 } else if (batch) {
                     tableUploader.uploadMultiple(path);
                 } else {

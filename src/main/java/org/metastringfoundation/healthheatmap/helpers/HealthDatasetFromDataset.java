@@ -32,6 +32,11 @@ public class HealthDatasetFromDataset implements HealthDataset {
         this.dataset = dataset;
     }
 
+    public HealthDatasetFromDataset(Dataset dataset, List<DataTransformer> transformers) {
+        this.dataset = dataset;
+        setTransformers(transformers);
+    }
+
     public void setTransformers(List<DataTransformer> transformers) {
         dataTransformers = transformers;
     }
