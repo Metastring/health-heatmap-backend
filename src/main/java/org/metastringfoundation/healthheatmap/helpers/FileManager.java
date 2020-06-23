@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileManager {
@@ -56,5 +57,21 @@ public class FileManager {
                 .peek(file -> LOG.debug("Selected: " + file.toString()))
                 .map(Path::toAbsolutePath)
                 .collect(Collectors.toSet());
+    }
+
+    public static List<Path> getFilesInDirectoryInOrder(Path startingDir) throws IOException {
+        return Files.walk(startingDir)
+                .filter(Files::isRegularFile)
+                .map(Path::toAbsolutePath)
+                .sorted(Path::compareTo)
+                .collect(Collectors.toList());
+    }
+
+    public static String readFileAsString(Path path) {
+        try {
+            return Files.readString(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -39,6 +39,14 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
         rules = parseCSVToRules(csvParser);
     }
 
+    public static DataTransformerFromSpreadsheet getDataTransformerCrashingOnError(String spreadsheet) {
+        try {
+            return new DataTransformerFromSpreadsheet(spreadsheet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private List<String> getKeyRawHeaders(CSVParser csvParser) {
         return csvParser.getHeaderNames().stream()
                 .filter(header -> header.startsWith("match "))

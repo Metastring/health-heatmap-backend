@@ -11,7 +11,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="data-reader" target="9" />
-      <module name="healthheatmap-api" target="9" />
+      <module name="healthheatmap-api" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
