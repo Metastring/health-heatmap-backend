@@ -28,7 +28,7 @@ public class PathManager {
 
     public static String guessMetadataPath(Path path) {
         Path basedir = path.getParent();
-        LOG.info("basedir is " + basedir);
+        LOG.debug("basedir is " + basedir);
         String fileName = path.getFileName().toString();
         String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
         return Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
