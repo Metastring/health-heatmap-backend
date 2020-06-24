@@ -45,7 +45,7 @@ public class TableAndDescriptionPair {
 
     private TableDescription readIndividualTableDescription(String tablePath) throws IOException {
         String metadataPath = guessMetadataPath(tablePath);
-        LOG.info("Assuming metadata is at " + metadataPath);
+        LOG.debug("Assuming metadata is at " + metadataPath);
         return TableDescription.fromPath(metadataPath);
     }
 
@@ -55,7 +55,7 @@ public class TableAndDescriptionPair {
             TableDescription rootMetadata = TableDescription.fromPath(rootMetadataPath);
             tableDescription.getFieldDescriptionList().addAll(rootMetadata.getFieldDescriptionList());
         } catch (IOException ex) {
-            LOG.info("Ignoring optional rootMetadata's error");
+            LOG.debug("Ignoring optional rootMetadata's error");
         }
     }
 
