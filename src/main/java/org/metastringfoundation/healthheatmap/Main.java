@@ -43,6 +43,7 @@ public class Main {
             boolean batch = commandLine.hasOption("batch");
             boolean dry = commandLine.hasOption("dry");
             boolean serverShouldStart = commandLine.hasOption("server");
+            boolean recreateIndex = commandLine.hasOption("recreate");
 
             if (serverShouldStart) {
                 Server.startProductionServer();
@@ -55,6 +56,9 @@ public class Main {
                     }
                 }));
                 Application application = ApplicationDefault.createPreconfiguredApplicationDefault();
+                if (recreateIndex) {
+                    application.factoryReset();
+                }
                 TableUploader tableUploader;
                 if (transformersDir != null && !transformersDir.isEmpty()) {
                     tableUploader = new TableUploader(

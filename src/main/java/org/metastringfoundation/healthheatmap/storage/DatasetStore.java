@@ -32,4 +32,6 @@ public interface DatasetStore {
     DataQueryResult query(DataQuery dataQuery) throws IOException;
 
     List<Map<String, Object>> getAllTermsOfFields(List<String> field) throws IOException;
+
+    void factoryReset() throws IOException;
 }

@@ -41,6 +41,11 @@ public class CLI {
             .desc("Whether the path specified requires a bulk upload (i.e., is a directory) (only use with -p)")
             .build();
 
+    final static Option recreateIndex = Option.builder("z")
+            .longOpt("recreate")
+            .desc("Whether elastic index should be deleted before entering data")
+            .build();
+
     final static Option dry = Option.builder("d")
             .longOpt("dry")
             .desc("When used, prints the dataset instead of uploading. Only supported when -b is not given.")
@@ -58,6 +63,7 @@ public class CLI {
             .addOption(batch)
             .addOption(dry)
             .addOption(transformersDirectory)
+            .addOption(recreateIndex)
             .addOption(server);
 
     public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {
