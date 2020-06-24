@@ -64,6 +64,11 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public void factoryReset() throws IOException {
+        datasetStore.factoryReset();
+    }
+
+    @Override
     public void shutdown() throws IOException {
         datasetStore.shutdown();
     }

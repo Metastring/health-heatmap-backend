@@ -19,6 +19,8 @@ package org.metastringfoundation.healthheatmap.storage;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -70,6 +72,17 @@ public class ElasticManager implements DatasetStore {
             request.add(new IndexRequest(dataIndex).source(dataPoint));
         }
         elastic.bulk(request, RequestOptions.DEFAULT);
+    }
+
+    @Override
+    public void factoryReset() throws IOException {
+        LOG.info("Deleting index: " + dataIndex);
+        DeleteIndexRequest request = new DeleteIndexRequest(dataIndex);
+        try {
+            elastic.indices().delete(request, RequestOptions.DEFAULT);
+        } catch (ElasticsearchException ex) {
+            LOG.info("Ignoring missing index");
+        }
     }
 
     @Override
