@@ -105,6 +105,6 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
 
     private <T extends Map<String, String>> Map<String, String> lookupKeyExtract(T data) {
         return keyHeaders.stream()
-                .collect(Collectors.toMap(k -> k, data::get));
+                .collect(Collectors.toMap(k -> k, k -> data.getOrDefault(k, "")));
     }
 }
