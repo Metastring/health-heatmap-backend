@@ -24,16 +24,16 @@ Data sourced from public datasets is curated, annotated, and organized in [this 
 
 * Java 11+ is required.
 * Elasticsearch 7 is required.
-* Clone this repo. Run `mvn clean compile package`. A `hhm-api.jar` file that contains all dependencies will be created in target folder.
-* Run `java -jar target/hhm-api.jar` for command line options.
+* Clone this repo. Run `mvn clean compile package`. 
+* Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main` for command line options.
 
 
 ## Add data
 
 * `git clone git@gitlab.com:asdofindia/healthheatmap-data` somewhere, say /home/metastring/healthheatmap-data
-* Run `java -jar target/hhm-api.jar --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
+* Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
 
 ## Run server
 
-* Run `java -jar target/hhm-api.jar --server`
-* Go to http://localhost:8080/data-reader/
+* Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main --server`
+* Go to http://localhost:8080/doc/
