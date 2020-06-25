@@ -5,6 +5,16 @@
     "description": "Query a multidimensional health data warehouse",
     "version": "0.0.1"
   },
+  "servers": [
+    {
+      "url": "http://hhm.optimus.metastringfoundation.free.gen.in/api/",
+      "description": "staging server"
+    },
+    {
+      "url": "http://localhost:8080/api/",
+      "description": "localhost"
+    }
+  ],
   "paths": {
     "/data": {
       "get": {
