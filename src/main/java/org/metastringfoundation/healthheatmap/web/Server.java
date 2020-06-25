@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class Server {
     private static final Logger LOG = LogManager.getLogger(Server.class);
-    public static final String DEPLOYMENT_URI = "http://localhost:8080/data-reader/";
+    public static final String DEPLOYMENT_URI = "http://localhost:8080/";
     public static final String BASE_URI = DEPLOYMENT_URI + "api/";
 
     public static HttpServer server;
