@@ -11,7 +11,7 @@
         <jackson.version>2.10.3</jackson.version>
         <cdi.api.version>2.0</cdi.api.version>
         <weld.servlet.core.version>3.1.4.Final</weld.servlet.core.version>
-        <weld.se.core.version>3.1.1.Final</weld.se.core.version>
+        <weld.se.core.version>3.1.4.Final</weld.se.core.version>
         <junit.version>5.6.0</junit.version>
     </properties>
     <build>
@@ -39,6 +39,20 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
@@ -50,43 +64,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
-                <configuration>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <!-- to prevent security exceptions -->
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <!-- to allow autodiscovery files (of jersey) to get concatenated -->
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.metastringfoundation.healthheatmap.Main</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <!-- for swagger-ui -->
                 <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -325,20 +303,14 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- these are dependencies that allow CDI to work in SE, whether for tests or for deployment -->
-        <!-- but jersey-cdi2-se causes conflicts if deployed to tomcat. So we will put it in provided scope now -->
-        <!-- and later add it in a profile that packages it, if needed -->
-        <!-- We will do the same for weld-se-core -->
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-cdi2-se</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
             <version>${weld.se.core.version}</version>
-            <scope>provided</scope>
         </dependency>
 
 
@@ -359,35 +331,6 @@
             <version>2.1.1</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>tomcat</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jersey.ext.cdi</groupId>
-                    <artifactId>jersey-cdi1x</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>se</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jersey.inject</groupId>
-                    <artifactId>jersey-cdi2-se</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.weld.se</groupId>
-                    <artifactId>weld-se-core</artifactId>
-                    <version>${weld.se.core.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 
     <repositories>
         <repository>
