@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
@@ -28,26 +29,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@Path("export")
-public class ExportResource {
-    private static final Logger LOG = LogManager.getLogger(ExportResource.class);
+@Path("dimensions")
+public class DimensionsResource {
+    private static final Logger LOG = LogManager.getLogger(DimensionsResource.class);
     private final Application app;
 
     @Inject
-    public ExportResource(Application app) {
+    public DimensionsResource(Application app) {
         this.app = app;
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String exportAnyFieldsAsCSV(@QueryParam("fields") List<String> fields) throws IOException {
+    public String exportAnyFieldsAsCSV(@QueryParam("include") List<String> fields) throws IOException {
         List<Map<String, Object>> fieldCombos = app.getAllTermsOfFields(fields);
         return KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(fieldCombos);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Map<String, Object>> exportAnyField(@QueryParam("fields") List<String> fields) throws IOException {
+    public List<Map<String, Object>> exportAnyField(@QueryParam("include") List<String> fields) throws IOException {
         LOG.debug("Fetching " + fields);
         List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
         LOG.debug(result);
@@ -57,6 +58,7 @@ public class ExportResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Use this endpoint to fetch values of various dimensions. Eg: source, indicator, entity.state, entity.district, etc")
     public List<Map<String, Object>> exportAnyFieldAdvanced(List<String> fields) throws IOException {
         LOG.debug("Fetching " + fields);
         List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
