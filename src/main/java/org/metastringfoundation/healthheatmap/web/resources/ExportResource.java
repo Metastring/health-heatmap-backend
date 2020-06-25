@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 
@@ -31,6 +33,7 @@ import java.util.Map;
 
 @Path("export")
 public class ExportResource {
+    private static final Logger LOG = LogManager.getLogger(ExportResource.class);
     private final Application app;
 
     @Inject
@@ -43,5 +46,14 @@ public class ExportResource {
     public String exportAnyFieldsAsCSV(@QueryParam("fields") List<String> fields) throws IOException {
         List<Map<String, Object>> fieldCombos = app.getAllTermsOfFields(fields);
         return KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(fieldCombos);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Map<String, Object>> exportAnyField(@QueryParam("fields") List<String> fields) throws IOException {
+        LOG.debug("Fetching " + fields);
+        List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
+        LOG.debug(result);
+        return result;
     }
 }

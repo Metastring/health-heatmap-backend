@@ -226,7 +226,7 @@
         <!-- for JSON responses in jersey -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-moxy</artifactId>
+            <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
 
         <!-- while reading and writing json metadata and other files -->
