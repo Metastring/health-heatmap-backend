@@ -16,7 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import io.swagger.v3.oas.annotations.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
@@ -58,7 +57,6 @@ public class DimensionsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Use this endpoint to fetch values of various dimensions. Eg: source, indicator, entity.state, entity.district, etc")
     public List<Map<String, Object>> exportAnyFieldAdvanced(List<String> fields) throws IOException {
         LOG.debug("Fetching " + fields);
         List<Map<String, Object>> result = app.getAllTermsOfFields(fields);

@@ -16,8 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.web.beans;
 
-import io.swagger.v3.oas.annotations.Parameter;
-
 import javax.ws.rs.QueryParam;
 import java.util.List;
 
@@ -28,19 +26,16 @@ public class DataRequest {
     private List<String> geographies;
     private List<String> sources;
 
-    @Parameter(description = "List of indicators")
     @QueryParam("indicators")
     public void setIndicators(String indicators) {
         this.indicators = commaSeparated(indicators);
     }
 
-    @Parameter(description = "List of geographies")
     @QueryParam("geographies")
     public void setGeographies(String geographies) {
         this.geographies = commaSeparated(geographies);
     }
 
-    @Parameter(description = "List of sources")
     @QueryParam("sources")
     public void setSources(String sources) {
         this.sources = commaSeparated(sources);

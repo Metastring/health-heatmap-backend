@@ -16,7 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import io.swagger.v3.oas.annotations.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
@@ -56,12 +55,6 @@ public class DataResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "SWAGGERFAIL: https://github.com/swagger-api/swagger-core/issues/2721\n" +
-            "This endpoint actually takes in a MultivaluedMap<String, String> " +
-            "(ie, a map with a key which is a string and value which is an array of strings. " +
-            "Perhaps you can use curl to send such a JSON as POST body. " +
-            "The key should be dimensions like 'indicator', 'source', etc. " +
-            "Values should be the value of these dimensions as it appears in the dataset.")
     public DataResponse getData(
             MultivaluedHashMap<String, String> params
     ) throws IOException {
