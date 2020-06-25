@@ -1,6 +1,6 @@
 openAPI:
   servers:
-    - url: http://localhost:8080/data-reader/api
-      description: local server
-    - url: http://206.189.142.241/data-reader/api
+    - url: http://hhm.optimus.metastringfoundation.free.gen.in/api
       description: staging host
+    - url: http://localhost:8080/api
+      description: local server
