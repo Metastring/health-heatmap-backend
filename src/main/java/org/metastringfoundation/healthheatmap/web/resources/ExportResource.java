@@ -22,10 +22,7 @@ import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
@@ -51,6 +48,16 @@ public class ExportResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Map<String, Object>> exportAnyField(@QueryParam("fields") List<String> fields) throws IOException {
+        LOG.debug("Fetching " + fields);
+        List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
+        LOG.debug(result);
+        return result;
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Map<String, Object>> exportAnyFieldAdvanced(List<String> fields) throws IOException {
         LOG.debug("Fetching " + fields);
         List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
         LOG.debug(result);
