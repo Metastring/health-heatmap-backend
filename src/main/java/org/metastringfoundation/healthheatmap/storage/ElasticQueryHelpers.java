@@ -58,7 +58,7 @@ public class ElasticQueryHelpers {
         LOG.debug("Incoming query: " + dataQuery);
         for (Map.Entry<String, Collection<String>> mustMatchTerm : dataQuery.getMust().entrySet()) {
             LOG.debug("Adding must match term: " + mustMatchTerm.getKey());
-            query.must(termsQuery(mustMatchTerm.getKey() + ".keyword", mustMatchTerm.getValue()));
+            query.must(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
         }
         return query;
     }

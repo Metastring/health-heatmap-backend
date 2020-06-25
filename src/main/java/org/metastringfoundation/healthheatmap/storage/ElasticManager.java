@@ -27,6 +27,9 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.search.SearchHit;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
@@ -76,6 +79,38 @@ public class ElasticManager implements DatasetStore {
 
     @Override
     public void factoryReset() throws IOException {
+        deleteIndex();
+        createIndexWithCorrectDynamicMapping();
+    }
+
+    private void createIndexWithCorrectDynamicMapping() throws IOException {
+        CreateIndexRequest request = new CreateIndexRequest(dataIndex);
+        XContentBuilder dynamicTemplate = XContentFactory.jsonBuilder();
+        dynamicTemplate.startObject();
+        dynamicTemplate.startArray("dynamic_templates");
+        {
+            dynamicTemplate.startObject();
+            {
+                dynamicTemplate.startObject("strings_as_keywords");
+                {
+                    dynamicTemplate.field("match_mapping_type", "string");
+                    dynamicTemplate.startObject("mapping");
+                    {
+                        dynamicTemplate.field("type", "keyword");
+                    }
+                    dynamicTemplate.endObject();
+                }
+                dynamicTemplate.endObject();
+            }
+            dynamicTemplate.endObject();
+        }
+        dynamicTemplate.endArray();
+        dynamicTemplate.endObject();
+        request.mapping(dynamicTemplate);
+        elastic.indices().create(request, RequestOptions.DEFAULT);
+    }
+
+    private void deleteIndex() throws IOException {
         LOG.info("Deleting index: " + dataIndex);
         DeleteIndexRequest request = new DeleteIndexRequest(dataIndex);
         try {
