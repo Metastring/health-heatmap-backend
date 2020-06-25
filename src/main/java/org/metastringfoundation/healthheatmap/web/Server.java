@@ -66,7 +66,7 @@ public class Server {
             final Properties properties = new Properties();
             properties.load(Server.class.getClassLoader().getResourceAsStream("project.properties"));
             String staticDir = "target/" + properties.getProperty("artifactId") + "-" + properties.getProperty("version");
-            String staticRoute = "/data-reader";
+            String staticRoute = "/doc";
             LOG.info("Serving static contents from " + staticDir + " at " + staticRoute);
             server.getServerConfiguration().addHttpHandler(new StaticHttpHandler(staticDir), staticRoute);
         } catch (IOException e) {
