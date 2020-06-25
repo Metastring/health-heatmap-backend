@@ -1,6 +1,0 @@
-openAPI:
-  servers:
-    - url: http://hhm.optimus.metastringfoundation.free.gen.in/api
-      description: staging host
-    - url: http://localhost:8080/api
-      description: local server
