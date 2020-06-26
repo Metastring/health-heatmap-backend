@@ -131,6 +131,9 @@ public class TableUploader {
 
     private String tryConvert(Set<Map<String, String>> keyFailure) {
         List<Map<String, String>> keyFailureRecords = new ArrayList<>(keyFailure);
+        if (keyFailureRecords.size() < 1) {
+            return "NO KEY FAILURES";
+        }
         try {
             return KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(keyFailureRecords);
         } catch (IOException e) {
