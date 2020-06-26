@@ -20,7 +20,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,6 +40,23 @@ class DataTransformerFromSpreadsheetTest {
                 "newSource", "NFHS-4",
                 "newIndicator", "MMR");
         Map<String, String> actual = transformer.transform(mutableData);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldCollectKeyLookupFailuresCorrectly() throws IOException {
+        var spreadsheet = "match source,match indicator,source,indicator\nNFHS4,MMRate,NFHS-4,MMR\n";
+        var transformer = new DataTransformerFromSpreadsheet(spreadsheet);
+        var data = List.of(
+                new HashMap<>(Map.of("source", "NFHS4", "indicator", "MMRate")),
+                new HashMap<>(Map.of("source", "NFHS-4", "indicator", "MMRate"))
+        );
+        var expected = Set.of(Map.of(
+                "source", "NFHS-4",
+                "indicator", "MMRate"
+        ));
+        data.forEach((transformer::transform));
+        var actual = transformer.getUnmatchedKeysFound();
         assertEquals(expected, actual);
     }
 }
