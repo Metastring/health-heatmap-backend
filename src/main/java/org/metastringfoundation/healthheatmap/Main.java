@@ -69,11 +69,7 @@ public class Main {
                     tableUploader = new TableUploader(application);
                 }
                 if (dry) {
-                    if (batch) {
-                        System.out.println("Printing in batch not yet supported");
-                    } else {
-                        tableUploader.print(path);
-                    }
+                    tableUploader.print(path);
                 } else if (batch) {
                     tableUploader.uploadMultiple(path);
                 } else {
