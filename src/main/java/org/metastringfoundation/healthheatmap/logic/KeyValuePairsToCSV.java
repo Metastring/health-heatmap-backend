@@ -61,7 +61,7 @@ public class KeyValuePairsToCSV {
         return stringWriter.toString();
     }
 
-    public static String convertToCSVWithFirstElementKeysAsHeaders(List<Map<String, Object>> inputMaps) throws IOException {
+    public static <T> String convertToCSVWithFirstElementKeysAsHeaders(List<Map<String, T>> inputMaps) throws IOException {
         if (inputMaps.size() < 1) {
             throw new IllegalArgumentException("At least one item must be present in the input");
         }

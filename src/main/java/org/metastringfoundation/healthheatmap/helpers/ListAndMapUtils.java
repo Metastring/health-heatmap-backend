@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class ListAndMapUtils {
 
-    public static Map<String, String> getStringOnlyMap(Map<String, Object> input) {
+    public static <T> Map<String, String> getStringOnlyMap(Map<String, T> input) {
         return input.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -30,7 +30,7 @@ public class ListAndMapUtils {
                 ));
     }
 
-    public static List<Map<String, String>> getListOfStringOnlyMaps(List<Map<String, Object>> inputMaps) {
+    public static <T> List<Map<String, String>> getListOfStringOnlyMaps(List<Map<String, T>> inputMaps) {
         return inputMaps.stream()
                 .map(ListAndMapUtils::getStringOnlyMap)
                 .collect(Collectors.toList());
