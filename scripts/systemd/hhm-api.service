@@ -1,0 +1,9 @@
+[Unit]
+Description=Health Heat Map service
+
+[Service]
+WorkingDirectory=%h/src/github/Metastring/health-heat-map-api
+ExecStart=/usr/lib/jvm/adoptopenjdk-11-hotspot-amd64/bin/java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main --server
+
+[Install]
+WantedBy=default.target
