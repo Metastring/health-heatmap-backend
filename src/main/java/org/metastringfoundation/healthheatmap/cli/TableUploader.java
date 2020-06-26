@@ -28,14 +28,14 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
+import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -114,6 +114,29 @@ public class TableUploader {
                         e.printStackTrace();
                     }
                 });
+        printTransformersReport();
+    }
+
+    private void printTransformersReport() {
+        if (transformers != null) {
+            transformers.forEach(this::printTransformerReport);
+        }
+    }
+
+    private void printTransformerReport(DataTransformer transformer) {
+        Set<Map<String, String>> keyFailure = transformer.getUnmatchedKeysFound();
+        String csv = tryConvert(keyFailure);
+        LOG.info(csv);
+    }
+
+    private String tryConvert(Set<Map<String, String>> keyFailure) {
+        List<Map<String, String>> keyFailureRecords = new ArrayList<>(keyFailure);
+        try {
+            return KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(keyFailureRecords);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "COULD NOT GENERATE CSV";
+        }
     }
 
     public void uploadMultipleFromList(Path path) {
