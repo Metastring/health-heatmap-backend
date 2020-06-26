@@ -21,8 +21,10 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DataTransformerFromSpreadsheet implements DataTransformer {
@@ -30,6 +32,7 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
     private final List<String> keyRawHeaders;
     private final List<String> keyHeaders;
     private final List<String> valueHeaders;
+    private final Set<Map<String, String>> lookupFailureKeys = new HashSet<>();
 
     public DataTransformerFromSpreadsheet(String spreadsheet) throws IOException {
         CSVParser csvParser = CSVParser.parse(spreadsheet, CSVFormat.DEFAULT.withFirstRecordAsHeader());
@@ -92,15 +95,23 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
 
     @Override
     public <T extends Map<String, String>> T transform(T data) {
-        Map<String, String> valuesToAdd = rulesLookup(data);
+        Map<String, String> lookupKey = lookupKeyExtract(data);
+        Map<String, String> valuesToAdd = rulesLookup(lookupKey);
         if (valuesToAdd != null) {
             data.putAll(valuesToAdd);
+        } else {
+            lookupFailureKeys.add(lookupKey);
         }
         return data;
     }
 
-    private <T extends Map<String, String>> Map<String, String> rulesLookup(T data) {
-        return rules.get(lookupKeyExtract(data));
+    @Override
+    public Set<Map<String, String>> getUnmatchedKeysFound() {
+        return lookupFailureKeys;
+    }
+
+    private <T extends Map<String, String>> Map<String, String> rulesLookup(Map<String, String> key) {
+        return rules.get(key);
     }
 
     private <T extends Map<String, String>> Map<String, String> lookupKeyExtract(T data) {
