@@ -80,14 +80,51 @@ public class TableUploader {
     }
 
     public void print(String path) throws IOException, DatasetIntegrityError {
-        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
-        Dataset dataset = new TableToDatasetAdapter(
-                tableAndDescription.getTable(),
-                tableAndDescription.getTableDescription()
-        );
+        if (isSingleRegularFile(path)) {
+            printSingle(path);
+        } else {
+            printMultiple(path);
+        }
+
+    }
+
+    private void printMultiple(String path) throws IOException {
+        Collection<Path> dataFiles = FileManager.getDataFilesInDirectory(Paths.get(path));
+        dataFiles.stream()
+                .peek(file -> LOG.info("File: " + file.toString()))
+                .forEach(file -> {
+                    try {
+                        printSomeDataPointsOf(file.toString());
+                    } catch (IOException | DatasetIntegrityError e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private void printSomeDataPointsOf(String path) throws IOException, DatasetIntegrityError {
+        Dataset dataset = getDataset(path);
+        dataset.getData().stream()
+                .limit(5)
+                .forEach(System.out::println);
+    }
+
+    private boolean isSingleRegularFile(String path) {
+        return Files.isRegularFile(Paths.get(path));
+    }
+
+    private void printSingle(String path) throws IOException, DatasetIntegrityError {
+        Dataset dataset = getDataset(path);
         for (DataPoint dataPoint : dataset.getData()) {
             System.out.println(dataPoint);
         }
+    }
+
+    private Dataset getDataset(String path) throws DatasetIntegrityError, IOException {
+        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
+        return new TableToDatasetAdapter(
+                tableAndDescription.getTable(),
+                tableAndDescription.getTableDescription()
+        );
     }
 
     public void uploadSingle(String path) throws IOException, DatasetIntegrityError {
