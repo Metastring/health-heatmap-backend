@@ -56,7 +56,8 @@ public class FileManager {
                 .filter(file -> file.toString().endsWith(".csv"))
                 .peek(file -> LOG.debug("Selected: " + file.toString()))
                 .map(Path::toAbsolutePath)
-                .collect(Collectors.toSet());
+                .sorted(Path::compareTo)
+                .collect(Collectors.toList());
     }
 
     public static List<Path> getFilesInDirectoryInOrder(Path startingDir) throws IOException {
