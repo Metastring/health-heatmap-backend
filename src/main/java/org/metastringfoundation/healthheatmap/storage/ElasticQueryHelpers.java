@@ -58,7 +58,7 @@ public class ElasticQueryHelpers {
         LOG.debug("Incoming query: " + dataQuery);
         for (Map.Entry<String, Collection<String>> mustMatchTerm : dataQuery.getMust().entrySet()) {
             LOG.debug("Adding must match term: " + mustMatchTerm.getKey());
-            query.must(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
+            query.filter(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
         }
         return query;
     }
@@ -81,6 +81,7 @@ public class ElasticQueryHelpers {
     ) {
         SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.size(10000);
         if (query != null) {
             searchSourceBuilder.query(query);
         }
