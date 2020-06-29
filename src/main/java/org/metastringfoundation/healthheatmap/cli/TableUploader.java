@@ -94,11 +94,18 @@ public class TableUploader {
                 .peek(file -> LOG.info("File: " + file.toString()))
                 .forEach(file -> {
                     try {
-                        printSomeDataPointsOf(file.toString());
+                        printAllDataPointsOf(file.toString());
+                        System.out.println("\n\n\n");
                     } catch (IOException | DatasetIntegrityError e) {
                         e.printStackTrace();
                     }
                 });
+    }
+
+    private void printAllDataPointsOf(String path) throws IOException, DatasetIntegrityError {
+        Dataset dataset = getDataset(path);
+        dataset.getData()
+                .forEach(System.out::println);
     }
 
     private void printSomeDataPointsOf(String path) throws IOException, DatasetIntegrityError {
