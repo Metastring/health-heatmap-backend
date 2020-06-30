@@ -30,10 +30,13 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.search.SearchHit;
+import org.metastringfoundation.datareader.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,10 +47,11 @@ import java.util.stream.Collectors;
 import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
 
 @ElasticStore
-public class ElasticManager implements DatasetStore {
+public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
     private static final Logger LOG = LogManager.getLogger(ElasticManager.class);
     private final RestHighLevelClient elastic;
     public final String dataIndex = "data";
+    public final String downloadsIndex = "downloads";
 
     public ElasticManager() {
         this("localhost", 9200);
@@ -136,5 +140,13 @@ public class ElasticManager implements DatasetStore {
     @Override
     public List<Map<String, Object>> getAllTermsOfFields(List<String> fields) throws IOException {
         return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, fields);
+    }
+
+    @Override
+    public void logDownload(DownloadRequest downloadRequest) throws IOException {
+        IndexRequest request = new IndexRequest(downloadsIndex);
+        String jsonData = Jsonizer.asJSON(downloadRequest);
+        request.source(jsonData, XContentType.JSON);
+        elastic.index(request, RequestOptions.DEFAULT);
     }
 }

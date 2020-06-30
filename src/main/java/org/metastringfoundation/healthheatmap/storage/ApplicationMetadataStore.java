@@ -18,7 +18,9 @@ package org.metastringfoundation.healthheatmap.storage;
 
 import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 
+import java.io.IOException;
+
 public interface ApplicationMetadataStore {
 
-    void logDownload(DownloadRequest downloadRequest);
+    void logDownload(DownloadRequest downloadRequest) throws IOException;
 }

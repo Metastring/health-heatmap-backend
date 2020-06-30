@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.ElasticStore;
@@ -38,15 +39,22 @@ import java.util.Map;
 public class ApplicationDefault implements Application {
     private static final Logger LOG = LogManager.getLogger(ApplicationDefault.class);
     public final DatasetStore datasetStore;
+    public final ApplicationMetadataStore metadataStore;
 
-    public static Application createPreconfiguredApplicationDefault() {
-        DatasetStore datasetStore = new ElasticManager();
-        return new ApplicationDefault(datasetStore);
+    public ApplicationDefault(@ElasticStore DatasetStore datasetStore) {
+        this(datasetStore, (ApplicationMetadataStore) datasetStore);
     }
 
     @Inject
-    public ApplicationDefault(@ElasticStore DatasetStore datasetStore) {
+    public ApplicationDefault(@ElasticStore DatasetStore datasetStore, @ElasticStore ApplicationMetadataStore metadataStore) {
         this.datasetStore = datasetStore;
+        this.metadataStore = metadataStore;
+    }
+
+    public static Application createPreconfiguredApplicationDefault() {
+        DatasetStore datasetStore = new ElasticManager();
+        ApplicationMetadataStore metadataStore = (ApplicationMetadataStore) datasetStore;
+        return new ApplicationDefault(datasetStore);
     }
 
     @Override
@@ -75,7 +83,7 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public void logDownload(DownloadRequest downloadRequest) {
-        // TODO: log download to storage
+    public void logDownload(DownloadRequest downloadRequest) throws IOException {
+        metadataStore.logDownload(downloadRequest);
     }
 }
