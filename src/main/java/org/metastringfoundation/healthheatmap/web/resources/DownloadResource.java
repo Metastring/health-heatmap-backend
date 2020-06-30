@@ -19,47 +19,43 @@ package org.metastringfoundation.healthheatmap.web.resources;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.beanconverters.DataQueryResultToDataResponse;
-import org.metastringfoundation.healthheatmap.logic.beanconverters.DataRequestToDataQuery;
+import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.MultiMapToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
-import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
+import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 
-@Path("data")
-public class DataResource {
-    private static final Logger LOG = LogManager.getLogger(DataResource.class);
+@Path("download")
+public class DownloadResource {
+    private static final Logger LOG = LogManager.getLogger(DownloadResource.class);
 
     private final Application app;
 
     @Inject
-    public DataResource(Application app) {
+    public DownloadResource(Application app) {
         this.app = app;
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public DataResponse getData(
-            @BeanParam DataRequest dataRequest
-    ) throws IOException {
-        DataQueryResult queryResult = app.query(DataRequestToDataQuery.convert(dataRequest));
-        return DataQueryResultToDataResponse.convert(queryResult);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public DataResponse getData(
-            MultivaluedHashMap<String, String> params
+    @Produces("text/csv")
+    public Response downloadData(
+            DownloadRequest downloadRequest
     ) throws IOException {
-        LOG.debug(params);
-        DataQueryResult queryResult = app.query(MultiMapToDataQuery.convertWithoutNormalization(params));
-        return DataQueryResultToDataResponse.convert(queryResult);
+        DataQueryResult queryResult = app.query(MultiMapToDataQuery.convertWithoutNormalization(downloadRequest.getFilter()));
+        app.logDownload(downloadRequest);
+        String resultCSV = KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(queryResult.getResult());
+        return Response
+                .ok(resultCSV)
+                .header("Content-Disposition", "attachment; filename=\"download.csv\"")
+                .build();
     }
 }

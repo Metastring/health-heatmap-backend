@@ -162,6 +162,34 @@
         }
       }
     },
+    "/download": {
+      "post": {
+        "description": "Use this endpoint to allow user to download data in various formats (presently only CSV)",
+        "operationId": "downloadData",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DownloadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "CSV of the requested filters",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "example": "indicator,entity.district,value,gender,socialgroup\nMMR,Kannur,1,Male,OBC"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "operationId": "getHealth",
@@ -199,6 +227,39 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        },
+        "example": {
+          "indicator": [
+            "MMR",
+            "U5MR"
+          ]
+        }
+      },
+      "DownloadRequest": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/MultivaluedMap"
+          },
+          "userinfo": {
+            "type": "object",
+            "example": {
+              "email": "akshay@metastringfoundation.org",
+              "name": "Akshay S Dinesh",
+              "affiliation": "Metastring Foundation"
+            },
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "affiliation": {
+                "type": "string"
+              }
             }
           }
         }

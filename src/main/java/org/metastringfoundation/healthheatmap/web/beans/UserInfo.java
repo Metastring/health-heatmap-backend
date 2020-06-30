@@ -14,13 +14,34 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.web.beans;
 
-import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+public class UserInfo {
+    private String email;
+    private String name;
+    private String affiliation;
 
-import java.io.IOException;
+    public String getEmail() {
+        return email;
+    }
 
-public interface Application extends DatasetStore, ApplicationMetadataStore {
-    void shutdown() throws IOException;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAffiliation() {
+        return affiliation;
+    }
+
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
+    }
 }

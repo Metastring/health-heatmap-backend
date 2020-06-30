@@ -37,6 +37,23 @@ public class MultiMapToDataQuery {
         return dataQuery;
     }
 
+    public static DataQuery convertWithoutNormalization(MultivaluedMap<String, String> dataRequest) {
+        DataQuery dataQuery = new DataQuery();
+        Map<String, Collection<String>> must = convertToMust(dataRequest);
+        LOG.debug(dataRequest + " normalized to " + must);
+        dataQuery.setMust(must);
+        return dataQuery;
+    }
+
+    private static Map<String, Collection<String>> convertToMust(MultivaluedMap<String, String> dataRequest) {
+        return dataRequest.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+    }
+
     public static Map<String, Collection<String>> normalizeParams(MultivaluedMap<String, String> input) {
         return input.entrySet()
                 .stream()

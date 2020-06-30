@@ -14,13 +14,11 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.storage;
 
-import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 
-import java.io.IOException;
+public interface ApplicationMetadataStore {
 
-public interface Application extends DatasetStore, ApplicationMetadataStore {
-    void shutdown() throws IOException;
+    void logDownload(DownloadRequest downloadRequest);
 }
