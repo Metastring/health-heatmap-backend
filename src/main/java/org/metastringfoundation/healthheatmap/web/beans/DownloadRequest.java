@@ -14,13 +14,27 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.web.beans;
 
-import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import javax.ws.rs.core.MultivaluedHashMap;
 
-import java.io.IOException;
+public class DownloadRequest {
+    private MultivaluedHashMap<String, String> filter;
+    private UserInfo userinfo;
 
-public interface Application extends DatasetStore, ApplicationMetadataStore {
-    void shutdown() throws IOException;
+    public MultivaluedHashMap<String, String> getFilter() {
+        return filter;
+    }
+
+    public void setFilter(MultivaluedHashMap<String, String> filter) {
+        this.filter = filter;
+    }
+
+    public UserInfo getUserinfo() {
+        return userinfo;
+    }
+
+    public void setUserinfo(UserInfo userinfo) {
+        this.userinfo = userinfo;
+    }
 }

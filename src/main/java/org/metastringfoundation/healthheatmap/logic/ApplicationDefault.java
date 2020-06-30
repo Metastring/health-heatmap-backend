@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.storage.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -71,5 +72,10 @@ public class ApplicationDefault implements Application {
     @Override
     public void shutdown() throws IOException {
         datasetStore.shutdown();
+    }
+
+    @Override
+    public void logDownload(DownloadRequest downloadRequest) {
+        // TODO: log download to storage
     }
 }
