@@ -20,6 +20,7 @@ public class UserInfo {
     private String email;
     private String name;
     private String affiliation;
+    private String purpose;
 
     public String getEmail() {
         return email;
@@ -43,5 +44,13 @@ public class UserInfo {
 
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 }
