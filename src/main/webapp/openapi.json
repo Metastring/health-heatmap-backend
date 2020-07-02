@@ -74,7 +74,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MultivaluedMap"
+                "$ref": "#/components/schemas/Filter"
               }
             }
           }
@@ -101,10 +101,7 @@
             "name": "include",
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "$ref": "#/components/schemas/SelectFields"
             }
           }
         ],
@@ -120,7 +117,25 @@
                     "additionalProperties": {
                       "type": "object"
                     }
-                  }
+                  },
+                  "example": [
+                    {
+                      "indicator_universal_name": "Under Five Mortality Rate",
+                      "indicator_category": "Child Health",
+                      "indicator_subcategory": "Mortality"
+                    },
+                    {
+                      "indicator_universal_name": "Maternal Mortality Rate",
+                      "indicator_category": "Maternal Health",
+                      "indicator_subcategory": "Mortality"
+                    }
+                  ]
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "example": "indicator\nMMR\nU5MR"
                 }
               }
             }
@@ -134,10 +149,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
+                "$ref": "#/components/schemas/FilterAndSelectFields"
               }
             }
           }
@@ -154,6 +166,43 @@
                     "additionalProperties": {
                       "type": "object"
                     }
+                  }
+                },
+                "examples": {
+                  "No Source": {
+                    "value": [
+                      {
+                        "indicator_universal_name": "Under Five Mortality Rate",
+                        "indicator_category": "Child Health",
+                        "indicator_subcategory": "Mortality"
+                      },
+                      {
+                        "indicator_universal_name": "Maternal Mortality Rate",
+                        "indicator_category": "Maternal Health",
+                        "indicator_subcategory": "Mortality"
+                      }
+                    ]
+                  },
+                  "With Source": {
+                    "value": [
+                      {
+                        "indicator_universal_name": "Under Five Mortality Rate",
+                        "indicator_category": "Child Health",
+                        "indicator_subcategory": "Mortality",
+                        "source": "NFHS - 4"
+                      },
+                      {
+                        "indicator_universal_name": "Under Five Mortality Rate",
+                        "indicator_category": "Child Health",
+                        "indicator_subcategory": "Mortality",
+                        "source": "AHS"
+                      },
+                      {
+                        "indicator_universal_name": "Maternal Mortality Rate",
+                        "indicator_category": "Maternal Health",
+                        "indicator_subcategory": "Mortality"
+                      }
+                    ]
                   }
                 }
               }
@@ -177,12 +226,12 @@
         },
         "responses": {
           "default": {
-            "description": "CSV of the requested filters",
+            "description": "CSV of the data obtained after filtering with the requested filters",
             "content": {
               "text/csv": {
                 "schema": {
                   "type": "string",
-                  "example": "indicator,entity.district,value,gender,socialgroup\nMMR,Kannur,1,Male,OBC"
+                  "example": "indicator_universal_name,entity.district,value,gender,socialgroup\nMaternal Mortality Rate,Kannur,1,Male,OBC\nUnder Five Mortality Rate,Kannur,2,Male,OBC"
                 }
               }
             }
@@ -231,9 +280,9 @@
           }
         },
         "example": {
-          "indicator": [
-            "MMR",
-            "U5MR"
+          "indicator_universal_name": [
+            "Maternal Mortality Rate",
+            "Under Five Mortality Rate"
           ]
         }
       },
@@ -263,6 +312,36 @@
             }
           }
         }
+      },
+      "Filter": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/MultivaluedMap"
+          }
+        }
+      },
+      "FilterAndSelectFields": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/MultivaluedMap"
+          },
+          "fields": {
+            "$ref": "#/components/schemas/SelectFields"
+          }
+        }
+      },
+      "SelectFields": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "example": [
+          "indicator_universal_name",
+          "indicator_category",
+          "indicator_subcategory"
+        ]
       }
     }
   }

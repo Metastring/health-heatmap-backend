@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.storage;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +32,7 @@ public interface DatasetStore {
 
     DataQueryResult query(DataQuery dataQuery) throws IOException;
 
-    List<Map<String, Object>> getAllTermsOfFields(List<String> field) throws IOException;
+    List<Map<String, Object>> getAllTermsOfFields(FilterAndSelectFields filterAndFields) throws IOException;
 
     void factoryReset() throws IOException;
 }

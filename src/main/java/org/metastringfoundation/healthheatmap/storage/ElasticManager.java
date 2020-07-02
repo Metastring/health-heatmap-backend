@@ -37,6 +37,7 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -138,8 +139,8 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
     }
 
     @Override
-    public List<Map<String, Object>> getAllTermsOfFields(List<String> fields) throws IOException {
-        return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, fields);
+    public List<Map<String, Object>> getAllTermsOfFields(FilterAndSelectFields filterAndFields) throws IOException {
+        return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, filterAndFields.getFields());
     }
 
     @Override

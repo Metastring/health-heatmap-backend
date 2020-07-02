@@ -26,6 +26,7 @@ import org.metastringfoundation.healthheatmap.storage.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -68,8 +69,8 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public List<Map<String, Object>> getAllTermsOfFields(List<String> fields) throws IOException {
-        return datasetStore.getAllTermsOfFields(fields);
+    public List<Map<String, Object>> getAllTermsOfFields(FilterAndSelectFields filterAndFields) throws IOException {
+        return datasetStore.getAllTermsOfFields(filterAndFields);
     }
 
     @Override
