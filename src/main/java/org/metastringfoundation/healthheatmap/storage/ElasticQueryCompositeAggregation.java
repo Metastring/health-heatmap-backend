@@ -51,20 +51,6 @@ public class ElasticQueryCompositeAggregation {
         calculateResult();
     }
 
-    private static Collection<CompositeAggregation.Bucket> getCompositeAggregationBuckets(
-            CompositeAggregation compositeAggregation
-    ) {
-        return compositeAggregation.getBuckets().stream()
-                .map(CompositeAggregation.Bucket.class::cast)
-                .collect(Collectors.toList());
-    }
-
-    private static @NotNull List<Map<String, Object>> termsMapsFrom(@NotNull Collection<CompositeAggregation.Bucket> buckets) {
-        return buckets.stream()
-                .map(CompositeAggregation.Bucket::getKey)
-                .collect(Collectors.toList());
-    }
-
     private void calculateResult() throws IOException {
         do {
             CompositeAggregationBuilder aggregation = getQueryForTermsOfField();
@@ -96,6 +82,20 @@ public class ElasticQueryCompositeAggregation {
 
     private TermsValuesSourceBuilder buildTermsSource(String fieldName) {
         return new TermsValuesSourceBuilder(fieldName).field(fieldName).order("asc");
+    }
+
+    private static Collection<CompositeAggregation.Bucket> getCompositeAggregationBuckets(
+            CompositeAggregation compositeAggregation
+    ) {
+        return compositeAggregation.getBuckets().stream()
+                .map(CompositeAggregation.Bucket.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    private static @NotNull List<Map<String, Object>> termsMapsFrom(@NotNull Collection<CompositeAggregation.Bucket> buckets) {
+        return buckets.stream()
+                .map(CompositeAggregation.Bucket::getKey)
+                .collect(Collectors.toList());
     }
 
     /**
