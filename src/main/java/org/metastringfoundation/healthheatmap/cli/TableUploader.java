@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -94,7 +95,7 @@ public class TableUploader {
                 .peek(file -> LOG.info("File: " + file.toString()))
                 .forEach(file -> {
                     try {
-                        printAllDataPointsOf(file.toString());
+                        printUniqueDimensionValuesOf(file.toString());
                         System.out.println("\n\n\n");
                     } catch (IOException | DatasetIntegrityError e) {
                         e.printStackTrace();
@@ -106,6 +107,26 @@ public class TableUploader {
         Dataset dataset = getDataset(path);
         dataset.getData()
                 .forEach(System.out::println);
+    }
+
+    private void printUniqueDimensionValuesOf(String path) throws IOException, DatasetIntegrityError {
+        Map<String, Set<String>> dimensionValues = getUniqueDimensionValuesOf(path);
+        dimensionValues.forEach((key, value) -> {
+            System.out.println(key);
+            value.forEach(System.out::println);
+            System.out.println("\n");
+        });
+    }
+
+    private Map<String, Set<String>> getUniqueDimensionValuesOf(String path) throws IOException, DatasetIntegrityError {
+        Dataset dataset = getDataset(path);
+        return dataset.getData().stream()
+                .map(DataPoint::getAsMap)
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toSet()))
+                );
     }
 
     private void printSomeDataPointsOf(String path) throws IOException, DatasetIntegrityError {
