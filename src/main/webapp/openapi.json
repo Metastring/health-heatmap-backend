@@ -297,7 +297,8 @@
             "example": {
               "email": "akshay@metastringfoundation.org",
               "name": "Akshay S Dinesh",
-              "affiliation": "Metastring Foundation"
+              "affiliation": "Metastring Foundation",
+              "purpose": "Research"
             },
             "properties": {
               "email": {
@@ -307,6 +308,9 @@
                 "type": "string"
               },
               "affiliation": {
+                "type": "string"
+              },
+              "purpose": {
                 "type": "string"
               }
             }
