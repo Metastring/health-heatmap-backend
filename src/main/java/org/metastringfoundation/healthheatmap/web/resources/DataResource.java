@@ -25,11 +25,11 @@ import org.metastringfoundation.healthheatmap.logic.beanconverters.MultiMapToDat
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
 import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
+import org.metastringfoundation.healthheatmap.web.beans.Filter;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
 import java.io.IOException;
 
 @Path("data")
@@ -56,10 +56,10 @@ public class DataResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public DataResponse getData(
-            MultivaluedHashMap<String, String> params
+            Filter filter
     ) throws IOException {
-        LOG.debug(params);
-        DataQueryResult queryResult = app.query(MultiMapToDataQuery.convertWithoutNormalization(params));
+        LOG.debug(filter.getFilter());
+        DataQueryResult queryResult = app.query(MultiMapToDataQuery.convertWithoutNormalization(filter.getFilter()));
         return DataQueryResultToDataResponse.convert(queryResult);
     }
 }

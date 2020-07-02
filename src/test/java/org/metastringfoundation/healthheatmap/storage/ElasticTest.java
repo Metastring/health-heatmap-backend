@@ -23,6 +23,7 @@ import org.metastringfoundation.datareader.dataset.map.MapDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -87,7 +88,9 @@ class ElasticTest {
 
         List<String> expected = List.of("mmr1", "mmr2", "mmr3", "mmr4", "mmr5", "something_else",
                 "u5mr1", "u5mr2", "u5mr3", "u5mr4", "u5mr5");
-        List<String> actual = elasticManager.getAllTermsOfFields(List.of("indicator.keyword")).stream()
+        FilterAndSelectFields filterAndFields = new FilterAndSelectFields();
+        filterAndFields.setFields(List.of("indicator.keyword"));
+        List<String> actual = elasticManager.getAllTermsOfFields(filterAndFields).stream()
                 .map(m -> m.get("indicator.keyword"))
                 .map(String.class::cast)
                 .collect(Collectors.toList());

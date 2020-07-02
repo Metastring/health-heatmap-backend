@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -41,15 +42,21 @@ public class DimensionsResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String exportAnyFieldsAsCSV(@QueryParam("include") List<String> fields) throws IOException {
-        List<Map<String, Object>> fieldCombos = app.getAllTermsOfFields(fields);
+        List<Map<String, Object>> fieldCombos = getFieldsWithoutAnyFilter(fields);
         return KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(fieldCombos);
+    }
+
+    private List<Map<String, Object>> getFieldsWithoutAnyFilter(List<String> fields) throws IOException {
+        FilterAndSelectFields filterAndFields = new FilterAndSelectFields();
+        filterAndFields.setFields(fields);
+        return app.getAllTermsOfFields(filterAndFields);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Map<String, Object>> exportAnyField(@QueryParam("include") List<String> fields) throws IOException {
         LOG.debug("Fetching " + fields);
-        List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
+        List<Map<String, Object>> result = getFieldsWithoutAnyFilter(fields);
         LOG.debug(result);
         return result;
     }
@@ -57,10 +64,14 @@ public class DimensionsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Map<String, Object>> exportAnyFieldAdvanced(List<String> fields) throws IOException {
-        LOG.debug("Fetching " + fields);
-        List<Map<String, Object>> result = app.getAllTermsOfFields(fields);
+    public List<Map<String, Object>> exportAnyFieldAdvanced(FilterAndSelectFields filterAndFields) throws IOException {
+        List<Map<String, Object>> result = getFields(filterAndFields);
         LOG.debug(result);
         return result;
     }
+
+    private List<Map<String, Object>> getFields(FilterAndSelectFields filterAndFields) throws IOException {
+        return app.getAllTermsOfFields(filterAndFields);
+    }
+
 }
