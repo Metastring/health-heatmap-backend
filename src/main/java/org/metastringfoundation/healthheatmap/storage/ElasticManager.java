@@ -140,7 +140,7 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
 
     @Override
     public List<Map<String, Object>> getAllTermsOfFields(FilterAndSelectFields filterAndFields) throws IOException {
-        return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, filterAndFields.getFields());
+        return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, filterAndFields);
     }
 
     @Override

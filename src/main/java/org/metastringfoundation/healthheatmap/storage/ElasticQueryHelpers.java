@@ -27,9 +27,11 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.MultivaluedHashMap;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -63,25 +65,38 @@ public class ElasticQueryHelpers {
         return query;
     }
 
+    public static @Nullable
+    QueryBuilder getElasticQuery(@Nullable MultivaluedHashMap<String, String> queryParams) {
+        if (queryParams == null) {
+            return null;
+        }
+        BoolQueryBuilder query = boolQuery();
+        for (Map.Entry<String, List<String>> term : queryParams.entrySet()) {
+            query.filter(termsQuery(term.getKey(), term.getValue()));
+        }
+        return query;
+    }
+
     public static @NotNull SearchRequest getElasticSearchRequest(@NotNull QueryBuilder query, @NotNull String index) {
-        return getAnySearchRequest(query, null, index);
+        return getAnySearchRequest(query, null, index, 10000);
     }
 
     public static @NotNull SearchRequest getAggregationRequest(
             @NotNull AggregationBuilder aggregation,
             @NotNull String index
     ) {
-        return getAnySearchRequest(null, aggregation, index);
+        return getAnySearchRequest(null, aggregation, index, 0);
     }
 
     public static @NotNull SearchRequest getAnySearchRequest(
             @Nullable QueryBuilder query,
             @Nullable AggregationBuilder aggregation,
-            @NotNull String index
+            @NotNull String index,
+            int size
     ) {
         SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.size(10000);
+        searchSourceBuilder.size(size);
         if (query != null) {
             searchSourceBuilder.query(query);
         }
@@ -98,11 +113,11 @@ public class ElasticQueryHelpers {
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().toString()));
     }
 
-    public static List<Map<String, Object>> getAllTermsOfFields(RestHighLevelClient elastic, String index, List<String> fields) throws IOException {
+    public static List<Map<String, Object>> getAllTermsOfFields(RestHighLevelClient elastic, String index, FilterAndSelectFields filterAndFields) throws IOException {
         ElasticQueryCompositeAggregation query = new ElasticQueryCompositeAggregation(
                 elastic,
                 index,
-                fields
+                filterAndFields
         );
         return query.getResult();
     }
