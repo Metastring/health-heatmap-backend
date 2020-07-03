@@ -19,19 +19,21 @@ package org.metastringfoundation.healthheatmap.storage;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.composite.CompositeAggregation;
 import org.elasticsearch.search.aggregations.bucket.composite.CompositeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.composite.CompositeValuesSourceBuilder;
 import org.elasticsearch.search.aggregations.bucket.composite.TermsValuesSourceBuilder;
+import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.MultivaluedHashMap;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
-import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.getAggregationRequest;
+import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.*;
 
 public class ElasticQueryCompositeAggregation {
     private static final String AGGREGATION_NAME = "allTerms";
@@ -39,6 +41,7 @@ public class ElasticQueryCompositeAggregation {
     private final RestHighLevelClient elastic;
     private final String index;
     private final List<String> fields;
+    private final MultivaluedHashMap<String, String> filter;
 
     private final List<Map<String, Object>> result = new ArrayList<>();
 
@@ -48,13 +51,23 @@ public class ElasticQueryCompositeAggregation {
         this.elastic = elastic;
         this.index = index;
         this.fields = fields;
+        this.filter = null;
+        calculateResult();
+    }
+
+    public ElasticQueryCompositeAggregation(RestHighLevelClient elastic, String index, FilterAndSelectFields filterAndFields) throws IOException {
+        this.elastic = elastic;
+        this.index = index;
+        this.fields = filterAndFields.getFields();
+        this.filter = filterAndFields.getFilter();
         calculateResult();
     }
 
     private void calculateResult() throws IOException {
         do {
             CompositeAggregationBuilder aggregation = getQueryForTermsOfField();
-            SearchRequest request = getAggregationRequest(aggregation, index);
+            QueryBuilder query = getElasticQuery(filter);
+            SearchRequest request = getAnySearchRequest(query, aggregation, index, 0);
             SearchResponse response = doSearch(elastic, request);
             CompositeAggregation compositeAggregation = response.getAggregations().get(AGGREGATION_NAME);
             Collection<CompositeAggregation.Bucket> buckets = getCompositeAggregationBuckets(compositeAggregation);
