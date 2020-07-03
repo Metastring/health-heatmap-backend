@@ -26,10 +26,16 @@ import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.ApplicationDefault;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
+import org.metastringfoundation.healthheatmap.logic.DataTransformerForEntityType;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
     private static final Logger LOG = LogManager.getLogger(Main.class);
@@ -61,9 +67,14 @@ public class Main {
                 }
                 TableUploader tableUploader;
                 if (transformersDir != null && !transformersDir.isEmpty()) {
+                    List<DataTransformer> transformers = Stream.of(
+                            List.of(new DataTransformerForEntityType()),
+                            DataTransformersReader.getFromPath(Paths.get(transformersDir)).getTransformers()
+                    ).flatMap(Collection::stream)
+                            .collect(Collectors.toList());
                     tableUploader = new TableUploader(
                             application,
-                            DataTransformersReader.getFromPath(Paths.get(transformersDir)).getTransformers()
+                            transformers
                     );
                 } else {
                     tableUploader = new TableUploader(application);
