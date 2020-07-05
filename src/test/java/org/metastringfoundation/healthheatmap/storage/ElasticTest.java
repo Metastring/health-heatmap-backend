@@ -46,7 +46,7 @@ class ElasticTest {
     private static final ElasticManager elasticManager = new ElasticManager(ELASTICSEARCH_CONTAINER.getHost(), ELASTICSEARCH_CONTAINER.getFirstMappedPort());
 
     private void refreshIndex() throws IOException {
-        elasticManager.getElastic().indices().refresh(new RefreshRequest(elasticManager.dataIndex), RequestOptions.DEFAULT);
+        elasticManager.getElastic().indices().refresh(new RefreshRequest(elasticManager.getDataIndexName()), RequestOptions.DEFAULT);
     }
 
     @Test

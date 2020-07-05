@@ -28,6 +28,7 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
@@ -37,10 +38,11 @@ import java.util.Map;
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
  * Brings everything else together to make web resources work, CLI, and anything else that needs to work.
  */
+@ApplicationScoped
 public class ApplicationDefault implements Application {
     private static final Logger LOG = LogManager.getLogger(ApplicationDefault.class);
-    public final DatasetStore datasetStore;
-    public final ApplicationMetadataStore metadataStore;
+    private final DatasetStore datasetStore;
+    private final ApplicationMetadataStore metadataStore;
 
     public ApplicationDefault(@ElasticStore DatasetStore datasetStore) {
         this(datasetStore, (ApplicationMetadataStore) datasetStore);

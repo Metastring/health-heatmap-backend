@@ -39,6 +39,7 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -48,11 +49,12 @@ import java.util.stream.Collectors;
 import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
 
 @ElasticStore
+@ApplicationScoped
 public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
     private static final Logger LOG = LogManager.getLogger(ElasticManager.class);
     private final RestHighLevelClient elastic;
-    public final String dataIndex = "data";
-    public final String downloadsIndex = "downloads";
+    private final String dataIndex = "data";
+    private final String downloadsIndex = "downloads";
 
     public ElasticManager() {
         this("localhost", 9200);
@@ -71,6 +73,10 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
 
     public RestHighLevelClient getElastic() {
         return elastic;
+    }
+
+    public String getDataIndexName() {
+        return dataIndex;
     }
 
     @Override
