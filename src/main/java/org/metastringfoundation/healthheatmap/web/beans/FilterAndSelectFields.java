@@ -17,13 +17,14 @@
 package org.metastringfoundation.healthheatmap.web.beans;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FilterAndSelectFields {
     private Filter filter;
     private List<String> fields;
 
-    public Filter getFilter() {
-        return filter;
+    public Optional<Filter> getFilter() {
+        return Optional.ofNullable(filter);
     }
 
     public void setFilter(Filter filter) {
