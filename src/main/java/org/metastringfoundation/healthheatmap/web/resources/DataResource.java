@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.DataQueryResultToDataResponse;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.DataRequestToDataQuery;
-import org.metastringfoundation.healthheatmap.logic.beanconverters.MultiMapToDataQuery;
+import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
 import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
@@ -58,8 +58,8 @@ public class DataResource {
     public DataResponse getData(
             Filter filter
     ) throws IOException {
-        LOG.debug(filter.getFilter());
-        DataQueryResult queryResult = app.query(MultiMapToDataQuery.convertWithoutNormalization(filter.getFilter()));
+        LOG.debug(filter);
+        DataQueryResult queryResult = app.query(FilterToDataQuery.convertWithoutNormalization(filter));
         return DataQueryResultToDataResponse.convert(queryResult);
     }
 }

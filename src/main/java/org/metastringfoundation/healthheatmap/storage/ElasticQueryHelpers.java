@@ -24,6 +24,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
@@ -31,15 +32,13 @@ import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.core.MultivaluedHashMap;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class ElasticQueryHelpers {
     private static final Logger LOG = LogManager.getLogger(ElasticQueryHelpers.class);
@@ -58,22 +57,29 @@ public class ElasticQueryHelpers {
     public static @NotNull QueryBuilder getElasticQuery(@NotNull DataQuery dataQuery) {
         BoolQueryBuilder query = boolQuery();
         LOG.debug("Incoming query: " + dataQuery);
-        for (Map.Entry<String, Collection<String>> mustMatchTerm : dataQuery.getMust().entrySet()) {
-            LOG.debug("Adding must match term: " + mustMatchTerm.getKey());
-            query.filter(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
-        }
+        dataQuery.getTerms().ifPresent(terms -> {
+            for (Map.Entry<String, Collection<String>> mustMatchTerm : terms.entrySet()) {
+                LOG.debug("Adding must match term: " + mustMatchTerm.getKey());
+                query.filter(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
+            }
+        });
+        dataQuery.getRanges().ifPresent(ranges -> {
+            for (Map.Entry<String, Map<String, String>> range : ranges.entrySet()) {
+                query.filter(getRangeQuery(range));
+            }
+        });
+
+        LOG.debug(query.toString());
         return query;
     }
 
-    public static @Nullable
-    QueryBuilder getElasticQuery(@Nullable MultivaluedHashMap<String, String> queryParams) {
-        if (queryParams == null) {
-            return null;
-        }
-        BoolQueryBuilder query = boolQuery();
-        for (Map.Entry<String, List<String>> term : queryParams.entrySet()) {
-            query.filter(termsQuery(term.getKey(), term.getValue()));
-        }
+    private static QueryBuilder getRangeQuery(Map.Entry<String, Map<String, String>> range) {
+        RangeQueryBuilder query = rangeQuery(range.getKey());
+        Map<String, String> filters = range.getValue();
+        if (filters.containsKey("lt")) query.lt(filters.get("lt"));
+        if (filters.containsKey("lte")) query.lte(filters.get("lte"));
+        if (filters.containsKey("gte")) query.gte(filters.get("gte"));
+        if (filters.containsKey("gt")) query.gt(filters.get("gt"));
         return query;
     }
 

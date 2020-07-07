@@ -30,7 +30,7 @@ public class DataRequestToDataQuery {
         if (dataRequest.getIndicators() != null) {
             must.put("indicator", dataRequest.getIndicators());
         }
-        dataQuery.setMust(must);
+        dataQuery.setTerms(must);
         return dataQuery;
     }
 }

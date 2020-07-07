@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.logic.beanconverters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
+import org.metastringfoundation.healthheatmap.web.beans.Filter;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Collection;
@@ -26,26 +27,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MultiMapToDataQuery {
-    private static final Logger LOG = LogManager.getLogger(MultiMapToDataQuery.class);
+public class FilterToDataQuery {
+    private static final Logger LOG = LogManager.getLogger(FilterToDataQuery.class);
 
     public static DataQuery convert(MultivaluedMap<String, String> dataRequest) {
         DataQuery dataQuery = new DataQuery();
         Map<String, Collection<String>> must = normalizeParams(dataRequest);
         LOG.debug(dataRequest + " normalized to " + must);
-        dataQuery.setMust(must);
+        dataQuery.setTerms(must);
         return dataQuery;
     }
 
-    public static DataQuery convertWithoutNormalization(MultivaluedMap<String, String> dataRequest) {
+    public static DataQuery convertWithoutNormalization(Filter filter) {
         DataQuery dataQuery = new DataQuery();
-        Map<String, Collection<String>> must = convertToMust(dataRequest);
-        LOG.debug(dataRequest + " normalized to " + must);
-        dataQuery.setMust(must);
+        Map<String, Collection<String>> terms = convertToTerms(filter.getTerms());
+        LOG.debug(filter.getTerms() + " normalized to " + terms);
+        dataQuery.setTerms(terms);
+        dataQuery.setRanges(filter.getRanges());
         return dataQuery;
     }
 
-    private static Map<String, Collection<String>> convertToMust(MultivaluedMap<String, String> dataRequest) {
+    private static Map<String, Collection<String>> convertToTerms(MultivaluedMap<String, String> dataRequest) {
         return dataRequest.entrySet()
                 .stream()
                 .collect(Collectors.toMap(

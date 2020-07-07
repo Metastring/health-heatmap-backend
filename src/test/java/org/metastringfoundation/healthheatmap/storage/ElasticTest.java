@@ -58,7 +58,7 @@ class ElasticTest {
         );
         elasticManager.save(new HealthDatasetFromDataset(new MapDataset(data)));
         DataQuery dataQuery = new DataQuery();
-        dataQuery.setMust(Map.of("indicator", List.of("mmr")));
+        dataQuery.setTerms(Map.of("indicator", List.of("mmr")));
         refreshIndex();
         DataQueryResult actual = elasticManager.query(dataQuery);
         assertEquals(List.of(

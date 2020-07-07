@@ -25,10 +25,11 @@ import org.elasticsearch.search.aggregations.bucket.composite.CompositeAggregati
 import org.elasticsearch.search.aggregations.bucket.composite.CompositeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.composite.CompositeValuesSourceBuilder;
 import org.elasticsearch.search.aggregations.bucket.composite.TermsValuesSourceBuilder;
+import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
+import org.metastringfoundation.healthheatmap.web.beans.Filter;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.core.MultivaluedHashMap;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class ElasticQueryCompositeAggregation {
     private final RestHighLevelClient elastic;
     private final String index;
     private final List<String> fields;
-    private final MultivaluedHashMap<String, String> filter;
+    private final Filter filter;
 
     private final List<Map<String, Object>> result = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class ElasticQueryCompositeAggregation {
     private void calculateResult() throws IOException {
         do {
             CompositeAggregationBuilder aggregation = getQueryForTermsOfField();
-            QueryBuilder query = getElasticQuery(filter);
+            QueryBuilder query = getElasticQuery(FilterToDataQuery.convertWithoutNormalization(filter));
             SearchRequest request = getAnySearchRequest(query, aggregation, index, 0);
             SearchResponse response = doSearch(elastic, request);
             CompositeAggregation compositeAggregation = response.getAggregations().get(AGGREGATION_NAME);

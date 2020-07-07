@@ -26,7 +26,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MultiMapToDataQueryTest {
+public class FilterToDataQueryTest {
 
     @Test
     void normalizeParams() {
@@ -38,7 +38,7 @@ public class MultiMapToDataQueryTest {
                 "a", List.of("1", "2", "3", "4"),
                 "b", List.of("4", "6", "7", "8")
         );
-        Map<String, Collection<String>> actual = MultiMapToDataQuery.normalizeParams(input);
+        Map<String, Collection<String>> actual = FilterToDataQuery.normalizeParams(input);
 
         assertEquals(expected, actual);
     }
@@ -47,7 +47,7 @@ public class MultiMapToDataQueryTest {
     void splitsCommaSeparatedStringInsideList() {
         Collection<String> input = List.of("1,2", "3", "4,5");
         Collection<String> expected = List.of("1", "2", "3", "4", "5");
-        Collection<String> actual = MultiMapToDataQuery.splitCommaSeparatedElementsIn(input);
+        Collection<String> actual = FilterToDataQuery.splitCommaSeparatedElementsIn(input);
         assertEquals(expected, actual);
     }
 }

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
-import org.metastringfoundation.healthheatmap.logic.beanconverters.MultiMapToDataQuery;
+import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.beans.DownloadRequest;
 
@@ -50,7 +50,7 @@ public class DownloadResource {
     public Response downloadData(
             DownloadRequest downloadRequest
     ) throws IOException {
-        DataQueryResult queryResult = app.query(MultiMapToDataQuery.convertWithoutNormalization(downloadRequest.getFilter()));
+        DataQueryResult queryResult = app.query(FilterToDataQuery.convertWithoutNormalization(downloadRequest.getFilter()));
         app.logDownload(downloadRequest);
         String resultCSV = KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(queryResult.getResult());
         return Response
