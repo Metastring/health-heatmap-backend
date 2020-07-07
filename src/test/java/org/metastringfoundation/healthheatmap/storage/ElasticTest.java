@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.storage;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.datareader.dataset.map.MapDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
@@ -50,6 +51,7 @@ class ElasticTest {
     }
 
     @Test
+    @Tag("container")
     public void querySavedData() throws IOException {
         List<Map<String, String>> data = List.of(
                 Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1"),
@@ -68,6 +70,7 @@ class ElasticTest {
     }
 
     @Test
+    @Tag("container")
     public void correctlyGetsAllTermsOfAField() throws IOException {
         List<Map<String, String>> data = List.of(
                 Map.of("indicator", "mmr1", "source", "NFHS"),

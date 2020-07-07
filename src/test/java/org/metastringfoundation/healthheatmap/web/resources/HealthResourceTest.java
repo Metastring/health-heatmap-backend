@@ -17,21 +17,20 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Test; // JerseyTest doesn't work with Junit5, https://github.com/eclipse-ee4j/jersey/issues/3662
+import org.junit.jupiter.api.Test;
+import org.metastringfoundation.healthheatmap.logic.Application;
+
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-public class HealthResourceTest extends JerseyTest {
-    @Override
-    protected ResourceConfig configure() {
-        return new ResourceConfig(Health.class);
-    }
-
+public class HealthResourceTest {
     @Test
-    public void testRequestCounter() throws InterruptedException {
-        String response = target().path("/health").request().get(String.class);
-        assertEquals("healthyenough", response);
+    public void testHealth() {
+        Application mockApp = mock(Application.class);
+        HealthResource healthResource = new HealthResource(mockApp);
+        Map<String, String> response = healthResource.getHealth();
+        assertEquals(Map.of("database", "GREEN"), response);
     }
 }

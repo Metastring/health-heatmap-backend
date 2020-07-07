@@ -23,16 +23,22 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.Map;
 
 @Path("health")
-public class Health {
+public class HealthResource {
+    private final Application app;
+
     @Inject
-    Application app;
+    public HealthResource(Application app) {
+        this.app = app;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getHealth() {
-        return Response.status(200).entity("healthyenough").build();
+    public Map<String, String> getHealth() {
+        return Map.of(
+                "database", "GREEN"
+        );
     }
 }

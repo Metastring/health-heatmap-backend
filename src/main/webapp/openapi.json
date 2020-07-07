@@ -196,7 +196,21 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "component": {
+                      "type": "string",
+                      "enum": [
+                        "GREEN",
+                        "YELLOW",
+                        "RED"
+                      ]
+                    }
+                  }
+                }
+              }
             }
           }
         }
