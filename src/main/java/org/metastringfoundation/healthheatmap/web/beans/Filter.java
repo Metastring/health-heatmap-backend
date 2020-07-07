@@ -18,21 +18,22 @@ package org.metastringfoundation.healthheatmap.web.beans;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Filter {
     private MultivaluedHashMap<String, String> terms;
     private Map<String, Map<String, String>> ranges;
 
-    public MultivaluedHashMap<String, String> getTerms() {
-        return terms;
+    public Optional<MultivaluedHashMap<String, String>> getTerms() {
+        return Optional.ofNullable(terms);
     }
 
     public void setTerms(MultivaluedHashMap<String, String> terms) {
         this.terms = terms;
     }
 
-    public Map<String, Map<String, String>> getRanges() {
-        return ranges;
+    public Optional<Map<String, Map<String, String>>> getRanges() {
+        return Optional.ofNullable(ranges);
     }
 
     public void setRanges(Map<String, Map<String, String>> ranges) {
