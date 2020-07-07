@@ -286,11 +286,29 @@
           ]
         }
       },
+      "MapOfMap": {
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "object",
+            "properties": {
+              "comparator": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "example": {
+          "duration.start": {
+            "gt": "2010-01-01"
+          }
+        }
+      },
       "DownloadRequest": {
         "type": "object",
         "properties": {
           "filter": {
-            "$ref": "#/components/schemas/MultivaluedMap"
+            "$ref": "#/components/schemas/Filter"
           },
           "userinfo": {
             "type": "object",
@@ -320,8 +338,11 @@
       "Filter": {
         "type": "object",
         "properties": {
-          "filter": {
+          "terms": {
             "$ref": "#/components/schemas/MultivaluedMap"
+          },
+          "ranges": {
+            "$ref": "#/components/schemas/MapOfMap"
           }
         }
       },
@@ -329,7 +350,7 @@
         "type": "object",
         "properties": {
           "filter": {
-            "$ref": "#/components/schemas/MultivaluedMap"
+            "$ref": "#/components/schemas/Filter"
           },
           "fields": {
             "$ref": "#/components/schemas/SelectFields"

@@ -17,15 +17,25 @@
 package org.metastringfoundation.healthheatmap.web.beans;
 
 import javax.ws.rs.core.MultivaluedHashMap;
+import java.util.Map;
 
 public class Filter {
-    private MultivaluedHashMap<String, String> filter;
+    private MultivaluedHashMap<String, String> terms;
+    private Map<String, Map<String, String>> ranges;
 
-    public MultivaluedHashMap<String, String> getFilter() {
-        return filter;
+    public MultivaluedHashMap<String, String> getTerms() {
+        return terms;
     }
 
-    public void setFilter(MultivaluedHashMap<String, String> filter) {
-        this.filter = filter;
+    public void setTerms(MultivaluedHashMap<String, String> terms) {
+        this.terms = terms;
+    }
+
+    public Map<String, Map<String, String>> getRanges() {
+        return ranges;
+    }
+
+    public void setRanges(Map<String, Map<String, String>> ranges) {
+        this.ranges = ranges;
     }
 }

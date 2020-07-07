@@ -18,22 +18,33 @@ package org.metastringfoundation.healthheatmap.storage.beans;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 public class DataQuery {
-    private Map<String, Collection<String>> must;
+    private Map<String, Collection<String>> terms;
+    private Map<String, Map<String, String>> ranges;
 
-    public Map<String, Collection<String>> getMust() {
-        return must;
+    public Optional<Map<String, Collection<String>>> getTerms() {
+        return Optional.ofNullable(terms);
     }
 
-    public void setMust(Map<String, Collection<String>> must) {
-        this.must = must;
+    public void setTerms(Map<String, Collection<String>> terms) {
+        this.terms = terms;
+    }
+
+    public Optional<Map<String, Map<String, String>>> getRanges() {
+        return Optional.ofNullable(ranges);
+    }
+
+    public void setRanges(Map<String, Map<String, String>> ranges) {
+        this.ranges = ranges;
     }
 
     @Override
     public String toString() {
         return "DataQuery{" +
-                "must=" + must +
+                "terms=" + terms +
+                ", ranges=" + ranges +
                 '}';
     }
 }

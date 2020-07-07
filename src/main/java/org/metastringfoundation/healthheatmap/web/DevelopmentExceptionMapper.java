@@ -14,25 +14,20 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.beans;
+package org.metastringfoundation.healthheatmap.web;
 
-public class DownloadRequest {
-    private Filter filter;
-    private UserInfo userinfo;
+import org.glassfish.grizzly.utils.Exceptions;
 
-    public Filter getFilter() {
-        return filter;
-    }
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
-
-    public UserInfo getUserinfo() {
-        return userinfo;
-    }
-
-    public void setUserinfo(UserInfo userinfo) {
-        this.userinfo = userinfo;
+@Provider
+public class DevelopmentExceptionMapper implements
+        ExceptionMapper<Throwable> {
+    @Override
+    public Response toResponse(Throwable ex) {
+        return Response.status(500).entity(Exceptions.getStackTraceAsString(ex)).type("text/plain")
+                .build();
     }
 }

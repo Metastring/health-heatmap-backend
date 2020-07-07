@@ -16,18 +16,17 @@
 
 package org.metastringfoundation.healthheatmap.web.beans;
 
-import javax.ws.rs.core.MultivaluedHashMap;
 import java.util.List;
 
 public class FilterAndSelectFields {
-    private MultivaluedHashMap<String, String> filter;
+    private Filter filter;
     private List<String> fields;
 
-    public MultivaluedHashMap<String, String> getFilter() {
+    public Filter getFilter() {
         return filter;
     }
 
-    public void setFilter(MultivaluedHashMap<String, String> filter) {
+    public void setFilter(Filter filter) {
         this.filter = filter;
     }
 

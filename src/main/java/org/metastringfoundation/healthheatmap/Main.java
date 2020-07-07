@@ -52,7 +52,7 @@ public class Main {
             boolean recreateIndex = commandLine.hasOption("recreate");
 
             if (serverShouldStart) {
-                Server.startProductionServer();
+                Server.startDevelopmentServer();
             } else if (path != null && !path.isEmpty()) {
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
