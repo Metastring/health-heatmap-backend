@@ -37,9 +37,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Runs the application. Various CLI params available.
+ *
+ * @see org.metastringfoundation.healthheatmap.cli
+ */
 public class Main {
     private static final Logger LOG = LogManager.getLogger(Main.class);
 
+    /**
+     * Entry point.
+     * @param args - cli arguments
+     * @throws IllegalArgumentException if arguments are wrong
+     * @throws IOException for various reasons including database communication issues
+     * @throws DatasetIntegrityError when uploading dataset if the dataset is malformed
+     */
     public static void main(String[] args) throws IllegalArgumentException, IOException, DatasetIntegrityError {
         try {
             CommandLine commandLine = new CLI().parse(args);

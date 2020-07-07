@@ -22,43 +22,37 @@ import org.apache.commons.cli.*;
  * Wrapper CLI to parse arguments using standard libraries (Apache Commons CLI)
  */
 public class CLI {
-    /**
-     * Option to start the server
-     */
-    final static Option server = new Option("s", "server", false, "Run the API server");
+    private final static Option server = new Option("s", "server", false, "Run the API server");
 
-    /**
-     * Path to a file that needs to be uploaded to the dataset
-     */
-    final static Option path = Option.builder("p")
+    private final static Option path = Option.builder("p")
             .hasArg()
             .longOpt("path")
             .desc("Path to the file/directory to be uploaded")
             .build();
 
-    final static Option batch = Option.builder("b")
+    private final static Option batch = Option.builder("b")
             .longOpt("batch")
             .desc("Whether the path specified requires a bulk upload (i.e., is a directory) (only use with -p)")
             .build();
 
-    final static Option recreateIndex = Option.builder("z")
+    private final static Option recreateIndex = Option.builder("z")
             .longOpt("recreate")
             .desc("Whether elastic index should be deleted before entering data")
             .build();
 
-    final static Option dry = Option.builder("d")
+    private final static Option dry = Option.builder("d")
             .longOpt("dry")
             .desc("When used, prints the dataset instead of uploading. Only supported when -b is not given.")
             .build();
 
-    final static Option transformersDirectory = Option.builder("t")
+    private final static Option transformersDirectory = Option.builder("t")
             .longOpt("transformers")
             .hasArg()
             .desc("Directory which contains the data transformers that need to run on the data before it gets uploaded")
             .build();
 
 
-    public final static Options options = new Options()
+    private final static Options options = new Options()
             .addOption(path)
             .addOption(batch)
             .addOption(dry)
@@ -66,8 +60,23 @@ public class CLI {
             .addOption(recreateIndex)
             .addOption(server);
 
-    public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {
+    /**
+     * Prints the arguments manual
+     */
+    public static void printHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("healthheatmap-api", options);
+    }
 
+    /**
+     * Parse commandline arguments using Apache Commons CLI package
+     *
+     * @param args whatever user passes in will do
+     * @return parsed commandline
+     * @throws IllegalArgumentException if arguments are wrong
+     * @throws ParseException           if parsing is screwed up
+     */
+    public CommandLine parse(String[] args) throws IllegalArgumentException, ParseException {
         final CommandLineParser commandLineParser = new DefaultParser();
         try {
             return commandLineParser.parse(options, args);
@@ -75,10 +84,5 @@ public class CLI {
             e.printStackTrace();
             throw e;
         }
-    }
-
-    public static void printHelp() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("data-reader", options);
     }
 }
