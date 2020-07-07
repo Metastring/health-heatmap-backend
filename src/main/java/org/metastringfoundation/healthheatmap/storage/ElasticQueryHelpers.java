@@ -27,7 +27,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
+import org.metastringfoundation.healthheatmap.web.beans.Filter;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
 import javax.annotation.Nullable;
@@ -52,6 +54,10 @@ public class ElasticQueryHelpers {
         LOG.debug(query.toString());
         SearchRequest searchRequest = getElasticSearchRequest(query, index);
         return elastic.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
+    public static @NotNull QueryBuilder getElasticQuery(@NotNull Filter filter) {
+        return getElasticQuery(FilterToDataQuery.convertWithoutNormalization(filter));
     }
 
     public static @NotNull QueryBuilder getElasticQuery(@NotNull DataQuery dataQuery) {
