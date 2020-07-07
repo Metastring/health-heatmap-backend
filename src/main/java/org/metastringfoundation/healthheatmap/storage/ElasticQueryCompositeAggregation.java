@@ -27,54 +27,78 @@ import org.elasticsearch.search.aggregations.bucket.composite.CompositeValuesSou
 import org.elasticsearch.search.aggregations.bucket.composite.TermsValuesSourceBuilder;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
 import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.getAnySearchRequest;
 
+/**
+ * Runs a composite aggregation to get all the results of multiple terms queries.
+ * The looping with afterKey required is managed within this class so that you don't have to worry about it.
+ */
 public class ElasticQueryCompositeAggregation {
     private static final String AGGREGATION_NAME = "allTerms";
 
-    private final RestHighLevelClient elastic;
-    private final String index;
-    private final FilterAndSelectFields filterAndFields;
+    private final @Nonnull
+    RestHighLevelClient elastic;
+    private final @Nonnull
+    String index;
+    private final @Nonnull
+    FilterAndSelectFields filterAndFields;
 
     private final List<Map<String, Object>> result = new ArrayList<>();
 
-    private Map<String, Object> afterKey = new HashMap<>();
+    private @Nullable
+    Map<String, Object> afterKey;
 
-    public ElasticQueryCompositeAggregation(RestHighLevelClient elastic, String index, FilterAndSelectFields filterAndFields) throws IOException {
+    /**
+     * The default constructor
+     *
+     * @param elastic         client through which the aggregation is run
+     * @param index           on which the aggregation is run
+     * @param filterAndFields filters restrict the scope of the documents and fields are what gets returned in output
+     * @throws IOException if elastic is down
+     */
+    public ElasticQueryCompositeAggregation(
+            @Nonnull RestHighLevelClient elastic,
+            @Nonnull String index,
+            @Nonnull FilterAndSelectFields filterAndFields
+    ) throws IOException {
         this.elastic = elastic;
         this.index = index;
         this.filterAndFields = filterAndFields;
         calculateResult();
     }
 
+    private static @Nonnull
+    List<Map<String, Object>> termsMapsFrom(@Nonnull Collection<CompositeAggregation.Bucket> buckets) {
+        return buckets.stream()
+                .map(CompositeAggregation.Bucket::getKey)
+                .collect(Collectors.toList());
+    }
+
     private void calculateResult() throws IOException {
         do {
             CompositeAggregationBuilder aggregation = getQueryForTermsOfField();
-            QueryBuilder query = filterAndFields.getFilter().map(ElasticQueryHelpers::getElasticQuery).orElse(null);
+            QueryBuilder query = getQuery();
             SearchRequest request = getAnySearchRequest(query, aggregation, index, 0);
             SearchResponse response = doSearch(elastic, request);
             CompositeAggregation compositeAggregation = response.getAggregations().get(AGGREGATION_NAME);
             Collection<CompositeAggregation.Bucket> buckets = getCompositeAggregationBuckets(compositeAggregation);
-            afterKey = compositeAggregation.afterKey();
+            afterKey = compositeAggregation.afterKey(); // .afterKey() returns null towards the end
             result.addAll(termsMapsFrom(buckets));
         } while (afterKey != null);
     }
 
-    private CompositeAggregationBuilder getQueryForTermsOfField() {
-        CompositeAggregationBuilder aggregation = AggregationBuilders.composite(
-                AGGREGATION_NAME,
-                getTermsBuilders()
-        );
-        if (!afterKey.isEmpty()) {
-            aggregation.aggregateAfter(afterKey);
-        }
-        return aggregation;
+    private QueryBuilder getQuery() {
+        return filterAndFields.getFilter().map(ElasticQueryHelpers::getElasticQuery).orElse(null);
     }
 
     private List<CompositeValuesSourceBuilder<?>> getTermsBuilders() {
@@ -95,10 +119,15 @@ public class ElasticQueryCompositeAggregation {
                 .collect(Collectors.toList());
     }
 
-    private static @NotNull List<Map<String, Object>> termsMapsFrom(@NotNull Collection<CompositeAggregation.Bucket> buckets) {
-        return buckets.stream()
-                .map(CompositeAggregation.Bucket::getKey)
-                .collect(Collectors.toList());
+    private CompositeAggregationBuilder getQueryForTermsOfField() {
+        CompositeAggregationBuilder aggregation = AggregationBuilders.composite(
+                AGGREGATION_NAME,
+                getTermsBuilders()
+        );
+        if (afterKey != null && !afterKey.isEmpty()) {
+            aggregation.aggregateAfter(afterKey);
+        }
+        return aggregation;
     }
 
     /**

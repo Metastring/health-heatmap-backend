@@ -17,56 +17,6 @@
   ],
   "paths": {
     "/data": {
-      "get": {
-        "operationId": "getData",
-        "parameters": [
-          {
-            "name": "indicators",
-            "in": "query",
-            "description": "List of indicators",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "geographies",
-            "in": "query",
-            "description": "List of geographies",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "sources",
-            "in": "query",
-            "description": "List of sources",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataResponse"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "description": "Get any data. Dimensions like indicator, source form the key. Values to filter should be passed as value for each key",
         "operationId": "getData_1",

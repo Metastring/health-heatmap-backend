@@ -16,27 +16,66 @@
 
 package org.metastringfoundation.healthheatmap.web.beans;
 
-import javax.ws.rs.core.MultivaluedHashMap;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class Filter {
-    private MultivaluedHashMap<String, String> terms;
-    private Map<String, Map<String, String>> ranges;
+    private @Nullable
+    Map<String, List<String>> terms;
+    private @Nullable
+    Map<String, Map<String, String>> ranges;
 
-    public Optional<MultivaluedHashMap<String, String>> getTerms() {
-        return Optional.ofNullable(terms);
+    @Nullable
+    public Map<String, List<String>> getTerms() {
+        return terms;
     }
 
-    public void setTerms(MultivaluedHashMap<String, String> terms) {
+    public void setTerms(@Nullable Map<String, List<String>> terms) {
         this.terms = terms;
     }
 
-    public Optional<Map<String, Map<String, String>>> getRanges() {
-        return Optional.ofNullable(ranges);
+    @Nullable
+    public Map<String, Map<String, String>> getRanges() {
+        return ranges;
     }
 
-    public void setRanges(Map<String, Map<String, String>> ranges) {
+    public void setRanges(@Nullable Map<String, Map<String, String>> ranges) {
         this.ranges = ranges;
+    }
+
+    public static final class FilterBuilder {
+        private
+        Map<String, List<String>> terms;
+        private
+        Map<String, Map<String, String>> ranges;
+
+        private FilterBuilder() {
+        }
+
+        public static FilterBuilder aFilter() {
+            return new FilterBuilder();
+        }
+
+        public FilterBuilder withTerms(Map<String, List<String>> terms) {
+            this.terms = terms;
+            return this;
+        }
+
+        public FilterBuilder withRanges(Map<String, Map<String, String>> ranges) {
+            this.ranges = ranges;
+            return this;
+        }
+
+        public FilterBuilder but() {
+            return aFilter().withTerms(terms).withRanges(ranges);
+        }
+
+        public Filter build() {
+            Filter filter = new Filter();
+            filter.setTerms(terms);
+            filter.setRanges(ranges);
+            return filter;
+        }
     }
 }

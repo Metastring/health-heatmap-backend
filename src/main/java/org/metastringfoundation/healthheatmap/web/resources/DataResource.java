@@ -20,15 +20,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.DataQueryResultToDataResponse;
-import org.metastringfoundation.healthheatmap.logic.beanconverters.DataRequestToDataQuery;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
-import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.web.beans.DataRequest;
 import org.metastringfoundation.healthheatmap.web.beans.DataResponse;
 import org.metastringfoundation.healthheatmap.web.beans.Filter;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
@@ -43,15 +43,6 @@ public class DataResource {
         this.app = app;
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public DataResponse getData(
-            @BeanParam DataRequest dataRequest
-    ) throws IOException {
-        DataQueryResult queryResult = app.query(DataRequestToDataQuery.convert(dataRequest));
-        return DataQueryResultToDataResponse.convert(queryResult);
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -59,7 +50,7 @@ public class DataResource {
             Filter filter
     ) throws IOException {
         LOG.debug(filter);
-        DataQueryResult queryResult = app.query(FilterToDataQuery.convertWithoutNormalization(filter));
-        return DataQueryResultToDataResponse.convert(queryResult);
+        var result = app.query(FilterToDataQuery.convert(filter));
+        return DataQueryResultToDataResponse.convert(result);
     }
 }
