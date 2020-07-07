@@ -40,10 +40,12 @@ public class FilterToDataQuery {
 
     public static DataQuery convertWithoutNormalization(Filter filter) {
         DataQuery dataQuery = new DataQuery();
-        Map<String, Collection<String>> terms = convertToTerms(filter.getTerms());
-        LOG.debug(filter.getTerms() + " normalized to " + terms);
-        dataQuery.setTerms(terms);
-        dataQuery.setRanges(filter.getRanges());
+        filter.getTerms().ifPresent(termsMap -> {
+            Map<String, Collection<String>> terms = convertToTerms(termsMap);
+            LOG.debug(termsMap + " normalized to " + terms);
+            dataQuery.setTerms(terms);
+        });
+        filter.getRanges().ifPresent(dataQuery::setRanges);
         return dataQuery;
     }
 
