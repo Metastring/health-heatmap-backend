@@ -16,27 +16,31 @@
 
 package org.metastringfoundation.healthheatmap.storage.beans;
 
-import java.util.Collection;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class DataQuery {
-    private Map<String, Collection<String>> terms;
-    private Map<String, Map<String, String>> ranges;
+    private @Nullable
+    Map<String, List<String>> terms;
+    private @Nullable
+    Map<String, Map<String, String>> ranges;
 
-    public Optional<Map<String, Collection<String>>> getTerms() {
-        return Optional.ofNullable(terms);
+    public @Nullable
+    Map<String, List<String>> getTerms() {
+        return terms;
     }
 
-    public void setTerms(Map<String, Collection<String>> terms) {
+    public void setTerms(@Nullable Map<String, List<String>> terms) {
         this.terms = terms;
     }
 
-    public Optional<Map<String, Map<String, String>>> getRanges() {
-        return Optional.ofNullable(ranges);
+    public @Nullable
+    Map<String, Map<String, String>> getRanges() {
+        return ranges;
     }
 
-    public void setRanges(Map<String, Map<String, String>> ranges) {
+    public void setRanges(@Nullable Map<String, Map<String, String>> ranges) {
         this.ranges = ranges;
     }
 

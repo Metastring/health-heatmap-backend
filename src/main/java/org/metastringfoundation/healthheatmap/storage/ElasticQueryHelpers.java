@@ -22,9 +22,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
@@ -32,23 +30,32 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.web.beans.Filter;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
+/**
+ * Collection of various utility functions to interact with elastic search
+ */
 public class ElasticQueryHelpers {
     private static final Logger LOG = LogManager.getLogger(ElasticQueryHelpers.class);
 
-    public static @NotNull SearchResponse doSearch(
-            @NotNull RestHighLevelClient elastic,
-            @NotNull DataQuery dataQuery,
-            @NotNull String index
+    /**
+     * Queries elastic for data using filters supplied
+     *
+     * @param elastic   the client
+     * @param dataQuery the query (including filters)
+     * @param index     the index in which to search
+     * @return data that matches the filters
+     * @throws IOException for connection issues
+     */
+    public static SearchResponse doSearch(
+            @Nonnull RestHighLevelClient elastic,
+            @Nonnull DataQuery dataQuery,
+            @Nonnull String index
     ) throws IOException {
         QueryBuilder query = getElasticQuery(dataQuery);
         LOG.debug(query.toString());
@@ -56,54 +63,50 @@ public class ElasticQueryHelpers {
         return elastic.search(searchRequest, RequestOptions.DEFAULT);
     }
 
-    public static @NotNull QueryBuilder getElasticQuery(@NotNull Filter filter) {
-        return getElasticQuery(FilterToDataQuery.convertWithoutNormalization(filter));
+    /**
+     * simplifies going from filter to elastic query by doing conversion within
+     *
+     * @param filter the filter
+     * @return the query
+     * @see #getElasticQuery(DataQuery)
+     */
+    public static @Nonnull
+    QueryBuilder getElasticQuery(@Nonnull Filter filter) {
+        return getElasticQuery(FilterToDataQuery.convert(filter));
     }
 
-    public static @NotNull QueryBuilder getElasticQuery(@NotNull DataQuery dataQuery) {
-        BoolQueryBuilder query = boolQuery();
+    /**
+     * Converts a generic data query to elastic specific query
+     *
+     * @param dataQuery terms, ranges, etc can be filtered by
+     * @return the corresponding elastic filter query
+     */
+    public static @Nonnull
+    QueryBuilder getElasticQuery(@Nonnull DataQuery dataQuery) {
         LOG.debug("Incoming query: " + dataQuery);
-        dataQuery.getTerms().ifPresent(terms -> {
-            for (Map.Entry<String, Collection<String>> mustMatchTerm : terms.entrySet()) {
-                LOG.debug("Adding must match term: " + mustMatchTerm.getKey());
-                query.filter(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
-            }
-        });
-        dataQuery.getRanges().ifPresent(ranges -> {
-            for (Map.Entry<String, Map<String, String>> range : ranges.entrySet()) {
-                query.filter(getRangeQuery(range));
-            }
-        });
-
-        LOG.debug(query.toString());
+        QueryBuilder query = ElasticFilterQuery.getQuery(dataQuery);
+        LOG.debug("Query generated: \n" + query.toString());
         return query;
     }
 
-    private static QueryBuilder getRangeQuery(Map.Entry<String, Map<String, String>> range) {
-        RangeQueryBuilder query = rangeQuery(range.getKey());
-        Map<String, String> filters = range.getValue();
-        if (filters.containsKey("lt")) query.lt(filters.get("lt"));
-        if (filters.containsKey("lte")) query.lte(filters.get("lte"));
-        if (filters.containsKey("gte")) query.gte(filters.get("gte"));
-        if (filters.containsKey("gt")) query.gt(filters.get("gt"));
-        return query;
-    }
-
-    public static @NotNull SearchRequest getElasticSearchRequest(@NotNull QueryBuilder query, @NotNull String index) {
+    public static @Nonnull
+    SearchRequest getElasticSearchRequest(@Nonnull QueryBuilder query, @Nonnull String index) {
         return getAnySearchRequest(query, null, index, 10000);
     }
 
-    public static @NotNull SearchRequest getAggregationRequest(
-            @NotNull AggregationBuilder aggregation,
-            @NotNull String index
+    public static @Nonnull
+    SearchRequest getAggregationRequest(
+            @Nonnull AggregationBuilder aggregation,
+            @Nonnull String index
     ) {
         return getAnySearchRequest(null, aggregation, index, 0);
     }
 
-    public static @NotNull SearchRequest getAnySearchRequest(
+    public static @Nonnull
+    SearchRequest getAnySearchRequest(
             @Nullable QueryBuilder query,
             @Nullable AggregationBuilder aggregation,
-            @NotNull String index,
+            @Nonnull String index,
             int size
     ) {
         SearchRequest searchRequest = new SearchRequest(index);

@@ -21,57 +21,13 @@ import org.apache.logging.log4j.Logger;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.web.beans.Filter;
 
-import javax.ws.rs.core.MultivaluedMap;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class FilterToDataQuery {
     private static final Logger LOG = LogManager.getLogger(FilterToDataQuery.class);
 
-    public static DataQuery convert(MultivaluedMap<String, String> dataRequest) {
+    public static DataQuery convert(Filter filter) {
         DataQuery dataQuery = new DataQuery();
-        Map<String, Collection<String>> must = normalizeParams(dataRequest);
-        LOG.debug(dataRequest + " normalized to " + must);
-        dataQuery.setTerms(must);
+        dataQuery.setTerms(filter.getTerms());
+        dataQuery.setRanges(filter.getRanges());
         return dataQuery;
-    }
-
-    public static DataQuery convertWithoutNormalization(Filter filter) {
-        DataQuery dataQuery = new DataQuery();
-        filter.getTerms().ifPresent(termsMap -> {
-            Map<String, Collection<String>> terms = convertToTerms(termsMap);
-            LOG.debug(termsMap + " normalized to " + terms);
-            dataQuery.setTerms(terms);
-        });
-        filter.getRanges().ifPresent(dataQuery::setRanges);
-        return dataQuery;
-    }
-
-    private static Map<String, Collection<String>> convertToTerms(MultivaluedMap<String, String> dataRequest) {
-        return dataRequest.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
-    }
-
-    public static Map<String, Collection<String>> normalizeParams(MultivaluedMap<String, String> input) {
-        return input.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        mapEntry -> splitCommaSeparatedElementsIn(mapEntry.getValue())
-                ));
-    }
-
-    public static Collection<String> splitCommaSeparatedElementsIn(Collection<String> input) {
-        return input.stream()
-                .map(e -> e.split(","))
-                .map(List::of)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
     }
 }

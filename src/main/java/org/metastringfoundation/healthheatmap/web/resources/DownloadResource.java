@@ -50,7 +50,7 @@ public class DownloadResource {
     public Response downloadData(
             DownloadRequest downloadRequest
     ) throws IOException {
-        DataQueryResult queryResult = app.query(FilterToDataQuery.convertWithoutNormalization(downloadRequest.getFilter()));
+        DataQueryResult queryResult = app.query(FilterToDataQuery.convert(downloadRequest.getFilter()));
         app.logDownload(downloadRequest);
         String resultCSV = KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(queryResult.getResult());
         return Response
