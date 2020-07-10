@@ -208,14 +208,7 @@
             <version>3.13.1</version>
         </dependency>
 
-
         <!-- web -->
-        <!-- jersey's dependency injector -->
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-        </dependency>
-
         <!-- the grizzly embedded server -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
@@ -301,6 +294,21 @@
 
         <!-- dev -->
 
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.smallrye.config</groupId>
+            <artifactId>smallrye-config</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+
+        <!-- ops -->
+
+
         <!-- test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -346,7 +354,6 @@
             <artifactId>weld-se-core</artifactId>
             <version>${weld.se.core.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
