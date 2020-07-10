@@ -71,13 +71,6 @@ public class Main {
                 Server.start(environment);
 
             } else if (path != null && !path.isEmpty()) {
-                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                    try {
-                        LOG.info("Shutting down");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }));
                 Application application = ApplicationDefault.createPreconfiguredApplicationDefault();
                 if (recreateIndex) {
                     application.factoryReset();
