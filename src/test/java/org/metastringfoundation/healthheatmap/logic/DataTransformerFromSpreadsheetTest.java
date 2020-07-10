@@ -17,9 +17,9 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
+import org.metastringfoundation.data.DataPoint;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,16 +30,23 @@ class DataTransformerFromSpreadsheetTest {
 
     @Test
     public void shouldTransformCorrectly() throws IOException {
-        String spreadsheet = "match source,match indicator,newSource,newIndicator\nNFHS4,MMRate,NFHS-4,MMR\n";
+        String spreadsheet = "match source,match indicator,newSource,newIndicator\nNFHS4,MMRate,NFHS-4,MMR\nNFHS4,MMRate,NFHS-4,MMRatio\n";
         DataTransformer transformer = new DataTransformerFromSpreadsheet(spreadsheet);
         Map<String, String> data = Map.of("source", "NFHS4", "indicator", "MMRate");
-        Map<String, String> mutableData = new HashMap<>(data);
-        Map<String, String> expected = Map.of(
-                "source", "NFHS4",
-                "indicator", "MMRate",
-                "newSource", "NFHS-4",
-                "newIndicator", "MMR");
-        Map<String, String> actual = transformer.transform(mutableData);
+        DataPoint dataPoint = DataPoint.from(data);
+        List<DataPoint> expected = List.of(
+                DataPoint.from(Map.of(
+                        "source", "NFHS4",
+                        "indicator", "MMRate",
+                        "newSource", "NFHS-4",
+                        "newIndicator", "MMR")),
+                DataPoint.from(Map.of(
+                        "source", "NFHS4",
+                        "indicator", "MMRate",
+                        "newSource", "NFHS-4",
+                        "newIndicator", "MMRatio"))
+        );
+        List<DataPoint> actual = transformer.transform(dataPoint);
         assertEquals(expected, actual);
     }
 
@@ -48,8 +55,8 @@ class DataTransformerFromSpreadsheetTest {
         var spreadsheet = "match source,match indicator,source,indicator\nNFHS4,MMRate,NFHS-4,MMR\n";
         var transformer = new DataTransformerFromSpreadsheet(spreadsheet);
         var data = List.of(
-                new HashMap<>(Map.of("source", "NFHS4", "indicator", "MMRate")),
-                new HashMap<>(Map.of("source", "NFHS-4", "indicator", "MMRate"))
+                DataPoint.from(Map.of("source", "NFHS4", "indicator", "MMRate")),
+                DataPoint.from(Map.of("source", "NFHS-4", "indicator", "MMRate"))
         );
         var expected = Set.of(Map.of(
                 "source", "NFHS-4",
