@@ -20,6 +20,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.cli.CLI;
 import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
@@ -64,7 +66,10 @@ public class Main {
             boolean recreateIndex = commandLine.hasOption("recreate");
 
             if (serverShouldStart) {
-                Server.startDevelopmentServer();
+                Config config = ConfigProvider.getConfig();
+                String environment = config.getOptionalValue("ENV", String.class).orElse("development");
+                Server.start(environment);
+
             } else if (path != null && !path.isEmpty()) {
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
