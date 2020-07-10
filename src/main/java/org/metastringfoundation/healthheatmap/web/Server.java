@@ -29,51 +29,64 @@ import java.util.Properties;
 
 public class Server {
     private static final Logger LOG = LogManager.getLogger(Server.class);
-    public static final String DEPLOYMENT_URI = "http://localhost:8080/";
-    public static final String BASE_URI = DEPLOYMENT_URI + "api/";
 
-    public static HttpServer server;
+    private final String DEPLOYMENT_URI = "http://localhost:8080/";
+    private final String BASE_URI = DEPLOYMENT_URI + "api/";
 
-    private static void startServer() {
-        try {
-            server.start();
-        } catch (IOException ex) {
-            LOG.fatal(ex);
+    private final ResourceConfig resourceConfig = new ResourceConfig();
+    private final HttpServer server;
+
+    private Server(String env) throws IOException {
+        if ("production".equals(env)) {
+            configureAsProductionServer();
+        } else {
+            configureAsDevelopmentServer();
         }
-        LOG.info("Application started.\nTry out {}", DEPLOYMENT_URI);
-        try {
-            Thread.currentThread().join();
-        } catch (InterruptedException ex) {
-            LOG.fatal(ex);
-        }
+        server = getServer(resourceConfig);
+        addDocHandler(server);
+        addGracefulShutdownHook();
     }
 
-    public static void startDevelopmentServer() {
-        ResourceConfig developmentApp = new ResourceConfig();
-        developmentApp.packages(
+    public static void start(String env) throws IOException {
+        Server server = new Server(env);
+        server.startServer();
+    }
+
+    private void configureAsProductionServer() {
+        configureClasses();
+    }
+
+    private void configureAsDevelopmentServer() {
+        configureClasses();
+        resourceConfig.register(new DevelopmentExceptionMapper());
+    }
+
+    private void configureClasses() {
+        resourceConfig.packages(
                 "org.metastringfoundation.healthheatmap;" +
                         "io.swagger.v3.jaxrs2.integration.resources"
         );
-        developmentApp.register(new DevelopmentExceptionMapper());
-        server = getServer(developmentApp);
-        startServer();
     }
 
-    public static HttpServer getServer(ResourceConfig rc) {
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
-        Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
+    private void startServer() throws IOException {
+        server.start();
+        LOG.info("Application started.\nTry out {}", DEPLOYMENT_URI);
+    }
 
-        try {
-            final Properties properties = new Properties();
-            properties.load(Server.class.getClassLoader().getResourceAsStream("project.properties"));
-            String staticDir = "target/" + properties.getProperty("artifactId") + "-" + properties.getProperty("version");
-            String staticRoute = "/doc";
-            LOG.info("Serving static contents from " + staticDir + " at " + staticRoute);
-            server.getServerConfiguration().addHttpHandler(new StaticHttpHandler(staticDir), staticRoute);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private HttpServer getServer(ResourceConfig rc) {
+        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc, false);
+    }
 
-        return server;
+    private void addDocHandler(HttpServer server) throws IOException {
+        final Properties properties = new Properties();
+        properties.load(Server.class.getClassLoader().getResourceAsStream("project.properties"));
+        String staticDir = "target/" + properties.getProperty("artifactId") + "-" + properties.getProperty("version");
+        String staticRoute = "/doc";
+        LOG.info("Serving static contents from " + staticDir + " at " + staticRoute);
+        server.getServerConfiguration().addHttpHandler(new StaticHttpHandler(staticDir), staticRoute);
+    }
+
+    private void addGracefulShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new ServerShutdown(server));
     }
 }
