@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
+import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
@@ -53,13 +54,18 @@ public class HealthDatasetFromDataset implements HealthDataset {
     private Collection<? extends Map<String, String>> dataAfterTransforms() {
         return dataset.getData().stream()
                 .map(this::applyTransform)
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
-    private <T extends Map<String, String>> T applyTransform(T data) {
+    private List<DataPoint> applyTransform(DataPoint data) {
+        List<DataPoint> expandingList = List.of(data);
         for (DataTransformer dataTransformer : dataTransformers) {
-            data = dataTransformer.transform(data);
+            expandingList = expandingList.stream()
+                    .map(dataTransformer::transform)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
         }
-        return data;
+        return expandingList;
     }
 }

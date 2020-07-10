@@ -19,16 +19,17 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.metastringfoundation.data.DataPoint;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+
 public class DataTransformerFromSpreadsheet implements DataTransformer {
-    private final Map<Map<String, String>, Map<String, String>> rules;
+    private final Map<Map<String, String>, List<Map<String, String>>> rules;
     private final List<String> keyRawHeaders;
     private final List<String> keyHeaders;
     private final List<String> valueHeaders;
@@ -69,9 +70,13 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
                 .collect(Collectors.toList());
     }
 
-    private Map<Map<String, String>, Map<String, String>> parseCSVToRules(CSVParser csvParser) throws IOException {
+    private Map<Map<String, String>, List<Map<String, String>>> parseCSVToRules(CSVParser csvParser) throws IOException {
         return csvParser.getRecords().stream()
-                .collect(Collectors.toMap(this::getRuleKey, this::getRuleValue));
+                .collect(groupingBy(
+                        this::getRuleKey,
+                        Collectors.mapping(this::getRuleValue, toList())
+                        )
+                );
     }
 
     private Map<String, String> getRuleKey(CSVRecord record) {
@@ -94,15 +99,21 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
     }
 
     @Override
-    public <T extends Map<String, String>> T transform(T data) {
+    public List<DataPoint> transform(DataPoint data) {
         Map<String, String> lookupKey = lookupKeyExtract(data);
-        Map<String, String> valuesToAdd = rulesLookup(lookupKey);
-        if (valuesToAdd != null) {
-            data.putAll(valuesToAdd);
+        Optional<List<Map<String, String>>> lookupValue = rulesLookup(lookupKey);
+        if (lookupValue.isPresent()) {
+            return lookupValue.get().stream()
+                    .map(valuesToAdd -> {
+                        DataPoint clone = DataPoint.from(data);
+                        clone.putAll(valuesToAdd);
+                        return clone;
+                    })
+                    .collect(Collectors.toList());
         } else {
             lookupFailureKeys.add(lookupKey);
+            return List.of(data);
         }
-        return data;
     }
 
     @Override
@@ -110,8 +121,8 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
         return lookupFailureKeys;
     }
 
-    private <T extends Map<String, String>> Map<String, String> rulesLookup(Map<String, String> key) {
-        return rules.get(key);
+    private Optional<List<Map<String, String>>> rulesLookup(Map<String, String> key) {
+        return Optional.ofNullable(rules.get(key));
     }
 
     private <T extends Map<String, String>> Map<String, String> lookupKeyExtract(T data) {

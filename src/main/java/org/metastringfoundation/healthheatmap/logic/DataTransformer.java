@@ -16,11 +16,14 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.DataPoint;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public interface DataTransformer {
-    <T extends Map<String, String>> T transform(T data);
+    List<DataPoint> transform(DataPoint data);
 
     Set<Map<String, String>> getUnmatchedKeysFound();
 }

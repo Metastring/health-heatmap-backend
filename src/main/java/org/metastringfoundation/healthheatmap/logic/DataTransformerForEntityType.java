@@ -16,12 +16,15 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.DataPoint;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class DataTransformerForEntityType implements DataTransformer {
     @Override
-    public <T extends Map<String, String>> T transform(T data) {
+    public List<DataPoint> transform(DataPoint data) {
         if (data.containsKey("entity.district")) {
             data.put("entity.type", "DISTRICT");
         } else if (data.containsKey("entity.state")) {
@@ -38,7 +41,7 @@ public class DataTransformerForEntityType implements DataTransformer {
                 }
             }
         }
-        return data;
+        return List.of(data);
     }
 
     @Override
