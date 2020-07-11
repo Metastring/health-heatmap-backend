@@ -7,7 +7,7 @@ This software can be conceptually divided into two equally important halves. The
 
 ### Data
 
-Data sourced from public datasets is curated, annotated, and organized in [this git repository](https://gitlab.com/asdofindia/healthheatmap-data). This is in a form which can be directly ingested by the software.
+Data sourced from public datasets is curated, annotated, and organized. This is in a form which can be directly ingested by the software.
 
 ### ETL pipeline
 
