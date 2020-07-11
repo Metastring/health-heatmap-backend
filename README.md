@@ -1,4 +1,7 @@
 # Health HeatMap Backend
+
+![](https://github.com/Metastring/health-heatmap-backend/workflows/Build/badge.svg)
+
 This software can handle multitudes of spreadsheets and upload into a multi-dimensional database which allows querying by various dimensions.
 
 ## Overview

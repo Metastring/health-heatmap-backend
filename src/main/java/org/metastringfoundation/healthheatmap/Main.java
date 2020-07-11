@@ -49,10 +49,11 @@ public class Main {
 
     /**
      * Entry point.
+     *
      * @param args - cli arguments
      * @throws IllegalArgumentException if arguments are wrong
-     * @throws IOException for various reasons including database communication issues
-     * @throws DatasetIntegrityError when uploading dataset if the dataset is malformed
+     * @throws IOException              for various reasons including database communication issues
+     * @throws DatasetIntegrityError    when uploading dataset if the dataset is malformed
      */
     public static void main(String[] args) throws IllegalArgumentException, IOException, DatasetIntegrityError {
         try {
