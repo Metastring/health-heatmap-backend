@@ -5,7 +5,7 @@
     <artifactId>health-heatmap-backend</artifactId>
     <version>0.0.1</version>
     <properties>
-        <maven.compiler.release>1.11</maven.compiler.release>
+        <maven.compiler.release>11</maven.compiler.release>
         <jersey.version>2.31</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.10.3</jackson.version>
