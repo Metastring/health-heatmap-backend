@@ -1,4 +1,4 @@
-# Health Heat Map API
+# Health HeatMap Backend
 This software can handle multitudes of spreadsheets and upload into a multi-dimensional database which allows querying by various dimensions.
 
 ## Overview
@@ -30,7 +30,7 @@ Data sourced from public datasets is curated, annotated, and organized in [this 
 
 ## Add data
 
-* `git clone git@gitlab.com:asdofindia/healthheatmap-data` somewhere, say /home/metastring/healthheatmap-data
+* Put data somewhere, say /home/metastring/healthheatmap-data
 * Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
 
 ## Run server
