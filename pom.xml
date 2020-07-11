@@ -2,11 +2,10 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.metastringfoundation</groupId>
-    <artifactId>healthheatmap-api</artifactId>
+    <artifactId>health-heatmap-backend</artifactId>
     <version>0.0.1</version>
     <properties>
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
+        <maven.compiler.release>1.11</maven.compiler.release>
         <jersey.version>2.31</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.10.3</jackson.version>
@@ -15,7 +14,7 @@
         <junit.version>5.6.0</junit.version>
     </properties>
     <build>
-        <finalName>hhm-api</finalName>
+        <finalName>health-heatmap-backend</finalName>
         <resources>
             <resource>
                 <!-- project.properties in here need to get picked up and variables replaced -->
@@ -32,9 +31,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <!-- let us stick to old version, just in case (compatibility with legacy stuff outside) -->
-                    <source>11</source>
-                    <target>11</target>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
             <plugin>

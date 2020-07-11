@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="healthheatmap-api" />
+        <module name="health-heatmap-backend" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="data-reader" target="9" />
+      <module name="health-heatmap-backend" target="1.11" />
       <module name="healthheatmap-api" target="11" />
     </bytecodeTargetLevel>
   </component>

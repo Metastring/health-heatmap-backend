@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/healthheatmap-api.iml" filepath="$PROJECT_DIR$/healthheatmap-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/health-heatmap-backend.iml" filepath="$PROJECT_DIR$/health-heatmap-backend.iml" />
     </modules>
   </component>
 </project>
