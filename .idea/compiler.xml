@@ -10,9 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="data-reader" target="9" />
-      <module name="health-heatmap-backend" target="1.11" />
-      <module name="healthheatmap-api" target="11" />
+      <module name="health-heatmap-backend" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

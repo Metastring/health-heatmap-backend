@@ -13,23 +13,13 @@
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
-      <option name="name" value="Maven Central repository" />
-      <option name="url" value="https://repo1.maven.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="central" />
       <option name="name" value="libs-release" />
       <option name="url" value="http://206.189.142.241/artifactory/libs-release" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="snapshots" />
-      <option name="name" value="libs-snapshot" />
-      <option name="url" value="http://206.189.142.241/artifactory/libs-snapshot" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="metastringfoundation" />
-      <option name="name" value="metastringfoundation" />
-      <option name="url" value="http://jenkins.staging.metastringfoundation.free.gen.in/plugin/repository/everything/" />
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="metastringfoundation.datareader" />
@@ -40,6 +30,16 @@
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="snapshots" />
+      <option name="name" value="libs-snapshot" />
+      <option name="url" value="http://206.189.142.241/artifactory/libs-snapshot" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="metastringfoundation" />
+      <option name="name" value="metastringfoundation" />
+      <option name="url" value="http://jenkins.staging.metastringfoundation.free.gen.in/plugin/repository/everything/" />
     </remote-repository>
   </component>
 </project>
