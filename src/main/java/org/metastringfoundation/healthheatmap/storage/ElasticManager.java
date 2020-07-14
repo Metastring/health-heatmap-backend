@@ -137,11 +137,17 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
         SearchResponse searchResponse = doSearch(elastic, dataQuery, dataIndex);
         LOG.debug(searchResponse.toString());
         searchResult.setResult(Arrays.stream(searchResponse.getHits().getHits())
-                .map(SearchHit::getSourceAsMap)
+                .map(this::getHitAsMapWithId)
                 .map(ElasticQueryHelpers::convertToStringOnlyMap)
                 .collect(Collectors.toList())
         );
         return searchResult;
+    }
+
+    private Map<String, Object> getHitAsMapWithId(SearchHit hit) {
+        Map<String, Object> mapWithId = hit.getSourceAsMap();
+        mapWithId.put("_id", hit.getId());
+        return mapWithId;
     }
 
     @Override
