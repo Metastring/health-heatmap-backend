@@ -27,8 +27,10 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Path("indicators")
 public class IndicatorResource {
@@ -82,30 +84,29 @@ public class IndicatorResource {
     }
 
     private Map<String, Object> resultToSingleMap(List<Map<String, Object>> input) {
-        Set<String> fields = input.stream()
-                .flatMap(e -> e.keySet().stream())
-                .collect(Collectors.toSet());
-
         Map<String, Object> result = new HashMap<>();
-
         Map<String, Map<String, Object>> sourceSpecific = new HashMap<>();
 
-        Set<String> commonFields = new HashSet<>();
+        Set<String> commonFields = Set.of(
+                "indicator_universal_name",
+                "indicator_category",
+                "indicator_subcategory",
+                "indicator_positive_negative",
+                "indicator_type",
+                "indicator_definition"
+        );
 
-        for (String field : fields) {
-            Set<String> values = input.stream().map(e -> e.get(field).toString()).collect(Collectors.toSet());
-            if (values.size() == 1) {
-                result.put(field, values.stream().findFirst().get());
-                commonFields.add(field);
-            }
-        }
+        Set<String> sourceSpecificFields = Set.of(
+                "indicator_methodOfEstimation"
+        );
 
-        for (Map<String, Object> oneSource : input) {
-            commonFields.forEach(oneSource::remove);
-            String source = oneSource.get("source").toString();
-            oneSource.remove("source");
-            sourceSpecific.put(source, oneSource);
-        }
+        input.forEach(indicatorData -> {
+            Map<String, Object> thisSourceSpecific = new HashMap<>();
+            commonFields.forEach(field -> result.put(field, indicatorData.get(field)));
+            sourceSpecificFields.forEach(field -> thisSourceSpecific.put(field, indicatorData.get(field)));
+            String source = (String) indicatorData.get("source");
+            sourceSpecific.put(source, thisSourceSpecific);
+        });
 
         result.put("source_specific", sourceSpecific);
 
