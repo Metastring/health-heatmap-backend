@@ -161,6 +161,115 @@
         }
       }
     },
+    "/indicators": {
+      "get": {
+        "description": "Use this endpoint to fetch indicators",
+        "operationId": "getAllIndicators",
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "examples": {
+                  "With Source": {
+                    "value": [
+                      {
+                        "indicator_universal_name": "Under Five Mortality Rate",
+                        "indicator_category": "Child Health",
+                        "indicator_subcategory": "Mortality",
+                        "indicator_positive_negative": "NEGATIVE",
+                        "source": "NFHS - 4"
+                      },
+                      {
+                        "indicator_universal_name": "Under Five Mortality Rate",
+                        "indicator_category": "Child Health",
+                        "indicator_subcategory": "Mortality",
+                        "indicator_positive_negative": "NEGATIVE",
+                        "source": "AHS"
+                      },
+                      {
+                        "indicator_universal_name": "Maternal Mortality Rate",
+                        "indicator_category": "Maternal Health",
+                        "indicator_subcategory": "Mortality",
+                        "indicator_positive_negative": "NEGATIVE",
+                        "source": "AHS"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indicators/{name}": {
+      "get": {
+        "description": "Use this endpoint to fetch indicators",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Universal Name of the Indicator to be fetched"
+          }
+        ],
+        "operationId": "getOneIndicator",
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "source_specific": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "examples": {
+                  "Default": {
+                    "value": {
+                      "indicator_universal_name": "Under Five Mortality Rate",
+                      "indicator_category": "Child Health",
+                      "indicator_subcategory": "Mortality",
+                      "indicator_positive_negative": "NEGATIVE",
+                      "source_specific": {
+                        "NFHS - 4": {
+                          "method": "Survey"
+                        },
+                        "NFHS - 3": {
+                          "method": "Door-to-door"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/download": {
       "post": {
         "description": "Use this endpoint to allow user to download data in various formats (presently only CSV)",
