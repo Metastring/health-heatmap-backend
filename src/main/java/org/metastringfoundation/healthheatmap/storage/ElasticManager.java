@@ -127,7 +127,7 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
         try {
             elastic.indices().delete(request, RequestOptions.DEFAULT);
         } catch (ElasticsearchException ex) {
-            LOG.info("Ignoring missing index");
+            LOG.info("Tried deleting a non-existent index. Oops!");
         }
     }
 
