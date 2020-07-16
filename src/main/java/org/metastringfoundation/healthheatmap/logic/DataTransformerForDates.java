@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DataTransformerForDates implements DataTransformer {
     @Override
@@ -32,7 +33,37 @@ public class DataTransformerForDates implements DataTransformer {
         if (data.containsKey("duration.end")) {
             data.put("duration.end", cleanDate(data.get("duration.end")));
         }
+        data.put("duration.type", getDateType(data));
         return List.of(data);
+    }
+
+    private String getDateType(DataPoint data) {
+        if (data.containsKey("duration.type")) {
+            return data.get("duration.type");
+        }
+        try {
+            String[] startSplit = data.get("duration.start").split("-");
+            String[] endSplit = data.get("duration.end").split("-");
+            List<Integer> start = Arrays.stream(startSplit).map(Integer::parseInt).collect(Collectors.toList());
+            List<Integer> end = Arrays.stream(endSplit).map(Integer::parseInt).collect(Collectors.toList());
+            Integer startYear = start.get(0);
+            Integer endYear = end.get(0);
+            Integer startMonth = start.get(1);
+            Integer endMonth = end.get(1);
+            Integer startDay = end.get(2);
+            Integer endDay = end.get(2);
+
+            if (startYear.equals(endYear) && startMonth.equals(1) && endMonth.equals(12) && startDay.equals(1) && endDay.equals(31)) {
+                return "YEARLY";
+            }
+            if (startYear.equals(endYear) && startMonth.equals(endMonth) && startDay.equals(endDay)) {
+                return "DAILY";
+            } else {
+                return "UNKNOWN";
+            }
+        } catch (Exception e) {
+            return "UNKNOWN";
+        }
     }
 
     private String cleanDate(String s) {
@@ -58,7 +89,6 @@ public class DataTransformerForDates implements DataTransformer {
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             return s;
         }
-
     }
 
     @Override
