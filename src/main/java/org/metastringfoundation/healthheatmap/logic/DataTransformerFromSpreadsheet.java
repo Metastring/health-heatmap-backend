@@ -112,7 +112,8 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
                     .collect(Collectors.toList());
         } else {
             lookupFailureKeys.add(lookupKey);
-            return List.of(data);
+            DataPoint clone = DataPoint.from(data);
+            return List.of(clone);
         }
     }
 

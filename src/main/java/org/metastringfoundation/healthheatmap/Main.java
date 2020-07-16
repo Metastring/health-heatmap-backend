@@ -26,10 +26,7 @@ import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.cli.CLI;
 import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
-import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.ApplicationDefault;
-import org.metastringfoundation.healthheatmap.logic.DataTransformer;
-import org.metastringfoundation.healthheatmap.logic.DataTransformerForEntityType;
+import org.metastringfoundation.healthheatmap.logic.*;
 import org.metastringfoundation.healthheatmap.web.Server;
 
 import java.io.IOException;
@@ -80,7 +77,8 @@ public class Main {
                 if (transformersDir != null && !transformersDir.isEmpty()) {
                     List<DataTransformer> transformers = Stream.of(
                             List.of(new DataTransformerForEntityType()),
-                            DataTransformersReader.getFromPath(Paths.get(transformersDir)).getTransformers()
+                            DataTransformersReader.getFromPath(Paths.get(transformersDir)).getTransformers(),
+                            List.of(new DataTransformerForDates())
                     ).flatMap(Collection::stream)
                             .collect(Collectors.toList());
                     tableUploader = new TableUploader(
