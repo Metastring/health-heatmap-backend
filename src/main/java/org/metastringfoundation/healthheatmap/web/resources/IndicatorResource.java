@@ -77,7 +77,9 @@ public class IndicatorResource {
                 "indicator_positive_negative",
                 "indicator_type",
                 "indicator_definition",
-                "indicator_methodOfEstimation"
+                "indicator_methodOfEstimation",
+                "License",
+                "License URL"
         ));
         List<Map<String, Object>> result = getFromDimensions(resourceContext, filter);
         return resultToSingleMap(result);
@@ -97,7 +99,9 @@ public class IndicatorResource {
         );
 
         Set<String> sourceSpecificFields = Set.of(
-                "indicator_methodOfEstimation"
+                "indicator_methodOfEstimation",
+                "License",
+                "License URL"
         );
 
         input.forEach(indicatorData -> {
