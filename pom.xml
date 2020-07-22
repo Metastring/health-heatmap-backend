@@ -127,8 +127,59 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.13.0</version> <!-- or use version from pluginManagement -->
+                <configuration>
+                    <!-- failOnViolation is actually true by default, but can be disabled -->
+                    <failOnViolation>true</failOnViolation>
+                    <!-- printFailingErrors is pretty useful -->
+                    <printFailingErrors>true</printFailingErrors>
+                    <!-- enable incremental analysis -->
+                    <analysisCache>true</analysisCache>
+                    <!-- analysisCacheLocation: optional - points to the following location by default -->
+                    <analysisCacheLocation>${project.build.directory}/pmd/pmd.cache</analysisCacheLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>3.13.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 
     <dependencyManagement>
