@@ -16,11 +16,17 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.DatasetIntegrityError;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface Application extends DatasetStore, ApplicationMetadataStore {
     void shutdown() throws IOException;
+
+    HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError;
 }

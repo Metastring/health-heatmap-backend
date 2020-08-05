@@ -20,31 +20,30 @@ import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class HealthDatasetFromDataset implements HealthDataset {
     private final Dataset dataset;
-    private List<DataTransformer> dataTransformers;
+    private final List<DataTransformer> dataTransformers;
 
     public HealthDatasetFromDataset(Dataset dataset) {
         this.dataset = dataset;
+        dataTransformers = List.of();
     }
 
-    public HealthDatasetFromDataset(Dataset dataset, List<DataTransformer> transformers) {
+    public HealthDatasetFromDataset(Dataset dataset, @Nullable List<DataTransformer> transformers) {
         this.dataset = dataset;
-        setTransformers(transformers);
-    }
-
-    public void setTransformers(List<DataTransformer> transformers) {
-        dataTransformers = transformers;
+        dataTransformers = Objects.requireNonNullElseGet(transformers, List::of);
     }
 
     @Override
     public Collection<? extends Map<String, String>> getData() {
-        if (dataTransformers == null) {
+        if (dataTransformers == null || dataTransformers.size() == 0) {
             return dataset.getData();
         } else {
             return dataAfterTransforms();

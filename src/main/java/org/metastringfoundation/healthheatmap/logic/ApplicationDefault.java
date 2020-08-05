@@ -18,7 +18,12 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.data.DatasetIntegrityError;
+import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
+import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.ElasticManager;
@@ -83,6 +88,15 @@ public class ApplicationDefault implements Application {
     @Override
     public void shutdown() throws IOException {
         datasetStore.shutdown();
+    }
+
+    @Override
+    public HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError {
+        Dataset dataset = new TableToDatasetAdapter(
+                tableAndDescriptionPair.getTable(),
+                tableAndDescriptionPair.getTableDescription()
+        );
+        return new HealthDatasetFromDataset(dataset, transformers);
     }
 
     @Override
