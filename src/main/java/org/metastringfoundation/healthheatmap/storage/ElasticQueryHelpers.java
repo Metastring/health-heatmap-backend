@@ -16,8 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -25,6 +23,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.jboss.logging.Logger;
 import org.metastringfoundation.healthheatmap.logic.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.web.beans.Filter;
@@ -41,7 +40,7 @@ import java.util.stream.Collectors;
  * Collection of various utility functions to interact with elastic search
  */
 public class ElasticQueryHelpers {
-    private static final Logger LOG = LogManager.getLogger(ElasticQueryHelpers.class);
+    private static final Logger LOG = Logger.getLogger(ElasticQueryHelpers.class);
 
     /**
      * Queries elastic for data using filters supplied

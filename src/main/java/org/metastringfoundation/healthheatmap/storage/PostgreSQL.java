@@ -16,10 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.storage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jooq.*;
+import org.jboss.logging.Logger;
 import org.jooq.Record;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.metastringfoundation.datareader.dataset.table.Table;
@@ -35,7 +34,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class PostgreSQL {
-    private static final Logger LOG = LogManager.getLogger(PostgreSQL.class);
+    private static final Logger LOG = Logger.getLogger(PostgreSQL.class);
 
     private final Connection psqlConnection;
     private final DSLContext dslContext;
@@ -55,7 +54,7 @@ public class PostgreSQL {
             psqlConnection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
             throw new RuntimeException();
         }
 
@@ -71,7 +70,7 @@ public class PostgreSQL {
         return "Maybe healthy";
     }
 
-    public void createArbitraryTable(String name, Table table) throws ApplicationError {
+    public void createArbitraryTable(String name, Table table) {
         List<String> columnNames = new ArrayList<>();
         for (int col = 0; col < table.getNumberOfColumns(); col++) {
             String columnName = TableCellReference.convertNumToColString(col);
@@ -79,24 +78,19 @@ public class PostgreSQL {
         }
 
         List<List<String>> rows = table.getTable();
-        try {
-            createArbitraryTable(name, columnNames, rows);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ApplicationError("SQL Exception\n");
-        }
+        createArbitraryTable(name, columnNames, rows);
     }
 
-    private void createArbitraryTable(String name, List<String> columnNames, List<List<String>> rows) throws SQLException {
+    private void createArbitraryTable(String name, List<String> columnNames, List<List<String>> rows) {
         org.jooq.Table<Record> TABLE = DSL.table(DSL.name(name));
-        CreateTableColumnStep tableColumnStep =  dslContext.createTableIfNotExists(TABLE);
-        for (String column: columnNames) {
+        CreateTableColumnStep tableColumnStep = dslContext.createTableIfNotExists(TABLE);
+        for (String column : columnNames) {
             Name fieldName = DSL.name(column);
             tableColumnStep.column(fieldName, SQLDataType.VARCHAR(300));
         }
         tableColumnStep.execute();
 
-        for (List<String> row: rows) {
+        for (List<String> row : rows) {
             InsertSetStep<Record> insertDataStep = dslContext.insertInto(TABLE);
             for (int col = 0; col < row.size(); col++) {
                 String colName = columnNames.get(col);
@@ -115,7 +109,7 @@ public class PostgreSQL {
         psqlConnection.setAutoCommit(false);
 
         StringJoiner columns = new StringJoiner(",\n", "(", ")");
-        for (String column: columnNames) {
+        for (String column : columnNames) {
             String columnSql = column + " VARCHAR(300)";
             columns.add(columnSql);
         }
@@ -147,7 +141,7 @@ public class PostgreSQL {
 
         try (PreparedStatement insertStatement = psqlConnection.prepareStatement(insertRows)) {
             insertStatement.setString(1, name);
-            for (List<String> row: rows) {
+            for (List<String> row : rows) {
                 for (int param = 0; param < row.size(); param++) {
                     LOG.debug("Inserting " + row.get(param) + " at position " + (param + 1));
                     insertStatement.setString(param + 1, row.get(param));

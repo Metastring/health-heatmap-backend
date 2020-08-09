@@ -16,13 +16,12 @@
 
 package org.metastringfoundation.healthheatmap.logic.beanconverters;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.web.beans.Filter;
 
 public class FilterToDataQuery {
-    private static final Logger LOG = LogManager.getLogger(FilterToDataQuery.class);
+    private static final Logger LOG = Logger.getLogger(FilterToDataQuery.class);
 
     public static DataQuery convert(Filter filter) {
         DataQuery dataQuery = new DataQuery();

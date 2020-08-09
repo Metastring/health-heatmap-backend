@@ -17,8 +17,7 @@
 package org.metastringfoundation.healthheatmap.helpers;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -33,7 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileManager {
-    private static final Logger LOG = LogManager.getLogger(FileManager.class);
+    private static final Logger LOG = Logger.getLogger(FileManager.class);
 
     public static Reader getFileReader(Path nioPath) throws Exception {
         String path = nioPath.toString();

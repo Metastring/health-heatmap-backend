@@ -17,8 +17,6 @@
 package org.metastringfoundation.healthheatmap.storage;
 
 import org.apache.http.HttpHost;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -32,6 +30,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.search.SearchHit;
+import org.jboss.logging.Logger;
 import org.metastringfoundation.datareader.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
@@ -51,7 +50,7 @@ import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers
 @ElasticStore
 @ApplicationScoped
 public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
-    private static final Logger LOG = LogManager.getLogger(ElasticManager.class);
+    private static final Logger LOG = Logger.getLogger(ElasticManager.class);
     private final RestHighLevelClient elastic;
     private final String dataIndex = "data";
     private final String downloadsIndex = "downloads";

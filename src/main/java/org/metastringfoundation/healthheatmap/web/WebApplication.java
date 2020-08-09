@@ -19,6 +19,6 @@ package org.metastringfoundation.healthheatmap.web;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("api")
+@ApplicationPath("/api")
 public class WebApplication extends Application {
 }
