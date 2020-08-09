@@ -16,8 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.cli;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
@@ -42,7 +41,7 @@ import java.util.stream.Stream;
  * This is a utility that helps upload data directly from command line
  */
 public class TableUploader {
-    private static final Logger LOG = LogManager.getLogger(TableUploader.class);
+    private static final Logger LOG = Logger.getLogger(TableUploader.class);
 
     private final Application application;
     private final List<DataTransformer> transformers;

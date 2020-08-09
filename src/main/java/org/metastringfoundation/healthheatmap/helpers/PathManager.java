@@ -17,14 +17,13 @@
 package org.metastringfoundation.healthheatmap.helpers;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PathManager {
-    private static final Logger LOG = LogManager.getLogger(PathManager.class);
+    private static final Logger LOG = Logger.getLogger(PathManager.class);
 
     public static String guessMetadataPath(Path path) {
         Path basedir = path.getParent();

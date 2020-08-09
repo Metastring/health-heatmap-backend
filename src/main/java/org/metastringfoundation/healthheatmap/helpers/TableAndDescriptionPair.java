@@ -16,8 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
@@ -29,7 +28,7 @@ import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMe
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
 
 public class TableAndDescriptionPair {
-    private static final Logger LOG = LogManager.getLogger(TableAndDescriptionPair.class);
+    private static final Logger LOG = Logger.getLogger(TableAndDescriptionPair.class);
 
     private final Table table;
     private final TableDescription tableDescription;

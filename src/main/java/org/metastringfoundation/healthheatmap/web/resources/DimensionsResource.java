@@ -16,8 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.web.resources;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 import org.metastringfoundation.healthheatmap.web.beans.FilterAndSelectFields;
@@ -31,7 +30,7 @@ import java.util.Map;
 
 @Path("dimensions")
 public class DimensionsResource {
-    private static final Logger LOG = LogManager.getLogger(DimensionsResource.class);
+    private static final Logger LOG = Logger.getLogger(DimensionsResource.class);
     private final Application app;
 
     @Inject
