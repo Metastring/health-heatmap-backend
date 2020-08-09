@@ -27,7 +27,6 @@ import org.metastringfoundation.healthheatmap.cli.CLI;
 import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.logic.*;
-import org.metastringfoundation.healthheatmap.web.Server;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -66,7 +65,7 @@ public class Main {
             if (serverShouldStart) {
                 Config config = ConfigProvider.getConfig();
                 String environment = config.getOptionalValue("ENV", String.class).orElse("development");
-                Server.start(environment);
+                System.out.println("Please use `mvn liberty:dev` to start development server");
 
             } else if (path != null && !path.isEmpty()) {
                 Application application = ApplicationDefault.createPreconfiguredApplicationDefault();

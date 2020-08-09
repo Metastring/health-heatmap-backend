@@ -103,4 +103,9 @@ public class ApplicationDefault implements Application {
     public void logDownload(DownloadRequest downloadRequest) throws IOException {
         metadataStore.logDownload(downloadRequest);
     }
+
+    @Override
+    public String getHealth() {
+        return "yes, healthy";
+    }
 }

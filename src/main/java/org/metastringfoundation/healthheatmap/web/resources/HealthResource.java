@@ -41,4 +41,10 @@ public class HealthResource {
                 "database", "GREEN"
         );
     }
+
+    @GET
+    @Path("/internal")
+    public String health() {
+        return app.getHealth();
+    }
 }
