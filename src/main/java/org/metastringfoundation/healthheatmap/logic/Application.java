@@ -29,4 +29,6 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     void shutdown() throws IOException;
 
     HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError;
+
+    String getHealth();
 }
