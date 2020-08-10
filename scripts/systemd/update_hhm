@@ -10,7 +10,7 @@ update_data() {
 update_api() {
   cd ~/src/github/Metastring/health-heat-map-api
   git pull
-  mvn compile package
+  ./mvnw compile package
   systemctl --user restart hhm-api
 }
 

@@ -27,7 +27,7 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 
 * Java 11+ is required.
 * Elasticsearch 7 is required.
-* Clone this repo. Run `mvn clean install`. 
+* Clone this repo. Run `./mvnw clean install`. 
 * Run `java -jar cli/target/health-heatmap-cli.jar` for command line options.
 
 
