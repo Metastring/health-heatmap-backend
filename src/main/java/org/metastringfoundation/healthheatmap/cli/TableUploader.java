@@ -92,12 +92,6 @@ public class TableUploader {
                 });
     }
 
-    private void printAllDataPointsOf(String path) throws IOException, DatasetIntegrityError {
-        Dataset dataset = getDataset(path);
-        dataset.getData()
-                .forEach(System.out::println);
-    }
-
     private void printUniqueDimensionValuesOf(String path) throws IOException, DatasetIntegrityError {
         Map<String, Set<String>> dimensionValues = getUniqueDimensionValuesOf(path);
         dimensionValues.forEach((key, value) -> {
@@ -116,13 +110,6 @@ public class TableUploader {
                         Map.Entry::getKey,
                         Collectors.mapping(Map.Entry::getValue, Collectors.toSet()))
                 );
-    }
-
-    private void printSomeDataPointsOf(String path) throws IOException, DatasetIntegrityError {
-        Dataset dataset = getDataset(path);
-        dataset.getData().stream()
-                .limit(5)
-                .forEach(System.out::println);
     }
 
     private boolean isSingleRegularFile(String path) {

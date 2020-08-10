@@ -18,9 +18,6 @@ package org.metastringfoundation.healthheatmap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.jboss.logging.Logger;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.cli.CLI;
 import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
@@ -40,7 +37,6 @@ import java.util.stream.Stream;
  * @see org.metastringfoundation.healthheatmap.cli
  */
 public class Main {
-    private static final Logger LOG = Logger.getLogger(Main.class);
 
     /**
      * Entry point.
@@ -62,8 +58,6 @@ public class Main {
             boolean recreateIndex = commandLine.hasOption("recreate");
 
             if (serverShouldStart) {
-                Config config = ConfigProvider.getConfig();
-                String environment = config.getOptionalValue("ENV", String.class).orElse("development");
                 System.out.println("Please use `mvn liberty:dev` to start development server");
 
             } else if (path != null && !path.isEmpty()) {

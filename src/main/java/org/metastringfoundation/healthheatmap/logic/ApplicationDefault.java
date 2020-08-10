@@ -16,7 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.jboss.logging.Logger;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
@@ -44,7 +43,6 @@ import java.util.Map;
  */
 @ApplicationScoped
 public class ApplicationDefault implements Application {
-    private static final Logger LOG = Logger.getLogger(ApplicationDefault.class);
     private final DatasetStore datasetStore;
     private final ApplicationMetadataStore metadataStore;
 
@@ -60,7 +58,6 @@ public class ApplicationDefault implements Application {
 
     public static Application createPreconfiguredApplicationDefault() {
         DatasetStore datasetStore = new ElasticManager();
-        ApplicationMetadataStore metadataStore = (ApplicationMetadataStore) datasetStore;
         return new ApplicationDefault(datasetStore);
     }
 
