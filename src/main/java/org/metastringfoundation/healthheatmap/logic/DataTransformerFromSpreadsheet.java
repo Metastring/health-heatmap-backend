@@ -25,9 +25,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-
 public class DataTransformerFromSpreadsheet implements DataTransformer {
     private final Map<Map<String, String>, List<Map<String, String>>> rules;
     private final List<String> keyRawHeaders;
@@ -72,9 +69,9 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
 
     private Map<Map<String, String>, List<Map<String, String>>> parseCSVToRules(CSVParser csvParser) throws IOException {
         return csvParser.getRecords().stream()
-                .collect(groupingBy(
+                .collect(Collectors.groupingBy(
                         this::getRuleKey,
-                        Collectors.mapping(this::getRuleValue, toList())
+                        Collectors.mapping(this::getRuleValue, Collectors.toList())
                         )
                 );
     }
