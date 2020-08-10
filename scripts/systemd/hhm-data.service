@@ -4,7 +4,7 @@ Description=Health Heat Map reload data
 [Service]
 Type=oneshot
 WorkingDirectory=%h/src/github/Metastring/health-heat-map-api
-ExecStart=/usr/lib/jvm/adoptopenjdk-11-hotspot-amd64/bin/java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main -b -p %h/src/github/Metastring/healthheatmap-data/data -t %h/src/github/Metastring/healthheatmap-data/transformers -z
+ExecStart=/usr/lib/jvm/adoptopenjdk-11-hotspot-amd64/bin/java -jar cli/target/health-heatmap-cli.jar -b -p %h/src/github/Metastring/healthheatmap-data/data -t %h/src/github/Metastring/healthheatmap-data/transformers -z
 
 [Install]
 WantedBy=default.target

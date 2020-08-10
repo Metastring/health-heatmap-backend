@@ -6,11 +6,22 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="health-heatmap-backend" />
+        <module name="health-heatmap-backend (3)" />
+        <module name="health-heatmap-backend (2)" />
+        <module name="health-heatmap-backend (1)" />
+        <module name="health-heatmap-web" />
+        <module name="health-heatmap-core" />
+        <module name="health-heatmap-cli" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="health-heatmap-backend" target="11" />
+      <module name="health-heatmap-backend (1)" target="11" />
+      <module name="health-heatmap-backend (2)" target="11" />
+      <module name="health-heatmap-backend (3)" target="11" />
+      <module name="health-heatmap-cli" target="11" />
+      <module name="health-heatmap-core" target="11" />
+      <module name="health-heatmap-web" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
