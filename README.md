@@ -27,16 +27,16 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 
 * Java 11+ is required.
 * Elasticsearch 7 is required.
-* Clone this repo. Run `mvn clean compile package`. 
-* Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main` for command line options.
+* Clone this repo. Run `mvn clean install`. 
+* Run `java -jar cli/target/health-heatmap-cli.jar` for command line options.
 
 
 ## Add data
 
 * Put data somewhere, say /home/metastring/healthheatmap-data
-* Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
+* Run `java -jar cli/target/health-heatmap-cli.jar --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
 
 ## Run server
 
-* Run `java -cp target/classes:target/dependency/* org.metastringfoundation.healthheatmap.Main --server`
-* Go to http://localhost:8080/doc/
+* Run `java -jar web/target/health-heatmap-web-runner.jar`
+* Go to http://localhost:8080/api-playground/
