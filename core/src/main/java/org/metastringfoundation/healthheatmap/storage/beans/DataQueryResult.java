@@ -22,6 +22,12 @@ import java.util.Map;
 public class DataQueryResult {
     private List<Map<String, String>> result;
 
+    public static DataQueryResult of (List<Map<String, String>> result) {
+        DataQueryResult queryResult = new DataQueryResult();
+        queryResult.setResult(result);
+        return queryResult;
+    }
+
     public List<Map<String, String>> getResult() {
         return result;
     }

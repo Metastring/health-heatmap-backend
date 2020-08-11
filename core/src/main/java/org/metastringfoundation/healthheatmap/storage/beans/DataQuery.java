@@ -19,12 +19,20 @@ package org.metastringfoundation.healthheatmap.storage.beans;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class DataQuery {
     private @Nullable
     Map<String, List<String>> terms;
     private @Nullable
     Map<String, Map<String, String>> ranges;
+
+    public static DataQuery of(@Nullable Map<String, List<String>> terms, @Nullable Map<String, Map<String, String>> ranges) {
+        DataQuery dataQuery = new DataQuery();
+        dataQuery.setTerms(terms);
+        dataQuery.setRanges(ranges);
+        return dataQuery;
+    }
 
     public @Nullable
     Map<String, List<String>> getTerms() {
@@ -50,5 +58,19 @@ public class DataQuery {
                 "terms=" + terms +
                 ", ranges=" + ranges +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataQuery dataQuery = (DataQuery) o;
+        return Objects.equals(terms, dataQuery.terms) &&
+                Objects.equals(ranges, dataQuery.ranges);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(terms, ranges);
     }
 }
