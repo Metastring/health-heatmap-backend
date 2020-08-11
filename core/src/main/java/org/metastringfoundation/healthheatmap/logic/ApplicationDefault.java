@@ -101,7 +101,7 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public String getHealth() {
-        return "yes, healthy";
+    public boolean getHealth() throws IOException {
+        return datasetStore.getHealth();
     }
 }

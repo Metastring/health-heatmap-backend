@@ -40,3 +40,7 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 
 * Run `java -jar web/target/health-heatmap-web-runner.jar`
 * Go to http://localhost:8080/api-playground/
+
+## Development
+
+* You can do `../mvnw quarkus:dev` inside `web` folder to run a development server with automatic reloads

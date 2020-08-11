@@ -161,4 +161,9 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
         request.source(jsonData, XContentType.JSON);
         elastic.index(request, RequestOptions.DEFAULT);
     }
+
+    @Override
+    public boolean getHealth() throws IOException {
+        return ElasticHealthCheck.indexes(elastic, dataIndex, downloadsIndex);
+    }
 }

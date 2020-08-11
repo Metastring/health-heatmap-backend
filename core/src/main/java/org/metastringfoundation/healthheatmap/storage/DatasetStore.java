@@ -35,4 +35,6 @@ public interface DatasetStore {
     List<Map<String, Object>> getAllTermsOfFields(FilterAndSelectFields filterAndFields) throws IOException;
 
     void factoryReset() throws IOException;
+
+    boolean getHealth() throws IOException;
 }

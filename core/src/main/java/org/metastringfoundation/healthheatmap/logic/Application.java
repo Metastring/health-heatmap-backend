@@ -30,5 +30,5 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
 
     HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError;
 
-    String getHealth();
+    boolean getHealth() throws IOException;
 }
