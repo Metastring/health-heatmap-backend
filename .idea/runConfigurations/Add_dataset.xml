@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Add dataset" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="org.metastringfoundation.healthheatmap.Main" />
-    <module name="health-heatmap-backend" />
+    <module name="health-heatmap-cli" />
     <option name="PROGRAM_PARAMETERS" value="-p $FilePath$" />
     <method v="2">
       <option name="Make" enabled="true" />
