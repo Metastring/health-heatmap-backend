@@ -210,5 +210,17 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.26</version>
         </dependency>
+
+        <!-- miscellaneous fixes -->
+        <!-- logging in graal native -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>commons-logging-jboss-logging</artifactId>
+        </dependency>
     </dependencies>
 </project>
