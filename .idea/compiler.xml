@@ -7,8 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="health-heatmap-web" />
-        <module name="health-heatmap-core" />
         <module name="health-heatmap-cli" />
+        <module name="health-heatmap-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,6 +19,7 @@
       <module name="health-heatmap-cli" target="11" />
       <module name="health-heatmap-core" target="11" />
       <module name="health-heatmap-web" target="11" />
+      <module name="hhm-api" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
