@@ -34,10 +34,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
-class ElasticTest {
+class ElasticIT {
     @Container
     private static final ElasticsearchContainer ELASTICSEARCH_CONTAINER;
     static {
@@ -63,10 +65,10 @@ class ElasticTest {
         dataQuery.setTerms(Map.of("indicator", List.of("mmr")));
         refreshIndex();
         DataQueryResult actual = elasticManager.query(dataQuery);
-        assertEquals(List.of(
-                Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2"),
-                Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1")
-        ), actual.getResult());
+        assertThatJson(actual.getResult()).isEqualTo(List.of(
+                Map.of("indicator", "mmr", "entity.district", "kozhikkode", "value", "1.2", "_id", "${json-unit.ignore}"),
+                Map.of("indicator", "mmr", "entity.district", "kannur", "value", "1", "_id", "${json-unit.ignore}")
+        ));
     }
 
     @Test
