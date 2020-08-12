@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.resources;
+package org.metastringfoundation.healthheatmap.web.query;
 
 import org.jboss.logging.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
