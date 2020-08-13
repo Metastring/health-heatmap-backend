@@ -16,9 +16,13 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
+import org.metastringfoundation.datareader.dataset.table.Table;
+import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
+import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
@@ -34,8 +38,8 @@ import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
@@ -103,5 +107,17 @@ public class ApplicationDefault implements Application {
     @Override
     public boolean getHealth() throws IOException {
         return datasetStore.getHealth();
+    }
+
+    @Override
+    public List<VerificationResultField> verify(Table table, List<TableDescription> tableDescriptions) throws DatasetIntegrityError {
+        Dataset dataset = TableToDatasetAdapter.of(table, tableDescriptions);
+        Map<String, Set<String>> fieldValues = new HashMap<>();
+        for (DataPoint dataPoint: dataset.getData()) {
+            dataPoint.forEach((key, value) -> fieldValues.computeIfAbsent(key, k -> new HashSet<>()).add(value));
+        }
+        return fieldValues.entrySet().stream()
+                .map(entry -> new VerificationResultField(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }
