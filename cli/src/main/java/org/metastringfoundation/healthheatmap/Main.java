@@ -16,26 +16,18 @@
 
 package org.metastringfoundation.healthheatmap;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.annotations.QuarkusMain;
 import org.metastringfoundation.data.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.cli.CLI;
-import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
-import org.metastringfoundation.healthheatmap.cli.TableUploader;
-import org.metastringfoundation.healthheatmap.logic.*;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Runs the application. Various CLI params available.
  *
  * @see org.metastringfoundation.healthheatmap.cli
  */
+@QuarkusMain
 public class Main {
 
     /**
@@ -43,59 +35,9 @@ public class Main {
      *
      * @param args - cli arguments
      * @throws IllegalArgumentException if arguments are wrong
-     * @throws IOException              for various reasons including database communication issues
-     * @throws DatasetIntegrityError    when uploading dataset if the dataset is malformed
      */
-    public static void main(String[] args) throws IllegalArgumentException, IOException, DatasetIntegrityError {
-        try {
-            CommandLine commandLine = new CLI().parse(args);
-
-            String path = commandLine.getOptionValue("path");
-            String transformersDir = commandLine.getOptionValue("transformers");
-            boolean batch = commandLine.hasOption("batch");
-            boolean dry = commandLine.hasOption("dry");
-            boolean serverShouldStart = commandLine.hasOption("server");
-            boolean recreateIndex = commandLine.hasOption("recreate");
-
-            if (serverShouldStart) {
-                System.out.println("Please use `mvn liberty:dev` to start development server");
-
-            } else if (path != null && !path.isEmpty()) {
-                Application application = ApplicationDefault.createPreconfiguredApplicationDefault();
-                if (recreateIndex) {
-                    application.factoryReset();
-                }
-                TableUploader tableUploader;
-                if (transformersDir != null && !transformersDir.isEmpty()) {
-                    List<DataTransformer> transformers = Stream.of(
-                            List.of(new DataTransformerForEntityType()),
-                            DataTransformersReader.getFromPath(Paths.get(transformersDir)).getTransformers(),
-                            List.of(new DataTransformerForDates())
-                    ).flatMap(Collection::stream)
-                            .collect(Collectors.toList());
-                    tableUploader = new TableUploader(
-                            application,
-                            transformers
-                    );
-                } else {
-                    tableUploader = new TableUploader(application);
-                }
-                if (dry) {
-                    tableUploader.print(path);
-                } else if (batch) {
-                    tableUploader.uploadMultiple(path);
-                } else {
-                    tableUploader.uploadSingle(path);
-                }
-                application.shutdown();
-            } else {
-                CLI.printHelp();
-            }
-
-        } catch (ParseException e) {
-            CLI.printHelp();
-            System.exit(1);
-        }
+    public static void main(String[] args) throws IllegalArgumentException {
+       Quarkus.run(MainWithBells.class, args);
     }
 
 }
