@@ -16,24 +16,17 @@
 
 package org.metastringfoundation.healthheatmap;
 
-import io.quarkus.runtime.Quarkus;
-import io.quarkus.runtime.annotations.QuarkusMain;
+import io.quarkus.picocli.runtime.annotations.TopCommand;
+import io.quarkus.runtime.QuarkusApplication;
+import org.metastringfoundation.healthheatmap.cli.CommandUpload;
+import picocli.CommandLine;
 
-/**
- * Runs the application. Various CLI params available.
- *
- * @see org.metastringfoundation.healthheatmap.cli
- */
-@QuarkusMain
-public class Main {
+@TopCommand
+@picocli.CommandLine.Command(mixinStandardHelpOptions = true, subcommands = {CommandUpload.class})
+public class MainCommand implements QuarkusApplication {
 
-    /**
-     * Entry point.
-     *
-     * @param args - cli arguments
-     * @throws IllegalArgumentException if arguments are wrong
-     */
-    public static void main(String[] args) throws IllegalArgumentException {
-       Quarkus.run(MainCommand.class, args);
+    @Override
+    public int run(String... args) throws IllegalArgumentException {
+        return new CommandLine(new MainCommand()).execute(args);
     }
 }

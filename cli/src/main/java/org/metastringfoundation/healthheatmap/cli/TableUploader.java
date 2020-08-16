@@ -28,7 +28,6 @@ import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +45,6 @@ public class TableUploader {
     private final Application application;
     private final List<DataTransformer> transformers;
 
-    @Inject
     public TableUploader(Application application) {
         this.application = application;
         this.transformers = List.of();
