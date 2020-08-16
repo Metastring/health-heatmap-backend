@@ -28,13 +28,13 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 * Java 11+ is required.
 * Elasticsearch 7 is required.
 * Clone this repo. Run `./mvnw clean install`. 
-* Run `java -jar cli/target/health-heatmap-cli.jar` for command line options.
+* Run `java -jar cli/target/health-heatmap-cli-runner.jar` for command line options.
 
 
 ## Add data
 
 * Put data somewhere, say /home/metastring/healthheatmap-data
-* Run `java -jar cli/target/health-heatmap-cli.jar --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
+* Run `java -jar cli/target/health-heatmap-cli-runner.jar --batch --path /home/metastring/healthheatmap-data/data --transformers /home/metastring/healthheatmap-data/transformers`
 
 ## Run server
 
