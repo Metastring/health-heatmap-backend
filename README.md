@@ -43,4 +43,4 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 
 ## Development
 
-* You can do `../mvnw quarkus:dev` inside `web` folder to run a development server with automatic reloads
+* You can do `./mvnw -pl web quarkus:dev` to run a development server with automatic reloads
