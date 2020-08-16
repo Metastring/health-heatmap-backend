@@ -25,6 +25,7 @@ import org.metastringfoundation.healthheatmap.cli.DataTransformersReader;
 import org.metastringfoundation.healthheatmap.cli.TableUploader;
 import org.metastringfoundation.healthheatmap.logic.*;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -33,6 +34,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MainWithBells implements QuarkusApplication {
+
+    @Inject
+    Application application;
+
     @Override
     public int run(String... args) throws IllegalArgumentException, IOException, DatasetIntegrityError {
         try {
@@ -49,7 +54,6 @@ public class MainWithBells implements QuarkusApplication {
                 System.out.println("Please use `mvn liberty:dev` to start development server");
 
             } else if (path != null && !path.isEmpty()) {
-                Application application = ApplicationDefault.createPreconfiguredApplicationDefault();
                 if (recreateIndex) {
                     application.factoryReset();
                 }

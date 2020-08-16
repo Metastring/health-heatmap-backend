@@ -60,11 +60,6 @@ public class ApplicationDefault implements Application {
         this.metadataStore = metadataStore;
     }
 
-    public static Application createPreconfiguredApplicationDefault() {
-        DatasetStore datasetStore = new ElasticManager("localhost", 9200);
-        return new ApplicationDefault(datasetStore);
-    }
-
     @Override
     public void save(HealthDataset dataset) throws IOException {
         datasetStore.save(dataset);
