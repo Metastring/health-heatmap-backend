@@ -21,7 +21,6 @@ import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
-import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 import org.metastringfoundation.healthheatmap.logic.Application;
 
 import javax.annotation.Nullable;
@@ -33,8 +32,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Path("verify")
 public class VerificationResource {
