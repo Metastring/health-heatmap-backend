@@ -61,7 +61,7 @@ public class ApplicationDefault implements Application {
     }
 
     public static Application createPreconfiguredApplicationDefault() {
-        DatasetStore datasetStore = new ElasticManager();
+        DatasetStore datasetStore = new ElasticManager("localhost", 9200);
         return new ApplicationDefault(datasetStore);
     }
 

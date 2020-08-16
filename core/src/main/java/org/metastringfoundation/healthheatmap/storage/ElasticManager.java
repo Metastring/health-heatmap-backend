@@ -39,6 +39,7 @@ import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -55,15 +56,16 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
     private final String dataIndex = "data";
     private final String downloadsIndex = "downloads";
 
-    public ElasticManager() {
-        this("localhost", 9200);
-    }
-
     public ElasticManager(String hostname, int port) {
         LOG.debug("Creating new elasticmanager instance");
         elastic = new RestHighLevelClient(RestClient.builder(
                 new HttpHost(hostname, port, "http")
         ));
+    }
+
+    @Inject
+    public ElasticManager(RestHighLevelClient elastic) {
+        this.elastic = elastic;
     }
 
     public void shutdown() throws IOException {
