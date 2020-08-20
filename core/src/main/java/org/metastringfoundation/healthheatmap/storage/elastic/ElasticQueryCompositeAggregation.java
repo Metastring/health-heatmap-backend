@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.storage.elastic;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
-import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.getAnySearchRequest;
+import static org.metastringfoundation.healthheatmap.storage.elastic.ElasticQueryHelpers.doSearch;
+import static org.metastringfoundation.healthheatmap.storage.elastic.ElasticQueryHelpers.getAnySearchRequest;
 
 /**
  * Runs a composite aggregation to get all the results of multiple terms queries.

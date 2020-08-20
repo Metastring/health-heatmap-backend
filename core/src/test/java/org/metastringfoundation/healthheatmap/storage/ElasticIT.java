@@ -25,6 +25,7 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -35,7 +36,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers

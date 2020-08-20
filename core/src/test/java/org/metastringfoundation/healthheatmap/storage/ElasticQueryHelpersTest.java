@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.beans.Filter;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticQueryHelpers;
 
 import java.util.List;
 import java.util.Map;

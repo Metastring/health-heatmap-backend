@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
-import org.metastringfoundation.healthheatmap.storage.ElasticManager;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 

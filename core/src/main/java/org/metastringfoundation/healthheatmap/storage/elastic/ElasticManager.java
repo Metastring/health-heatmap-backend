@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.storage.elastic;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchException;
@@ -33,6 +33,8 @@ import org.elasticsearch.search.SearchHit;
 import org.jboss.logging.Logger;
 import org.metastringfoundation.datareader.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
+import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
@@ -46,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.metastringfoundation.healthheatmap.storage.ElasticQueryHelpers.doSearch;
+import static org.metastringfoundation.healthheatmap.storage.elastic.ElasticQueryHelpers.doSearch;
 
 @ElasticStore
 @ApplicationScoped

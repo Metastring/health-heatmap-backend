@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.storage.elastic;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;

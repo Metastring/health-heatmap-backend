@@ -30,7 +30,7 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
-import org.metastringfoundation.healthheatmap.storage.ElasticStore;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
