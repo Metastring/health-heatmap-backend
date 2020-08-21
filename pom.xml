@@ -136,8 +136,9 @@
 
     <repositories>
         <repository>
-            <id>metastringfoundation</id>
-            <url>http://jenkins.staging.metastringfoundation.free.gen.in/plugin/repository/everything/</url>
+            <id>github</id>
+            <name>Github repository for data-reader</name>
+            <url>https://maven.pkg.github.com/Metastring/data-reader</url>
         </repository>
     </repositories>
 
