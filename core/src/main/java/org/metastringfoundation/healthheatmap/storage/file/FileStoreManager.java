@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.storage.file;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.metastringfoundation.healthheatmap.storage.FileStore;
 
@@ -26,6 +27,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @ApplicationScoped
 public class FileStoreManager implements FileStore {
@@ -53,7 +57,33 @@ public class FileStoreManager implements FileStore {
     }
 
     @Override
-    public String getRelativeName(Path filePath) {
-        return dataDir.relativize(filePath).toString();
+    public String getRelativeName(Path path) {
+        return dataDir.relativize(path).toString();
+    }
+
+    @Override
+    public void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException {
+        FileUtils.cleanDirectory(dataDir.toFile());
+        try (Stream<Path> directoryTree = Files.walk(sourceDirectoryRoot)) {
+            directoryTree.forEach(source -> copy(source, dataDir.resolve(sourceDirectoryRoot.relativize(source))));
+        }
+    }
+
+    @Override
+    public String getTransformersDirectory() {
+        return dataDir.resolve("transformers").toString();
+    }
+
+    @Override
+    public String getAbsolutePath(String path) {
+        return Paths.get(dataDir.toString(), path).toString();
+    }
+
+    private void copy(Path source, Path destination) {
+        try {
+            Files.copy(source, destination, REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }

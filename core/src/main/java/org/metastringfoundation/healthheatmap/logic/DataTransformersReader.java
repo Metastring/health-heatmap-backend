@@ -14,11 +14,9 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.cli;
+package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
-import org.metastringfoundation.healthheatmap.logic.DataTransformer;
-import org.metastringfoundation.healthheatmap.logic.DataTransformerFromSpreadsheet;
 
 import java.io.IOException;
 import java.nio.file.Path;

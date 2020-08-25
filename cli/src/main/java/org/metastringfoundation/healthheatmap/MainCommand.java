@@ -18,15 +18,25 @@ package org.metastringfoundation.healthheatmap;
 
 import io.quarkus.picocli.runtime.annotations.TopCommand;
 import io.quarkus.runtime.QuarkusApplication;
+import org.metastringfoundation.healthheatmap.cli.CommandPrint;
 import org.metastringfoundation.healthheatmap.cli.CommandUpload;
 import picocli.CommandLine;
 
+import javax.inject.Inject;
+
 @TopCommand
-@picocli.CommandLine.Command(mixinStandardHelpOptions = true, subcommands = {CommandUpload.class})
+@CommandLine.Command(mixinStandardHelpOptions = true)
 public class MainCommand implements QuarkusApplication {
+    @Inject
+    CommandPrint print;
+    @Inject
+    CommandUpload upload;
 
     @Override
     public int run(String... args) throws IllegalArgumentException {
-        return new CommandLine(new MainCommand()).execute(args);
+        return new CommandLine(new MainCommand())
+                .addSubcommand(print)
+                .addSubcommand(upload)
+                .execute(args);
     }
 }

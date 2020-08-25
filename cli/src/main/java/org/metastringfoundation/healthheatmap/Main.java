@@ -34,6 +34,7 @@ public class Main {
      * @throws IllegalArgumentException if arguments are wrong
      */
     public static void main(String[] args) throws IllegalArgumentException {
-       Quarkus.run(MainCommand.class, args);
+        System.out.println("Starting Health Heatmap CLI");
+        Quarkus.run(MainCommand.class, args);
     }
 }

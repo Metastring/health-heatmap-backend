@@ -24,12 +24,13 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 
-public interface Application extends DatasetStore, ApplicationMetadataStore, FileStore {
+public interface Application extends DatasetStore, ApplicationMetadataStore {
     void shutdown() throws IOException;
 
     HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError;
@@ -37,4 +38,10 @@ public interface Application extends DatasetStore, ApplicationMetadataStore, Fil
     boolean getHealth() throws IOException;
 
     List<VerificationResultField> verify(Table table, List<TableDescription> tableDescriptions) throws DatasetIntegrityError;
+
+    void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError;
+    void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError;
+
+    void save(InputStream in, String fileNameWithRelativePath) throws IOException;
+    void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;
 }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.cli;
+package org.metastringfoundation.healthheatmap.logic;
 
 import org.jboss.logging.Logger;
 import org.metastringfoundation.data.DataPoint;
@@ -24,9 +24,6 @@ import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
-import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.DataTransformer;
-import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,20 +34,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * This is a utility that helps upload data directly from command line
+ * This is a utility that helps switch between table and dataset
  */
-public class TableUploader {
-    private static final Logger LOG = Logger.getLogger(TableUploader.class);
+public class TableDatasetInterpreter {
+    private static final Logger LOG = Logger.getLogger(TableDatasetInterpreter.class);
 
     private final Application application;
     private final List<DataTransformer> transformers;
 
-    public TableUploader(Application application) {
+    public TableDatasetInterpreter(Application application) {
         this.application = application;
         this.transformers = List.of();
     }
 
-    public TableUploader(Application application, List<DataTransformer> transformers) {
+    public TableDatasetInterpreter(Application application, List<DataTransformer> transformers) {
         this.application = application;
         this.transformers = transformers;
     }
@@ -116,6 +113,7 @@ public class TableUploader {
 
     private void printSingle(String path) throws IOException, DatasetIntegrityError {
         Dataset dataset = getDataset(path);
+        System.out.println(path);
         for (DataPoint dataPoint : dataset.getData()) {
             System.out.println(dataPoint);
         }
@@ -127,10 +125,6 @@ public class TableUploader {
                 tableAndDescription.getTable(),
                 tableAndDescription.getTableDescription()
         );
-    }
-
-    public void uploadSingle(String path) throws IOException, DatasetIntegrityError {
-        upload(path);
     }
 
     public void uploadMultiple(String inputPath) throws IOException {

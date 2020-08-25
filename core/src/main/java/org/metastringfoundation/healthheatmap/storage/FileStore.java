@@ -23,4 +23,9 @@ import java.nio.file.Path;
 public interface FileStore {
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;
     String getRelativeName(Path filePath);
+
+    void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;
+    String getTransformersDirectory();
+
+    String getAbsolutePath(String path);
 }

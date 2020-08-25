@@ -31,18 +31,22 @@ import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.FileStore;
-import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
@@ -117,7 +121,7 @@ public class ApplicationDefault implements Application {
     public List<VerificationResultField> verify(Table table, List<TableDescription> tableDescriptions) throws DatasetIntegrityError {
         Dataset dataset = TableToDatasetAdapter.of(table, tableDescriptions);
         Map<String, Set<String>> fieldValues = new HashMap<>();
-        for (DataPoint dataPoint: dataset.getData()) {
+        for (DataPoint dataPoint : dataset.getData()) {
             dataPoint.forEach((key, value) -> fieldValues.computeIfAbsent(key, k -> new HashSet<>()).add(value));
         }
         return fieldValues.entrySet().stream()
@@ -131,7 +135,47 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public String getRelativeName(Path filePath) {
-        return fileStore.getRelativeName(filePath);
+    public void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException {
+        fileStore.replaceRootDirectoryWith(sourceDirectoryRoot);
+    }
+
+    @Override
+    public void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
+        TableDatasetInterpreter tableDatasetInterpreter = getTableDatasetInterpreterWithTransformersIfAvailable();
+
+        String uploadPath = fileStore.getAbsolutePath(path);
+
+        if (Files.isDirectory(Path.of(uploadPath))) {
+            tableDatasetInterpreter.uploadMultiple(uploadPath);
+        } else {
+            tableDatasetInterpreter.upload(uploadPath);
+        }
+    }
+
+    @Override
+    public void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
+        TableDatasetInterpreter tableDatasetInterpreter = new TableDatasetInterpreter(this);
+        tableDatasetInterpreter.print(path);
+    }
+
+    @Nonnull
+    private TableDatasetInterpreter getTableDatasetInterpreterWithTransformersIfAvailable() throws IOException {
+        String transformersDirectory = fileStore.getTransformersDirectory();
+        TableDatasetInterpreter tableDatasetInterpreter;
+        if (transformersDirectory != null && !transformersDirectory.isEmpty()) {
+            List<DataTransformer> transformers = Stream.of(
+                    List.of(new DataTransformerForEntityType()),
+                    DataTransformersReader.getFromPath(Paths.get(transformersDirectory)).getTransformers(),
+                    List.of(new DataTransformerForDates())
+            ).flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+            tableDatasetInterpreter = new TableDatasetInterpreter(
+                    this,
+                    transformers
+            );
+        } else {
+            tableDatasetInterpreter = new TableDatasetInterpreter(this);
+        }
+        return tableDatasetInterpreter;
     }
 }
