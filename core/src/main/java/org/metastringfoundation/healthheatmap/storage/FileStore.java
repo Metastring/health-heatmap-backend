@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
 
 public interface FileStore {
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;
@@ -28,4 +29,5 @@ public interface FileStore {
     String getTransformersDirectory();
 
     String getAbsolutePath(String path);
+    List<Path> getDataFiles(Path path) throws IOException;
 }

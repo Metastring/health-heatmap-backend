@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.storage.file;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.storage.FileStore;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +28,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -77,6 +79,11 @@ public class FileStoreManager implements FileStore {
     @Override
     public String getAbsolutePath(String path) {
         return Paths.get(dataDir.toString(), path).toString();
+    }
+
+    @Override
+    public List<Path> getDataFiles(Path path) throws IOException {
+        return FileManager.getDataFilesInDirectory(path);
     }
 
     private void copy(Path source, Path destination) {

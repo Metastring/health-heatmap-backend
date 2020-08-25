@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ public class FileManager {
         return IOUtils.toString(new FileInputStream(path), StandardCharsets.UTF_8);
     }
 
-    public static Collection<Path> getDataFilesInDirectory(Path startingDir) throws IOException {
+    public static List<Path> getDataFilesInDirectory(Path startingDir) throws IOException {
         return Files.walk(startingDir)
                 .peek(file -> LOG.debug("Evaluating: " + file.toString()))
                 .filter(Files::isRegularFile)

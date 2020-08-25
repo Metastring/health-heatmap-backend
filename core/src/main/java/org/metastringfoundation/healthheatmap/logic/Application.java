@@ -44,4 +44,6 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
 
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;
     void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;
+
+    List<String> getDataFiles(String path) throws IOException;
 }

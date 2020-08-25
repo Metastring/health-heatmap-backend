@@ -140,6 +140,13 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public List<String> getDataFiles(String path) throws IOException {
+        return fileStore.getDataFiles(Path.of(path)).stream()
+                .map(fileStore::getRelativeName)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
         TableDatasetInterpreter tableDatasetInterpreter = getTableDatasetInterpreterWithTransformersIfAvailable();
 
