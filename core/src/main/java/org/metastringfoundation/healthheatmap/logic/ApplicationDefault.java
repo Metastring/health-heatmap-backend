@@ -130,6 +130,12 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException {
+        TableAndDescriptionPair tableAndDescriptionPair = new TableAndDescriptionPair(fileStore.getAbsolutePath(filename));
+        return verify(tableAndDescriptionPair.getTable(), List.of(tableAndDescriptionPair.getTableDescription()));
+    }
+
+    @Override
     public void save(InputStream in, String fileNameWithRelativePath) throws IOException {
         fileStore.save(in, fileNameWithRelativePath);
     }

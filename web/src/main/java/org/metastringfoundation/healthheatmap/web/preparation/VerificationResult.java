@@ -21,6 +21,10 @@ import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 import java.util.List;
 
 public class VerificationResult {
+    public static VerificationResult of(List<VerificationResultField> fields) {
+        return new VerificationResult(fields);
+    }
+
     private List<VerificationResultField> fields;
 
     public VerificationResult(List<VerificationResultField> fields) {
