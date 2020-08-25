@@ -14,24 +14,26 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.ingestion;
+package org.metastringfoundation.healthheatmap.web.preparation;
 
-import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
+import org.metastringfoundation.healthheatmap.logic.Application;
 
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
-public class VerificationResult {
-    private List<VerificationResultField> fields;
+@Path("datafile")
+public class DataFilesResource {
+    @Inject
+    Application app;
 
-    public VerificationResult(List<VerificationResultField> fields) {
-        this.fields = fields;
-    }
-
-    public List<VerificationResultField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<VerificationResultField> fields) {
-        this.fields = fields;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> listAllDataFiles() throws IOException {
+        return app.getDataFiles();
     }
 }

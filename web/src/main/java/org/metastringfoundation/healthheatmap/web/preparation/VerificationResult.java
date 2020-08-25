@@ -14,22 +14,24 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.web.preparation;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
+import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
+
 import java.util.List;
 
-public interface FileStore {
-    void save(InputStream in, String fileNameWithRelativePath) throws IOException;
-    String getRelativeName(Path filePath);
+public class VerificationResult {
+    private List<VerificationResultField> fields;
 
-    void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;
-    String getTransformersDirectory();
+    public VerificationResult(List<VerificationResultField> fields) {
+        this.fields = fields;
+    }
 
-    String getAbsolutePath(String path);
-    List<Path> getDataFiles(Path path) throws IOException;
+    public List<VerificationResultField> getFields() {
+        return fields;
+    }
 
-    String getDataFilesDirectory();
+    public void setFields(List<VerificationResultField> fields) {
+        this.fields = fields;
+    }
 }

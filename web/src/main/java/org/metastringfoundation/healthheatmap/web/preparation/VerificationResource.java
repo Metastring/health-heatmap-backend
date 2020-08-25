@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.ingestion;
+package org.metastringfoundation.healthheatmap.web.preparation;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.metastringfoundation.data.DatasetIntegrityError;

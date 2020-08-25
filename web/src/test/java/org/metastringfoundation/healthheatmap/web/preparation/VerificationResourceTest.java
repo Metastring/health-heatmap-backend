@@ -14,16 +14,12 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.ingestion;
+package org.metastringfoundation.healthheatmap.web.preparation;
 
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.logic.Application;
 
 import javax.json.Json;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;

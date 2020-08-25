@@ -29,26 +29,35 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @ApplicationScoped
 public class FileStoreManager implements FileStore {
-    private static final String DEFAULT_DATA_DIR = "/tmp/hhm_data";
+    private static final String DEFAULT_DATA_DIR_PREFIX = "hhm_data";
+    private static final String DEFAULT_DATA_FILES_DIR = "data";
     private final Path dataDir;
+    private final Path dataFilesDir;
 
     public static FileStoreManager getDefault() throws IOException {
-        return new FileStoreManager(DEFAULT_DATA_DIR);
+        return new FileStoreManager(Optional.of(DEFAULT_DATA_DIR_PREFIX));
     }
 
     @Inject
-    public FileStoreManager(@ConfigProperty(name = "hhm.datadir", defaultValue = DEFAULT_DATA_DIR) String dataDir) throws IOException {
-        this.dataDir = Paths.get(dataDir);
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // because injection of @ConfigProperty throws exception if no value present
+    public FileStoreManager(@ConfigProperty(name = "hhm.data.dir") Optional<String> dataDir) throws IOException {
+        if (dataDir.isEmpty()) {
+            this.dataDir = Files.createTempDirectory(DEFAULT_DATA_DIR_PREFIX);
+        } else {
+            this.dataDir = Paths.get(dataDir.get());
+        }
         Files.createDirectories(this.dataDir);
         if (!Files.isWritable(this.dataDir)) {
-            throw new IOException("HHM_DATADIR (" + dataDir + ") is not writeable");
+            throw new IOException("HHM_DATA_DIR (" + dataDir + ") is not writeable");
         }
+        this.dataFilesDir = this.dataDir.resolve(DEFAULT_DATA_FILES_DIR);
     }
 
     @Override
@@ -84,6 +93,11 @@ public class FileStoreManager implements FileStore {
     @Override
     public List<Path> getDataFiles(Path path) throws IOException {
         return FileManager.getDataFilesInDirectory(path);
+    }
+
+    @Override
+    public String getDataFilesDirectory() {
+        return dataFilesDir.toString();
     }
 
     private void copy(Path source, Path destination) {

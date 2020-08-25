@@ -140,6 +140,11 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public String getDataFilesDirectory() {
+        return fileStore.getDataFilesDirectory();
+    }
+
+    @Override
     public List<String> getDataFiles(String path) throws IOException {
         return fileStore.getDataFiles(Path.of(path)).stream()
                 .map(fileStore::getRelativeName)
