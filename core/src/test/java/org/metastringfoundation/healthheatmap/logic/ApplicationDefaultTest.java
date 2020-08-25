@@ -31,6 +31,9 @@ public class ApplicationDefaultTest {
     private final DatasetStore mockDatasetStore = mock(ElasticManager.class);
     private final Application application = new ApplicationDefault(mockDatasetStore);
 
+    public ApplicationDefaultTest() throws IOException {
+    }
+
     @Test
     public void applicationCorrectlyRoutesDataQueryToDatasetStore() throws IOException {
         DataQuery dataQuery = mock(DataQuery.class);

@@ -30,13 +30,17 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import org.metastringfoundation.healthheatmap.storage.FileStore;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,15 +52,21 @@ import java.util.stream.Collectors;
 public class ApplicationDefault implements Application {
     private final DatasetStore datasetStore;
     private final ApplicationMetadataStore metadataStore;
+    private final FileStore fileStore;
 
-    public ApplicationDefault(@ElasticStore DatasetStore datasetStore) {
-        this(datasetStore, (ApplicationMetadataStore) datasetStore);
+    public ApplicationDefault(@ElasticStore DatasetStore datasetStore) throws IOException {
+        this(datasetStore, (ApplicationMetadataStore) datasetStore, FileStoreManager.getDefault());
     }
 
     @Inject
-    public ApplicationDefault(@ElasticStore DatasetStore datasetStore, @ElasticStore ApplicationMetadataStore metadataStore) {
+    public ApplicationDefault(
+            @ElasticStore DatasetStore datasetStore,
+            @ElasticStore ApplicationMetadataStore metadataStore,
+            FileStore fileStore
+    ) {
         this.datasetStore = datasetStore;
         this.metadataStore = metadataStore;
+        this.fileStore = fileStore;
     }
 
     @Override
@@ -113,5 +123,15 @@ public class ApplicationDefault implements Application {
         return fieldValues.entrySet().stream()
                 .map(entry -> new VerificationResultField(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void save(InputStream in, String fileNameWithRelativePath) throws IOException {
+        fileStore.save(in, fileNameWithRelativePath);
+    }
+
+    @Override
+    public String getRelativeName(Path filePath) {
+        return fileStore.getRelativeName(filePath);
     }
 }
