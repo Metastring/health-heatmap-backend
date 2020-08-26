@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -102,6 +103,16 @@ public class FileStoreManager implements FileStore {
     @Override
     public List<Path> getDataFiles(String path) throws IOException {
         return getDataFiles(Path.of(path));
+    }
+
+    @Override
+    public List<Path> getFilesThatMatch(Path path, Predicate<Path> pathCondition) throws IOException {
+        return FileManager.getFilesInDirectoryThatMatch(path, pathCondition);
+    }
+
+    @Override
+    public String getFileAsString(Path file) {
+        return FileManager.readFileAsString(file);
     }
 
     @Override

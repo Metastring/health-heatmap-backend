@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface FileStore {
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;
@@ -32,4 +33,8 @@ public interface FileStore {
     Path getAbsolutePath(Path path);
     List<Path> getDataFiles(Path path) throws IOException;
     List<Path> getDataFiles(String path) throws IOException;
+
+    List<Path> getFilesThatMatch(Path path, Predicate<Path> pathCondition) throws IOException;
+
+    String getFileAsString(Path file);
 }

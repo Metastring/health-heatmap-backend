@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class FileManager {
@@ -72,5 +73,14 @@ public class FileManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List<Path> getFilesInDirectoryThatMatch(Path path, Predicate<Path> pathCondition) throws IOException {
+        return Files.walk(path)
+                .filter(Files::isRegularFile)
+                .filter(pathCondition)
+                .map(Path::toAbsolutePath)
+                .sorted(Path::compareTo)
+                .collect(Collectors.toList());
     }
 }
