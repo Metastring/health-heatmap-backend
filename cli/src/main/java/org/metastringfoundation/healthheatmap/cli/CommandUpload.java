@@ -64,6 +64,7 @@ public class CommandUpload implements Callable<Integer> {
             application.dryMakeAvailableInAPI(Paths.get(path, name).toString());
         } else {
             application.replaceRootDirectoryWith(Path.of(path));
+            application.refreshTransformers();
             application.makeAvailableInAPI(name);
         }
         return 0;

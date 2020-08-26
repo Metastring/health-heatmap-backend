@@ -21,11 +21,11 @@ import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
+import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -48,6 +48,7 @@ public class TableDatasetInterpreter {
     public static TableDatasetInterpreter getTableDatasetInterpreterWithTransformersIfAvailable(Path transformersDirectory) throws IOException {
         TableDatasetInterpreter tableDatasetInterpreter;
         if (transformersDirectory != null && Files.isDirectory(transformersDirectory) && Files.isReadable(transformersDirectory)) {
+            LOG.info("Reading transformers from: " + transformersDirectory.toString());
             List<DataTransformer> transformers = Stream.of(
                     List.of(new DataTransformerForEntityType()),
                     DataTransformersReader.getFromPath(transformersDirectory).getTransformers(),
@@ -89,21 +90,28 @@ public class TableDatasetInterpreter {
     }
 
 
-    public List<HealthDataset> getAsDatasets(Path path) throws IOException, DatasetIntegrityError {
+    public HealthDatasetBatchRead getAsDatasets(Path path) throws IOException {
+        List<Path> dataFiles;
         if (Files.isDirectory(path)) {
-            return getAsDatasetsFromDirectory(path);
+            dataFiles = FileManager.getDataFilesInDirectory(path);
         } else {
-            return List.of(getAsDatasetsFromFile(path));
+            dataFiles = List.of(path);
         }
+        return getAsDatasetsFrom(dataFiles);
     }
 
-    private List<HealthDataset> getAsDatasetsFromDirectory(Path path) throws IOException, DatasetIntegrityError {
-        List<Path> dataFiles = FileManager.getDataFilesInDirectory(path);
+    private HealthDatasetBatchRead getAsDatasetsFrom(List<Path> dataFiles) {
         List<HealthDataset> result = new ArrayList<>();
-        for (Path dataFile: dataFiles) {
-            result.add(getAsDatasetsFromFile(dataFile));
+        Map<Path, Exception> errors = new HashMap<>();
+        for (Path dataFile : dataFiles) {
+            LOG.info("Interpreting file: " + dataFile.toString());
+            try {
+                result.add(getAsDatasetsFromFile(dataFile));
+            } catch (DatasetIntegrityError | IOException exception) {
+                errors.put(dataFile, exception);
+            }
         }
-        return result;
+        return new HealthDatasetBatchRead(result, errors);
     }
 
     private HealthDataset getAsDatasetsFromFile(Path path) throws IOException, DatasetIntegrityError {

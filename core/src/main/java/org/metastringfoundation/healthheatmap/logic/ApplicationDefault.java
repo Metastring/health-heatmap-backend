@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.jboss.logging.Logger;
 import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
@@ -24,9 +25,9 @@ import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
+import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
-import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
@@ -36,17 +37,13 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
 import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
 
-import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * One (and only) implementation of the application that actually does the hard work of wiring everything together.
@@ -54,10 +51,12 @@ import java.util.stream.Stream;
  */
 @ApplicationScoped
 public class ApplicationDefault implements Application {
+    private static final Logger LOG = Logger.getLogger(ApplicationDefault.class);
+
     private final DatasetStore datasetStore;
     private final ApplicationMetadataStore metadataStore;
     private final FileStore fileStore;
-    private final TableDatasetInterpreter defaultTableDatasetInterpreter;
+    private TableDatasetInterpreter defaultTableDatasetInterpreter;
 
     public ApplicationDefault(@ElasticStore DatasetStore datasetStore) throws IOException {
         this(datasetStore, (ApplicationMetadataStore) datasetStore, FileStoreManager.getDefault());
@@ -163,9 +162,19 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
-        List<HealthDataset> healthDatasets = defaultTableDatasetInterpreter.getAsDatasets(fileStore.getAbsolutePath(Path.of(path)));
-        save(healthDatasets);
+    public void refreshTransformers() throws IOException {
+        LOG.info("Reloading table interpreter");
+        defaultTableDatasetInterpreter = TableDatasetInterpreter.getTableDatasetInterpreterWithTransformersIfAvailable(fileStore.getTransformersDirectory());
+    }
+
+    @Override
+    public void makeAvailableInAPI(String path) throws IOException {
+        LOG.info("Uploading " + path + " to the dataset");
+        HealthDatasetBatchRead healthDatasetsRead = defaultTableDatasetInterpreter.getAsDatasets(fileStore.getAbsolutePath(Path.of(path)));
+        LOG.info("Saving " + healthDatasetsRead.getDatasets().size() + " datasets. This might take a while");
+        save(healthDatasetsRead.getDatasets());
+        LOG.info("Here are the datasets with errors");
+        healthDatasetsRead.getErrors().forEach((filePath, error) -> LOG.error(filePath.toString() + " suffered an error: " + error.getMessage()));
         defaultTableDatasetInterpreter.printTransformersReport();
     }
 

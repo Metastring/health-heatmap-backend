@@ -48,7 +48,7 @@ public class FileStoreManager implements FileStore {
     @Inject
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // because injection of @ConfigProperty throws exception if no value present
     public FileStoreManager(@ConfigProperty(name = "hhm.data.dir") Optional<String> dataDir) throws IOException {
-        if (dataDir.isEmpty()) {
+        if (dataDir.isEmpty()) { // meaning the user hasn't provided a value for hhm.data.dir
             this.dataDir = Files.createTempDirectory(DEFAULT_DATA_DIR_PREFIX);
         } else {
             this.dataDir = Paths.get(dataDir.get());

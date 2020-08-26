@@ -40,7 +40,7 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     List<VerificationResultField> verify(Table table, List<TableDescription> tableDescriptions) throws DatasetIntegrityError;
     List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException;
 
-    void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError;
+    void makeAvailableInAPI(String path) throws IOException;
 
     void save(List<HealthDataset> healthDatasets) throws IOException;
 
@@ -55,4 +55,6 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     default List<String> getDataFiles() throws IOException {
         return getDataFiles(getDataFilesDirectory());
     }
+
+    void refreshTransformers() throws IOException;
 }
