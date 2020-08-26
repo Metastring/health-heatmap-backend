@@ -39,6 +39,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class FileStoreManager implements FileStore {
     private static final String DEFAULT_DATA_DIR_PREFIX = "hhm_data";
     private static final String DEFAULT_DATA_FILES_DIR = "data";
+    private static final String DEFAULT_TRANSFORMERS_DIR = "transformer";
+    private static final String DEFAULT_DIMENSIONS_DIR = "dimension";
     private final Path dataDir;
     private final Path dataFilesDir;
 
@@ -74,16 +76,16 @@ public class FileStoreManager implements FileStore {
     }
 
     @Override
+    public String getRelativeName(Path file, Path directory) {
+        return directory.relativize(file).toString();
+    }
+
+    @Override
     public void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException {
         FileUtils.cleanDirectory(dataDir.toFile());
         try (Stream<Path> directoryTree = Files.walk(sourceDirectoryRoot)) {
             directoryTree.forEach(source -> copy(source, dataDir.resolve(sourceDirectoryRoot.relativize(source))));
         }
-    }
-
-    @Override
-    public Path getTransformersDirectory() {
-        return dataDir.resolve("transformers");
     }
 
     @Override
@@ -118,6 +120,16 @@ public class FileStoreManager implements FileStore {
     @Override
     public Path getDataFilesDirectory() {
         return dataFilesDir;
+    }
+
+    @Override
+    public Path getTransformersDirectory() {
+        return dataDir.resolve(DEFAULT_TRANSFORMERS_DIR);
+    }
+
+    @Override
+    public Path getDimensionsDirectory() {
+        return dataDir.resolve(DEFAULT_DIMENSIONS_DIR);
     }
 
     private void copy(Path source, Path destination) {

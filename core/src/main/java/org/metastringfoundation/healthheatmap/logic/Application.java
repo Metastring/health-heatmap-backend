@@ -40,6 +40,8 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
 
     void refreshDatasets() throws IOException, DatasetIntegrityError;
 
+    void refreshDimensions() throws IOException;
+
     void makeAvailableInAPI(String path) throws IOException;
 
     void save(List<HealthDataset> healthDatasets) throws IOException;

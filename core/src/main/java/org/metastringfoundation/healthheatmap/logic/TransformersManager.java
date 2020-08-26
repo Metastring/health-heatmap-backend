@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface TransformersManager {
-    void refreshTransformers() throws IOException;
+    void refresh() throws IOException;
 
     List<DataTransformer> getThese(List<TransformerMeta> transformerMetaList);
 

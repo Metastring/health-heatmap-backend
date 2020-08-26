@@ -46,7 +46,7 @@ public class DatasetsManagerInMemory implements DatasetsManager {
     }
 
     @Override
-    public void refreshDatasets() throws IOException, DatasetIntegrityError {
+    public void refresh() throws IOException, DatasetIntegrityError {
         datasetPointerList = calculateDatasetPointerList();
     }
 

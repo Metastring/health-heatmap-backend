@@ -25,10 +25,12 @@ import java.util.function.Predicate;
 public interface FileStore {
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;
     String getRelativeName(Path filePath);
+    String getRelativeName(Path file, Path directory);
 
     void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;
     Path getTransformersDirectory();
     Path getDataFilesDirectory();
+    Path getDimensionsDirectory();
 
     Path getAbsolutePath(Path path);
     List<Path> getDataFiles(Path path) throws IOException;

@@ -33,6 +33,7 @@ import org.metastringfoundation.healthheatmap.logic.etl.TableDatasetInterpreter;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
+import org.metastringfoundation.healthheatmap.storage.memory.DimensionsManagerInMemory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -55,6 +56,7 @@ public class ApplicationDefault implements Application {
     private final FileStore fileStore;
     private final DatasetsManager datasetsManager;
     private final TransformersManager transformersManager;
+    private final DimensionsManagerInMemory dimensionsManager;
 
     @Inject
     public ApplicationDefault(
@@ -62,13 +64,15 @@ public class ApplicationDefault implements Application {
             @ElasticStore ApplicationMetadataStore metadataStore,
             FileStore fileStore,
             DatasetsManager datasetsManager,
-            TransformersManager transformersManager
+            TransformersManager transformersManager,
+            DimensionsManagerInMemory dimensionsManager
     ) {
         this.datasetStore = datasetStore;
         this.metadataStore = metadataStore;
         this.fileStore = fileStore;
         this.datasetsManager = datasetsManager;
         this.transformersManager = transformersManager;
+        this.dimensionsManager = dimensionsManager;
     }
 
     @Override
@@ -146,6 +150,7 @@ public class ApplicationDefault implements Application {
         fileStore.replaceRootDirectoryWith(sourceDirectoryRoot);
         refreshDatasets();
         refreshTransformers();
+        refreshDimensions();
     }
 
     @Override
@@ -163,13 +168,19 @@ public class ApplicationDefault implements Application {
     @Override
     public void refreshTransformers() throws IOException {
         LOG.info("Refreshing transformers");
-        transformersManager.refreshTransformers();
+        transformersManager.refresh();
     }
 
     @Override
     public void refreshDatasets() throws IOException, DatasetIntegrityError {
         LOG.info("Refreshing datasets");
-        datasetsManager.refreshDatasets();
+        datasetsManager.refresh();
+    }
+
+    @Override
+    public void refreshDimensions() throws IOException {
+        LOG.info("Refreshing dimensions");
+        dimensionsManager.refresh();
     }
 
     @Override

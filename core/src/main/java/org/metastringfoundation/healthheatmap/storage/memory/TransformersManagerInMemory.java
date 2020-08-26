@@ -62,7 +62,7 @@ public class TransformersManagerInMemory implements TransformersManager {
     }
 
     @Override
-    public void refreshTransformers() throws IOException {
+    public void refresh() throws IOException {
         transformers = readTransformers();
     }
 

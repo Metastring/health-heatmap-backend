@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
 
@@ -82,5 +83,9 @@ public class FileManager {
                 .map(Path::toAbsolutePath)
                 .sorted(Path::compareTo)
                 .collect(Collectors.toList());
+    }
+
+    public static String dropExtension(String nameWithExtension) {
+        return FilenameUtils.removeExtension(nameWithExtension);
     }
 }

@@ -24,5 +24,5 @@ import java.util.List;
 public interface DatasetsManager {
     List<DatasetPointer> getAllDatasets();
 
-    void refreshDatasets() throws IOException, DatasetIntegrityError;
+    void refresh() throws IOException, DatasetIntegrityError;
 }
