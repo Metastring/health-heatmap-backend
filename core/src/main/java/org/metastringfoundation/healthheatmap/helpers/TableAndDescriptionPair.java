@@ -23,6 +23,7 @@ import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
@@ -32,6 +33,10 @@ public class TableAndDescriptionPair {
 
     private final Table table;
     private final TableDescription tableDescription;
+
+    public TableAndDescriptionPair(Path path) throws IOException, DatasetIntegrityError {
+        this(path.toString());
+    }
 
     public TableAndDescriptionPair(String tablePath) throws IOException, DatasetIntegrityError {
         table = CSVTable.fromPath(tablePath);

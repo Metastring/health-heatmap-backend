@@ -81,13 +81,13 @@ public class FileStoreManager implements FileStore {
     }
 
     @Override
-    public String getTransformersDirectory() {
-        return dataDir.resolve("transformers").toString();
+    public Path getTransformersDirectory() {
+        return dataDir.resolve("transformers");
     }
 
     @Override
-    public String getAbsolutePath(String path) {
-        return Paths.get(dataDir.toString(), path).toString();
+    public Path getAbsolutePath(Path path) {
+        return Paths.get(dataDir.toString(), path.toString());
     }
 
     @Override
@@ -96,8 +96,8 @@ public class FileStoreManager implements FileStore {
     }
 
     @Override
-    public String getDataFilesDirectory() {
-        return dataFilesDir.toString();
+    public Path getDataFilesDirectory() {
+        return dataFilesDir;
     }
 
     private void copy(Path source, Path destination) {

@@ -41,6 +41,9 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException;
 
     void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError;
+
+    void save(List<HealthDataset> healthDatasets) throws IOException;
+
     void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError;
 
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;

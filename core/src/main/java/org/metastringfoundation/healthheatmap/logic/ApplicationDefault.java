@@ -57,6 +57,7 @@ public class ApplicationDefault implements Application {
     private final DatasetStore datasetStore;
     private final ApplicationMetadataStore metadataStore;
     private final FileStore fileStore;
+    private final TableDatasetInterpreter defaultTableDatasetInterpreter;
 
     public ApplicationDefault(@ElasticStore DatasetStore datasetStore) throws IOException {
         this(datasetStore, (ApplicationMetadataStore) datasetStore, FileStoreManager.getDefault());
@@ -67,15 +68,23 @@ public class ApplicationDefault implements Application {
             @ElasticStore DatasetStore datasetStore,
             @ElasticStore ApplicationMetadataStore metadataStore,
             FileStore fileStore
-    ) {
+    ) throws IOException {
         this.datasetStore = datasetStore;
         this.metadataStore = metadataStore;
         this.fileStore = fileStore;
+        this.defaultTableDatasetInterpreter = TableDatasetInterpreter.getTableDatasetInterpreterWithTransformersIfAvailable(fileStore.getTransformersDirectory());
     }
 
     @Override
     public void save(HealthDataset dataset) throws IOException {
         datasetStore.save(dataset);
+    }
+
+    @Override
+    public void save(List<HealthDataset> healthDatasets) throws IOException {
+        for (HealthDataset healthDataset : healthDatasets) {
+            save(healthDataset);
+        }
     }
 
     @Override
@@ -100,11 +109,7 @@ public class ApplicationDefault implements Application {
 
     @Override
     public HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError {
-        Dataset dataset = new TableToDatasetAdapter(
-                tableAndDescriptionPair.getTable(),
-                tableAndDescriptionPair.getTableDescription()
-        );
-        return new HealthDatasetFromDataset(dataset, transformers);
+        return TableDatasetInterpreter.asHealthDataset(tableAndDescriptionPair, transformers);
     }
 
     @Override
@@ -131,7 +136,7 @@ public class ApplicationDefault implements Application {
 
     @Override
     public List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException {
-        TableAndDescriptionPair tableAndDescriptionPair = new TableAndDescriptionPair(fileStore.getAbsolutePath(filename));
+        TableAndDescriptionPair tableAndDescriptionPair = new TableAndDescriptionPair(fileStore.getAbsolutePath(Path.of(filename)));
         return verify(tableAndDescriptionPair.getTable(), List.of(tableAndDescriptionPair.getTableDescription()));
     }
 
@@ -147,7 +152,7 @@ public class ApplicationDefault implements Application {
 
     @Override
     public String getDataFilesDirectory() {
-        return fileStore.getDataFilesDirectory();
+        return fileStore.getDataFilesDirectory().toString();
     }
 
     @Override
@@ -159,41 +164,15 @@ public class ApplicationDefault implements Application {
 
     @Override
     public void makeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
-        TableDatasetInterpreter tableDatasetInterpreter = getTableDatasetInterpreterWithTransformersIfAvailable();
-
-        String uploadPath = fileStore.getAbsolutePath(path);
-
-        if (Files.isDirectory(Path.of(uploadPath))) {
-            tableDatasetInterpreter.uploadMultiple(uploadPath);
-        } else {
-            tableDatasetInterpreter.upload(uploadPath);
-        }
+        List<HealthDataset> healthDatasets = defaultTableDatasetInterpreter.getAsDatasets(fileStore.getAbsolutePath(Path.of(path)));
+        save(healthDatasets);
+        defaultTableDatasetInterpreter.printTransformersReport();
     }
 
     @Override
     public void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
-        TableDatasetInterpreter tableDatasetInterpreter = new TableDatasetInterpreter(this);
-        tableDatasetInterpreter.print(path);
+        defaultTableDatasetInterpreter.print(path);
     }
 
-    @Nonnull
-    private TableDatasetInterpreter getTableDatasetInterpreterWithTransformersIfAvailable() throws IOException {
-        String transformersDirectory = fileStore.getTransformersDirectory();
-        TableDatasetInterpreter tableDatasetInterpreter;
-        if (transformersDirectory != null && !transformersDirectory.isEmpty()) {
-            List<DataTransformer> transformers = Stream.of(
-                    List.of(new DataTransformerForEntityType()),
-                    DataTransformersReader.getFromPath(Paths.get(transformersDirectory)).getTransformers(),
-                    List.of(new DataTransformerForDates())
-            ).flatMap(Collection::stream)
-                    .collect(Collectors.toList());
-            tableDatasetInterpreter = new TableDatasetInterpreter(
-                    this,
-                    transformers
-            );
-        } else {
-            tableDatasetInterpreter = new TableDatasetInterpreter(this);
-        }
-        return tableDatasetInterpreter;
-    }
+
 }

@@ -23,8 +23,11 @@ import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
+import org.metastringfoundation.healthheatmap.storage.FileStore;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,29 +42,73 @@ import java.util.stream.Stream;
 public class TableDatasetInterpreter {
     private static final Logger LOG = Logger.getLogger(TableDatasetInterpreter.class);
 
-    private final Application application;
     private final List<DataTransformer> transformers;
 
-    public TableDatasetInterpreter(Application application) {
-        this.application = application;
+    @Nonnull
+    public static TableDatasetInterpreter getTableDatasetInterpreterWithTransformersIfAvailable(Path transformersDirectory) throws IOException {
+        TableDatasetInterpreter tableDatasetInterpreter;
+        if (transformersDirectory != null && Files.isDirectory(transformersDirectory) && Files.isReadable(transformersDirectory)) {
+            List<DataTransformer> transformers = Stream.of(
+                    List.of(new DataTransformerForEntityType()),
+                    DataTransformersReader.getFromPath(transformersDirectory).getTransformers(),
+                    List.of(new DataTransformerForDates())
+            ).flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+            tableDatasetInterpreter = new TableDatasetInterpreter(
+                    transformers
+            );
+        } else {
+            LOG.info("Initializing tableDatasetInterpreter without transformers. Make sure you mean this.");
+            tableDatasetInterpreter = new TableDatasetInterpreter();
+        }
+        return tableDatasetInterpreter;
+    }
+
+    public TableDatasetInterpreter() {
         this.transformers = List.of();
     }
 
-    public TableDatasetInterpreter(Application application, List<DataTransformer> transformers) {
-        this.application = application;
+    public TableDatasetInterpreter(List<DataTransformer> transformers) {
         this.transformers = transformers;
     }
 
     /**
-     * Uploads the data into the database of the application.
+     * Independently get datasets from specified transformers
      *
-     * @param path - path to the CSV file that contains data
+     * @param tableAndDescriptionPair csv and its metadata
+     * @param transformers            list of transformers
+     * @return health dataset from the parameters (doesn't use system default transformers, etc)
+     * @throws DatasetIntegrityError if there is an issue with the data
      */
-    public void upload(String path) throws IOException, DatasetIntegrityError {
-        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
-        HealthDataset healthDataset = application.asHealthDataset(tableAndDescription, transformers);
-        application.save(healthDataset);
-        LOG.info("Done persisting dataset");
+    public static HealthDataset asHealthDataset(TableAndDescriptionPair tableAndDescriptionPair, List<DataTransformer> transformers) throws DatasetIntegrityError {
+        Dataset dataset = new TableToDatasetAdapter(
+                tableAndDescriptionPair.getTable(),
+                tableAndDescriptionPair.getTableDescription()
+        );
+        return new HealthDatasetFromDataset(dataset, transformers);
+    }
+
+
+    public List<HealthDataset> getAsDatasets(Path path) throws IOException, DatasetIntegrityError {
+        if (Files.isDirectory(path)) {
+            return getAsDatasetsFromDirectory(path);
+        } else {
+            return List.of(getAsDatasetsFromFile(path));
+        }
+    }
+
+    private List<HealthDataset> getAsDatasetsFromDirectory(Path path) throws IOException, DatasetIntegrityError {
+        List<Path> dataFiles = FileManager.getDataFilesInDirectory(path);
+        List<HealthDataset> result = new ArrayList<>();
+        for (Path dataFile: dataFiles) {
+            result.add(getAsDatasetsFromFile(dataFile));
+        }
+        return result;
+    }
+
+    private HealthDataset getAsDatasetsFromFile(Path path) throws IOException, DatasetIntegrityError {
+        TableAndDescriptionPair tableAndDescriptionPair = new TableAndDescriptionPair(path);
+        return asHealthDataset(tableAndDescriptionPair, transformers);
     }
 
     public void print(String path) throws IOException, DatasetIntegrityError {
@@ -127,30 +174,7 @@ public class TableDatasetInterpreter {
         );
     }
 
-    public void uploadMultiple(String inputPath) throws IOException {
-        Path path = Paths.get(inputPath);
-        if (Files.isRegularFile(path)) {
-            uploadMultipleFromList(path);
-        } else {
-            uploadDirectory(path);
-        }
-    }
-
-    private void uploadDirectory(Path path) throws IOException {
-        Collection<Path> dataFiles = FileManager.getDataFilesInDirectory(path);
-        dataFiles.stream()
-                .peek(file -> LOG.info("Uploading: " + file.toString()))
-                .forEach(file -> {
-                    try {
-                        upload(file.toString());
-                    } catch (IOException | DatasetIntegrityError e) {
-                        e.printStackTrace();
-                    }
-                });
-        printTransformersReport();
-    }
-
-    private void printTransformersReport() {
+    public void printTransformersReport() {
         if (transformers != null) {
             transformers.forEach(this::printTransformerReport);
         }
@@ -172,20 +196,6 @@ public class TableDatasetInterpreter {
         } catch (IOException e) {
             e.printStackTrace();
             return "COULD NOT GENERATE CSV";
-        }
-    }
-
-    public void uploadMultipleFromList(Path path) {
-        try (Stream<String> stream = Files.lines(path)) {
-            stream.forEach(line -> {
-                try {
-                    upload(line);
-                } catch (IOException | DatasetIntegrityError e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

@@ -26,10 +26,9 @@ public interface FileStore {
     String getRelativeName(Path filePath);
 
     void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;
-    String getTransformersDirectory();
+    Path getTransformersDirectory();
+    Path getDataFilesDirectory();
 
-    String getAbsolutePath(String path);
+    Path getAbsolutePath(Path path);
     List<Path> getDataFiles(Path path) throws IOException;
-
-    String getDataFilesDirectory();
 }
