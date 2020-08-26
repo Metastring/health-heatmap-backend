@@ -31,4 +31,5 @@ public interface FileStore {
 
     Path getAbsolutePath(Path path);
     List<Path> getDataFiles(Path path) throws IOException;
+    List<Path> getDataFiles(String path) throws IOException;
 }

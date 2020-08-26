@@ -22,7 +22,6 @@ import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
-import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
@@ -31,7 +30,6 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,18 +87,7 @@ public class TableDatasetInterpreter {
         return new HealthDatasetFromDataset(dataset, transformers);
     }
 
-
-    public HealthDatasetBatchRead getAsDatasets(Path path) throws IOException {
-        List<Path> dataFiles;
-        if (Files.isDirectory(path)) {
-            dataFiles = FileManager.getDataFilesInDirectory(path);
-        } else {
-            dataFiles = List.of(path);
-        }
-        return getAsDatasetsFrom(dataFiles);
-    }
-
-    private HealthDatasetBatchRead getAsDatasetsFrom(List<Path> dataFiles) {
+    public HealthDatasetBatchRead getAsDatasets(List<Path> dataFiles) {
         List<HealthDataset> result = new ArrayList<>();
         Map<Path, Exception> errors = new HashMap<>();
         for (Path dataFile : dataFiles) {
@@ -119,30 +106,21 @@ public class TableDatasetInterpreter {
         return asHealthDataset(tableAndDescriptionPair, transformers);
     }
 
-    public void print(String path) throws IOException, DatasetIntegrityError {
-        if (isSingleRegularFile(path)) {
-            printSingle(path);
-        } else {
-            printMultiple(path);
+    public void print(List<Path> dataFiles) throws IOException, DatasetIntegrityError {
+        for (Path file : dataFiles) {
+            LOG.info("File: " + file.toString());
+            printEachDataPoint(file);
+            System.out.println("\n\n\n");
         }
-
     }
 
-    private void printMultiple(String path) throws IOException {
-        Collection<Path> dataFiles = FileManager.getDataFilesInDirectory(Paths.get(path));
-        dataFiles.stream()
-                .peek(file -> LOG.info("File: " + file.toString()))
-                .forEach(file -> {
-                    try {
-                        printUniqueDimensionValuesOf(file.toString());
-                        System.out.println("\n\n\n");
-                    } catch (IOException | DatasetIntegrityError e) {
-                        e.printStackTrace();
-                    }
-                });
+    public void printConcise(List<Path> paths) throws IOException, DatasetIntegrityError {
+        for (Path path : paths) {
+            printUniqueDimensionValuesOf(path);
+        }
     }
 
-    private void printUniqueDimensionValuesOf(String path) throws IOException, DatasetIntegrityError {
+    private void printUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
         Map<String, Set<String>> dimensionValues = getUniqueDimensionValuesOf(path);
         dimensionValues.forEach((key, value) -> {
             System.out.println(key);
@@ -151,7 +129,7 @@ public class TableDatasetInterpreter {
         });
     }
 
-    private Map<String, Set<String>> getUniqueDimensionValuesOf(String path) throws IOException, DatasetIntegrityError {
+    private Map<String, Set<String>> getUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
         Dataset dataset = getDataset(path);
         return dataset.getData().stream()
                 .map(DataPoint::getAsMap)
@@ -162,11 +140,7 @@ public class TableDatasetInterpreter {
                 );
     }
 
-    private boolean isSingleRegularFile(String path) {
-        return Files.isRegularFile(Paths.get(path));
-    }
-
-    private void printSingle(String path) throws IOException, DatasetIntegrityError {
+    private void printEachDataPoint(Path path) throws IOException, DatasetIntegrityError {
         Dataset dataset = getDataset(path);
         System.out.println(path);
         for (DataPoint dataPoint : dataset.getData()) {
@@ -174,7 +148,7 @@ public class TableDatasetInterpreter {
         }
     }
 
-    private Dataset getDataset(String path) throws DatasetIntegrityError, IOException {
+    private Dataset getDataset(Path path) throws DatasetIntegrityError, IOException {
         TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
         return new TableToDatasetAdapter(
                 tableAndDescription.getTable(),

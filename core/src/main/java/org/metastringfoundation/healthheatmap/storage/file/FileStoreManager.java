@@ -92,7 +92,16 @@ public class FileStoreManager implements FileStore {
 
     @Override
     public List<Path> getDataFiles(Path path) throws IOException {
-        return FileManager.getDataFilesInDirectory(path);
+        if (Files.isDirectory(path)) {
+            return FileManager.getDataFilesInDirectory(path);
+        } else {
+            return List.of(path);
+        }
+    }
+
+    @Override
+    public List<Path> getDataFiles(String path) throws IOException {
+        return getDataFiles(Path.of(path));
     }
 
     @Override

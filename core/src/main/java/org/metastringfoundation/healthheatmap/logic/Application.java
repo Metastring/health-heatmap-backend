@@ -45,6 +45,7 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     void save(List<HealthDataset> healthDatasets) throws IOException;
 
     void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError;
+    void dryMakeAvailableInAPIConcise(String path) throws IOException, DatasetIntegrityError;
 
     void save(InputStream in, String fileNameWithRelativePath) throws IOException;
     void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException;

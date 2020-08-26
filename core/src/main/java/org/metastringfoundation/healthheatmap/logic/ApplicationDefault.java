@@ -170,7 +170,7 @@ public class ApplicationDefault implements Application {
     @Override
     public void makeAvailableInAPI(String path) throws IOException {
         LOG.info("Uploading " + path + " to the dataset");
-        HealthDatasetBatchRead healthDatasetsRead = defaultTableDatasetInterpreter.getAsDatasets(fileStore.getAbsolutePath(Path.of(path)));
+        HealthDatasetBatchRead healthDatasetsRead = defaultTableDatasetInterpreter.getAsDatasets(fileStore.getDataFiles(Path.of(path)));
         LOG.info("Saving " + healthDatasetsRead.getDatasets().size() + " datasets. This might take a while");
         save(healthDatasetsRead.getDatasets());
         LOG.info("Here are the datasets with errors");
@@ -180,8 +180,11 @@ public class ApplicationDefault implements Application {
 
     @Override
     public void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
-        defaultTableDatasetInterpreter.print(path);
+        defaultTableDatasetInterpreter.print(fileStore.getDataFiles(path));
     }
 
-
+    @Override
+    public void dryMakeAvailableInAPIConcise(String path) throws IOException, DatasetIntegrityError {
+        defaultTableDatasetInterpreter.printConcise(fileStore.getDataFiles(path));
+    }
 }
