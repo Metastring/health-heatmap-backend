@@ -44,6 +44,7 @@ public class TransformersManager {
 
     private Map<String, DataTransformer> readTransformers() throws IOException {
         Map<String, DataTransformer> result = new HashMap<>();
+        result.put("sys/entity", new DataTransformerForEntityType());
         Predicate<Path> anyPath = p -> true;
         List<Path> files = fileStore.getFilesThatMatch(fileStore.getTransformersDirectory(), anyPath);
         for (Path file : files) {
@@ -53,6 +54,7 @@ public class TransformersManager {
             );
             result.put(name, transformer);
         }
+        result.put("zsys/date", new DataTransformerForDates());
         return result;
     }
 
