@@ -18,7 +18,6 @@ package org.metastringfoundation.healthheatmap.beans;
 
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
