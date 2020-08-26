@@ -17,49 +17,12 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.data.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
-@ApplicationScoped
-public class DatasetsManager {
-    private final FileStore fileStore;
-    private final TransformersManager transformersManager;
-    private List<DatasetPointer> datasetPointerList;
+public interface DatasetsManager {
+    List<DatasetPointer> getAllDatasets();
 
-    @Inject
-    public DatasetsManager(FileStore fileStore, TransformersManager transformersManager) throws IOException, DatasetIntegrityError {
-        this.fileStore = fileStore;
-        this.transformersManager = transformersManager;
-        this.datasetPointerList = calculateDatasetPointerList();
-    }
-
-    public List<DatasetPointer> getAllDatasets() {
-        return datasetPointerList;
-    }
-
-    public void refreshDatasets() throws IOException, DatasetIntegrityError {
-        datasetPointerList = calculateDatasetPointerList();
-    }
-
-    private List<DatasetPointer> calculateDatasetPointerList() throws IOException, DatasetIntegrityError {
-        List<DatasetPointer> result = new ArrayList<>();
-        List<Path> csvPaths = fileStore.getFilesThatMatch(
-                fileStore.getDataFilesDirectory(),
-                p -> p.toString().endsWith(".csv")
-        );
-        for (Path csv: csvPaths) {
-            result.add(getCSVDatasetPointer(csv));
-        }
-        return result;
-    }
-
-    private DatasetPointer getCSVDatasetPointer(Path csvPath) throws IOException, DatasetIntegrityError {
-        return new CSVDatasetPointer(csvPath, fileStore, transformersManager);
-    }
+    void refreshDatasets() throws IOException, DatasetIntegrityError;
 }

@@ -34,8 +34,8 @@ public class ApplicationDefaultTest {
     private final DatasetStore mockDatasetStore = mock(ElasticManager.class);
     private final ApplicationMetadataStore mockApplicationMetadataStore = mock(ElasticManager.class);
     private final FileStore mockFileStore = mock(FileStoreManager.class);
-    private final DatasetsManager mockDatasetsManager = mock(DatasetsManager.class);
-    private final TransformersManager mockTransformersManager = mock(TransformersManager.class);
+    private final DatasetsManager mockDatasetsManager = mock(DatasetsManagerFileSystem.class);
+    private final TransformersManager mockTransformersManager = mock(TransformersManagerFileSystem.class);
 
     private final Application application = new ApplicationDefault(
             mockDatasetStore,

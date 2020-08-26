@@ -17,62 +17,14 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.beans.TransformerMeta;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-import static java.util.Map.Entry.comparingByKey;
+public interface TransformersManager {
+    void refreshTransformers() throws IOException;
 
-@ApplicationScoped
-public class TransformersManager {
-    private final FileStore fileStore;
-    private Map<String, DataTransformer> transformers;
+    List<DataTransformer> getThese(List<TransformerMeta> transformerMetaList);
 
-    @Inject
-    public TransformersManager(FileStore fileStore) throws IOException {
-        this.fileStore = fileStore;
-        this.transformers = readTransformers();
-    }
-
-    private Map<String, DataTransformer> readTransformers() throws IOException {
-        Map<String, DataTransformer> result = new HashMap<>();
-        result.put("sys/entity", new DataTransformerForEntityType());
-        Predicate<Path> anyPath = p -> true;
-        List<Path> files = fileStore.getFilesThatMatch(fileStore.getTransformersDirectory(), anyPath);
-        for (Path file : files) {
-            String name = fileStore.getRelativeName(file);
-            DataTransformer transformer = DataTransformerFromSpreadsheet.getDataTransformerCrashingOnError(
-                    fileStore.getFileAsString(file)
-            );
-            result.put(name, transformer);
-        }
-        result.put("zsys/date", new DataTransformerForDates());
-        return result;
-    }
-
-    public void refreshTransformers() throws IOException {
-        transformers = readTransformers();
-    }
-
-    public List<DataTransformer> getThese(List<TransformerMeta> transformerMetaList) {
-        return transformerMetaList.stream()
-                .map(TransformerMeta::getName)
-                .map(transformers::get)
-                .collect(Collectors.toList());
-    }
-
-    public List<DataTransformer> getAll() {
-        return transformers.entrySet().stream()
-                .sorted(comparingByKey())
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
+    List<DataTransformer> getAll();
 }
