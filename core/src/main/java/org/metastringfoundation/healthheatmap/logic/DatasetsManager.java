@@ -30,7 +30,7 @@ import java.util.List;
 public class DatasetsManager {
     private final FileStore fileStore;
     private final TransformersManager transformersManager;
-    private final List<DatasetPointer> datasetPointerList;
+    private List<DatasetPointer> datasetPointerList;
 
     @Inject
     public DatasetsManager(FileStore fileStore, TransformersManager transformersManager) throws IOException, DatasetIntegrityError {
@@ -41,6 +41,10 @@ public class DatasetsManager {
 
     public List<DatasetPointer> getAllDatasets() {
         return datasetPointerList;
+    }
+
+    public void refreshDatasets() throws IOException, DatasetIntegrityError {
+        datasetPointerList = calculateDatasetPointerList();
     }
 
     private List<DatasetPointer> calculateDatasetPointerList() throws IOException, DatasetIntegrityError {

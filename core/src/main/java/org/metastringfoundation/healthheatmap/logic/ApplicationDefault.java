@@ -35,7 +35,6 @@ import org.metastringfoundation.healthheatmap.storage.FileStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
-import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -56,22 +55,22 @@ public class ApplicationDefault implements Application {
     private final DatasetStore datasetStore;
     private final ApplicationMetadataStore metadataStore;
     private final FileStore fileStore;
-    private TableDatasetInterpreter defaultTableDatasetInterpreter;
-
-    public ApplicationDefault(@ElasticStore DatasetStore datasetStore) throws IOException {
-        this(datasetStore, (ApplicationMetadataStore) datasetStore, FileStoreManager.getDefault());
-    }
+    private final DatasetsManager datasetsManager;
+    private final TransformersManager transformersManager;
 
     @Inject
     public ApplicationDefault(
             @ElasticStore DatasetStore datasetStore,
             @ElasticStore ApplicationMetadataStore metadataStore,
-            FileStore fileStore
-    ) throws IOException {
+            FileStore fileStore,
+            DatasetsManager datasetsManager,
+            TransformersManager transformersManager
+    ) {
         this.datasetStore = datasetStore;
         this.metadataStore = metadataStore;
         this.fileStore = fileStore;
-        this.defaultTableDatasetInterpreter = TableDatasetInterpreter.getTableDatasetInterpreterWithTransformersIfAvailable(fileStore.getTransformersDirectory());
+        this.datasetsManager = datasetsManager;
+        this.transformersManager = transformersManager;
     }
 
     @Override
@@ -145,8 +144,10 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException {
+    public void replaceRootDirectoryWith(Path sourceDirectoryRoot) throws IOException, DatasetIntegrityError {
         fileStore.replaceRootDirectoryWith(sourceDirectoryRoot);
+        refreshDatasets();
+        refreshTransformers();
     }
 
     @Override
@@ -163,28 +164,34 @@ public class ApplicationDefault implements Application {
 
     @Override
     public void refreshTransformers() throws IOException {
-        LOG.info("Reloading table interpreter");
-        defaultTableDatasetInterpreter = TableDatasetInterpreter.getTableDatasetInterpreterWithTransformersIfAvailable(fileStore.getTransformersDirectory());
+        LOG.info("Refreshing transformers");
+        transformersManager.refreshTransformers();
+    }
+
+    @Override
+    public void refreshDatasets() throws IOException, DatasetIntegrityError {
+        LOG.info("Refreshing datasets");
+        datasetsManager.refreshDatasets();
     }
 
     @Override
     public void makeAvailableInAPI(String path) throws IOException {
         LOG.info("Uploading " + path + " to the dataset");
-        HealthDatasetBatchRead healthDatasetsRead = defaultTableDatasetInterpreter.getAsDatasets(fileStore.getDataFiles(Path.of(path)));
+        HealthDatasetBatchRead healthDatasetsRead = TableDatasetInterpreter.getAsDatasets(datasetsManager.getAllDatasets());
         LOG.info("Saving " + healthDatasetsRead.getDatasets().size() + " datasets. This might take a while");
         save(healthDatasetsRead.getDatasets());
         LOG.info("Here are the datasets with errors");
-        healthDatasetsRead.getErrors().forEach((filePath, error) -> LOG.error(filePath.toString() + " suffered an error: " + error.getMessage()));
-        defaultTableDatasetInterpreter.printTransformersReport();
+        healthDatasetsRead.getErrors().forEach((filePath, error) -> LOG.error(filePath + " suffered an error: " + error.getMessage()));
+        TableDatasetInterpreter.printTransformersReport(transformersManager.getAll());
     }
 
     @Override
     public void dryMakeAvailableInAPI(String path) throws IOException, DatasetIntegrityError {
-        defaultTableDatasetInterpreter.print(fileStore.getDataFiles(path));
+        TableDatasetInterpreter.print(fileStore.getDataFiles(path));
     }
 
     @Override
     public void dryMakeAvailableInAPIConcise(String path) throws IOException, DatasetIntegrityError {
-        defaultTableDatasetInterpreter.printConcise(fileStore.getDataFiles(path));
+        TableDatasetInterpreter.printConcise(fileStore.getDataFiles(path));
     }
 }

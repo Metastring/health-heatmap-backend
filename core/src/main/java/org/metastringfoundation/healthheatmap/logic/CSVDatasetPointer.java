@@ -53,6 +53,9 @@ public class CSVDatasetPointer implements DatasetPointer {
     @Override
     public List<DataTransformer> getTransformers() {
         HealthDatasetMetadata metadata = Jsonizer.convert(tableAndDescriptionPair.getTableDescription().getMetadata(), HealthDatasetMetadata.class);
+        if (metadata == null || metadata.getTransformers() == null) {
+            return transformersManager.getAll();
+        }
         List<TransformerMeta> transformerMetaList = metadata.getTransformers();
         return transformersManager.getThese(transformerMetaList);
     }

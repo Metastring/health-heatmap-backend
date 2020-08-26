@@ -23,16 +23,19 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.Map.Entry.comparingByKey;
+
 @ApplicationScoped
 public class TransformersManager {
     private final FileStore fileStore;
-    private final Map<String, DataTransformer> transformers;
+    private Map<String, DataTransformer> transformers;
 
     @Inject
     public TransformersManager(FileStore fileStore) throws IOException {
@@ -54,10 +57,21 @@ public class TransformersManager {
         return result;
     }
 
+    public void refreshTransformers() throws IOException {
+        transformers = readTransformers();
+    }
+
     public List<DataTransformer> getThese(List<TransformerMeta> transformerMetaList) {
         return transformerMetaList.stream()
                 .map(TransformerMeta::getName)
                 .map(transformers::get)
+                .collect(Collectors.toList());
+    }
+
+    public List<DataTransformer> getAll() {
+        return transformers.entrySet().stream()
+                .sorted(comparingByKey())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 }

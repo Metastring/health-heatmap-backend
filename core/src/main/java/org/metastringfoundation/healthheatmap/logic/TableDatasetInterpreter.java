@@ -26,50 +26,16 @@ import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This is a utility that helps switch between table and dataset
  */
 public class TableDatasetInterpreter {
     private static final Logger LOG = Logger.getLogger(TableDatasetInterpreter.class);
-
-    private final List<DataTransformer> transformers;
-
-    @Nonnull
-    public static TableDatasetInterpreter getTableDatasetInterpreterWithTransformersIfAvailable(Path transformersDirectory) throws IOException {
-        TableDatasetInterpreter tableDatasetInterpreter;
-        if (transformersDirectory != null && Files.isDirectory(transformersDirectory) && Files.isReadable(transformersDirectory)) {
-            LOG.info("Reading transformers from: " + transformersDirectory.toString());
-            List<DataTransformer> transformers = Stream.of(
-                    List.of(new DataTransformerForEntityType()),
-                    DataTransformersReader.getFromPath(transformersDirectory).getTransformers(),
-                    List.of(new DataTransformerForDates())
-            ).flatMap(Collection::stream)
-                    .collect(Collectors.toList());
-            tableDatasetInterpreter = new TableDatasetInterpreter(
-                    transformers
-            );
-        } else {
-            LOG.info("Initializing tableDatasetInterpreter without transformers. Make sure you mean this.");
-            tableDatasetInterpreter = new TableDatasetInterpreter();
-        }
-        return tableDatasetInterpreter;
-    }
-
-    public TableDatasetInterpreter() {
-        this.transformers = List.of();
-    }
-
-    public TableDatasetInterpreter(List<DataTransformer> transformers) {
-        this.transformers = transformers;
-    }
 
     /**
      * Independently get datasets from specified transformers
@@ -87,26 +53,29 @@ public class TableDatasetInterpreter {
         return new HealthDatasetFromDataset(dataset, transformers);
     }
 
-    public HealthDatasetBatchRead getAsDatasets(List<Path> dataFiles) {
+    public static HealthDataset asHealthDataset(Dataset dataset, List<DataTransformer> transformers) {
+        return new HealthDatasetFromDataset(dataset, transformers);
+    }
+
+    public static HealthDatasetBatchRead getAsDatasets(List<DatasetPointer> datasetPointers) {
         List<HealthDataset> result = new ArrayList<>();
-        Map<Path, Exception> errors = new HashMap<>();
-        for (Path dataFile : dataFiles) {
-            LOG.info("Interpreting file: " + dataFile.toString());
+        Map<String, Exception> errors = new HashMap<>();
+        for (DatasetPointer datasetPointer: datasetPointers) {
+            LOG.info("Interpreting file: " + datasetPointer.getName());
             try {
-                result.add(getAsDatasetsFromFile(dataFile));
+                result.add(asHealthDataset(datasetPointer));
             } catch (DatasetIntegrityError | IOException exception) {
-                errors.put(dataFile, exception);
+                errors.put(datasetPointer.getName(), exception);
             }
         }
         return new HealthDatasetBatchRead(result, errors);
     }
 
-    private HealthDataset getAsDatasetsFromFile(Path path) throws IOException, DatasetIntegrityError {
-        TableAndDescriptionPair tableAndDescriptionPair = new TableAndDescriptionPair(path);
-        return asHealthDataset(tableAndDescriptionPair, transformers);
+    private static HealthDataset asHealthDataset(DatasetPointer datasetPointer) throws IOException, DatasetIntegrityError {
+        return asHealthDataset(datasetPointer.getDataset(), datasetPointer.getTransformers());
     }
 
-    public void print(List<Path> dataFiles) throws IOException, DatasetIntegrityError {
+    public static void print(List<Path> dataFiles) throws IOException, DatasetIntegrityError {
         for (Path file : dataFiles) {
             LOG.info("File: " + file.toString());
             printEachDataPoint(file);
@@ -114,13 +83,13 @@ public class TableDatasetInterpreter {
         }
     }
 
-    public void printConcise(List<Path> paths) throws IOException, DatasetIntegrityError {
+    public static void printConcise(List<Path> paths) throws IOException, DatasetIntegrityError {
         for (Path path : paths) {
             printUniqueDimensionValuesOf(path);
         }
     }
 
-    private void printUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
+    private static void printUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
         Map<String, Set<String>> dimensionValues = getUniqueDimensionValuesOf(path);
         dimensionValues.forEach((key, value) -> {
             System.out.println(key);
@@ -129,7 +98,7 @@ public class TableDatasetInterpreter {
         });
     }
 
-    private Map<String, Set<String>> getUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
+    private static Map<String, Set<String>> getUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
         Dataset dataset = getDataset(path);
         return dataset.getData().stream()
                 .map(DataPoint::getAsMap)
@@ -140,7 +109,7 @@ public class TableDatasetInterpreter {
                 );
     }
 
-    private void printEachDataPoint(Path path) throws IOException, DatasetIntegrityError {
+    private static void printEachDataPoint(Path path) throws IOException, DatasetIntegrityError {
         Dataset dataset = getDataset(path);
         System.out.println(path);
         for (DataPoint dataPoint : dataset.getData()) {
@@ -148,7 +117,7 @@ public class TableDatasetInterpreter {
         }
     }
 
-    private Dataset getDataset(Path path) throws DatasetIntegrityError, IOException {
+    private static Dataset getDataset(Path path) throws DatasetIntegrityError, IOException {
         TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
         return new TableToDatasetAdapter(
                 tableAndDescription.getTable(),
@@ -156,19 +125,19 @@ public class TableDatasetInterpreter {
         );
     }
 
-    public void printTransformersReport() {
+    public static void printTransformersReport(Collection<DataTransformer> transformers) {
         if (transformers != null) {
-            transformers.forEach(this::printTransformerReport);
+            transformers.forEach(TableDatasetInterpreter::printTransformerReport);
         }
     }
 
-    private void printTransformerReport(DataTransformer transformer) {
+    private static void printTransformerReport(DataTransformer transformer) {
         Set<Map<String, String>> keyFailure = transformer.getUnmatchedKeysFound();
         String csv = tryConvert(keyFailure);
         LOG.info(csv);
     }
 
-    private String tryConvert(Set<Map<String, String>> keyFailure) {
+    private static String tryConvert(Set<Map<String, String>> keyFailure) {
         List<Map<String, String>> keyFailureRecords = new ArrayList<>(keyFailure);
         if (keyFailureRecords.size() < 1) {
             return "NO KEY FAILURES";

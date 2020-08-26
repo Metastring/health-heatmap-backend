@@ -17,10 +17,13 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
+import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.storage.DatasetStore;
+import org.metastringfoundation.healthheatmap.storage.FileStore;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
 
 import java.io.IOException;
 
@@ -29,10 +32,18 @@ import static org.mockito.Mockito.*;
 
 public class ApplicationDefaultTest {
     private final DatasetStore mockDatasetStore = mock(ElasticManager.class);
-    private final Application application = new ApplicationDefault(mockDatasetStore);
+    private final ApplicationMetadataStore mockApplicationMetadataStore = mock(ElasticManager.class);
+    private final FileStore mockFileStore = mock(FileStoreManager.class);
+    private final DatasetsManager mockDatasetsManager = mock(DatasetsManager.class);
+    private final TransformersManager mockTransformersManager = mock(TransformersManager.class);
 
-    public ApplicationDefaultTest() throws IOException {
-    }
+    private final Application application = new ApplicationDefault(
+            mockDatasetStore,
+            mockApplicationMetadataStore,
+            mockFileStore,
+            mockDatasetsManager,
+            mockTransformersManager
+    );
 
     @Test
     public void applicationCorrectlyRoutesDataQueryToDatasetStore() throws IOException {

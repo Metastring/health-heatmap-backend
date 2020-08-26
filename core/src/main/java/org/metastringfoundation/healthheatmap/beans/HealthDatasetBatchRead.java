@@ -24,9 +24,9 @@ import java.util.Map;
 
 public class HealthDatasetBatchRead {
     private final List<HealthDataset> datasets;
-    private final Map<Path, Exception> errors;
+    private final Map<String, Exception> errors;
 
-    public HealthDatasetBatchRead(List<HealthDataset> datasets, Map<Path, Exception> errors) {
+    public HealthDatasetBatchRead(List<HealthDataset> datasets, Map<String, Exception> errors) {
         this.datasets = datasets;
         this.errors = errors;
     }
@@ -35,7 +35,7 @@ public class HealthDatasetBatchRead {
         return datasets;
     }
 
-    public Map<Path, Exception> getErrors() {
+    public Map<String, Exception> getErrors() {
         return errors;
     }
 }
