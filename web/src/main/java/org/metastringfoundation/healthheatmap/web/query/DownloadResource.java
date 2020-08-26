@@ -17,7 +17,7 @@
 package org.metastringfoundation.healthheatmap.web.query;
 
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
+import org.metastringfoundation.healthheatmap.logic.etl.KeyValuePairsToCSV;
 import org.metastringfoundation.healthheatmap.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.beans.DownloadRequest;

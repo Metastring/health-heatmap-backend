@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.logic.etl;
 
 import org.jboss.logging.Logger;
 import org.metastringfoundation.data.DataPoint;
@@ -25,6 +25,8 @@ import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
+import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
 
 import java.io.IOException;
 import java.nio.file.Path;

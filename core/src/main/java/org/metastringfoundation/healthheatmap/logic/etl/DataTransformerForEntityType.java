@@ -14,9 +14,10 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.logic.etl;
 
 import org.metastringfoundation.data.DataPoint;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import java.util.List;
 import java.util.Map;

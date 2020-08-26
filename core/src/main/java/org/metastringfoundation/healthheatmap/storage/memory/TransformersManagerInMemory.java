@@ -14,10 +14,13 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.storage.memory;
 
 import org.metastringfoundation.healthheatmap.beans.TransformerMeta;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
+import org.metastringfoundation.healthheatmap.logic.*;
+import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerForDates;
+import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerForEntityType;
+import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerFromSpreadsheet;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,12 +35,12 @@ import java.util.stream.Collectors;
 import static java.util.Map.Entry.comparingByKey;
 
 @ApplicationScoped
-public class TransformersManagerFileSystem implements TransformersManager {
+public class TransformersManagerInMemory implements TransformersManager {
     private final FileStore fileStore;
     private Map<String, DataTransformer> transformers;
 
     @Inject
-    public TransformersManagerFileSystem(FileStore fileStore) throws IOException {
+    public TransformersManagerInMemory(FileStore fileStore) throws IOException {
         this.fileStore = fileStore;
         this.transformers = readTransformers();
     }

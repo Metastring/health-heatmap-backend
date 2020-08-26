@@ -17,13 +17,12 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
+import org.metastringfoundation.healthheatmap.storage.memory.DatasetsManagerInMemory;
+import org.metastringfoundation.healthheatmap.storage.memory.TransformersManagerInMemory;
 
 import java.io.IOException;
 
@@ -34,8 +33,8 @@ public class ApplicationDefaultTest {
     private final DatasetStore mockDatasetStore = mock(ElasticManager.class);
     private final ApplicationMetadataStore mockApplicationMetadataStore = mock(ElasticManager.class);
     private final FileStore mockFileStore = mock(FileStoreManager.class);
-    private final DatasetsManager mockDatasetsManager = mock(DatasetsManagerFileSystem.class);
-    private final TransformersManager mockTransformersManager = mock(TransformersManagerFileSystem.class);
+    private final DatasetsManager mockDatasetsManager = mock(DatasetsManagerInMemory.class);
+    private final TransformersManager mockTransformersManager = mock(TransformersManagerInMemory.class);
 
     private final Application application = new ApplicationDefault(
             mockDatasetStore,

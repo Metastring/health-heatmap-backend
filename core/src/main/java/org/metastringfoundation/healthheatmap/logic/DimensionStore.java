@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.logic;
 
 public interface DimensionStore {
 }

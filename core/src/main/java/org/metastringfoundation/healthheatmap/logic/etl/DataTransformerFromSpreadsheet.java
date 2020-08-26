@@ -14,12 +14,13 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.logic.etl;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.metastringfoundation.data.DataPoint;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import java.io.IOException;
 import java.util.*;

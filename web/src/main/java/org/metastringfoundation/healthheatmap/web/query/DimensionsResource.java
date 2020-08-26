@@ -18,7 +18,7 @@ package org.metastringfoundation.healthheatmap.web.query;
 
 import org.jboss.logging.Logger;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.logic.KeyValuePairsToCSV;
+import org.metastringfoundation.healthheatmap.logic.etl.KeyValuePairsToCSV;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 
 import javax.inject.Inject;

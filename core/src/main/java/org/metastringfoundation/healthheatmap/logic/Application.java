@@ -22,8 +22,6 @@ import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
-import org.metastringfoundation.healthheatmap.storage.ApplicationMetadataStore;
-import org.metastringfoundation.healthheatmap.storage.DatasetStore;
 
 import java.io.IOException;
 import java.io.InputStream;

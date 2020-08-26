@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.storage;
+package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;

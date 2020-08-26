@@ -14,10 +14,11 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.storage.memory;
 
 import org.metastringfoundation.data.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
+import org.metastringfoundation.healthheatmap.logic.*;
+import org.metastringfoundation.healthheatmap.logic.etl.CSVDatasetPointer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,13 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class DatasetsManagerFileSystem implements DatasetsManager {
+public class DatasetsManagerInMemory implements DatasetsManager {
     private final FileStore fileStore;
     private final TransformersManager transformersManager;
     private List<DatasetPointer> datasetPointerList;
 
     @Inject
-    public DatasetsManagerFileSystem(FileStore fileStore, TransformersManager transformersManager) throws IOException, DatasetIntegrityError {
+    public DatasetsManagerInMemory(FileStore fileStore, TransformersManager transformersManager) throws IOException, DatasetIntegrityError {
         this.fileStore = fileStore;
         this.transformersManager = transformersManager;
         this.datasetPointerList = calculateDatasetPointerList();

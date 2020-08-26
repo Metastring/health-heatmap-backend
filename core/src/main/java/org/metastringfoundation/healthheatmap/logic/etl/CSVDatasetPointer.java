@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.logic.etl;
 
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
@@ -23,7 +23,10 @@ import org.metastringfoundation.healthheatmap.beans.HealthDatasetMetadata;
 import org.metastringfoundation.healthheatmap.beans.TransformerMeta;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
+import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
+import org.metastringfoundation.healthheatmap.logic.FileStore;
+import org.metastringfoundation.healthheatmap.logic.TransformersManager;
 
 import java.io.IOException;
 import java.nio.file.Path;

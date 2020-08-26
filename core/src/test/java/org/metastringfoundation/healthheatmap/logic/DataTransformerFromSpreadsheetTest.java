@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.data.DataPoint;
+import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerFromSpreadsheet;
 
 import java.io.IOException;
 import java.util.List;

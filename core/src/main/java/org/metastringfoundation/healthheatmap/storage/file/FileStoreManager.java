@@ -19,7 +19,7 @@ package org.metastringfoundation.healthheatmap.storage.file;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
-import org.metastringfoundation.healthheatmap.storage.FileStore;
+import org.metastringfoundation.healthheatmap.logic.FileStore;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

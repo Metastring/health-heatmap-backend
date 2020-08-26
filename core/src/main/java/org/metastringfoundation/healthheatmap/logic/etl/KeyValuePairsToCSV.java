@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.logic;
+package org.metastringfoundation.healthheatmap.logic.etl;
 
 import com.google.common.collect.Iterables;
 import org.apache.commons.csv.CSVFormat;
