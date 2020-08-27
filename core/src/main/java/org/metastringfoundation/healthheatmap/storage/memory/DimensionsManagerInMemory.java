@@ -20,6 +20,7 @@ import org.metastringfoundation.healthheatmap.helpers.FileManager;
 import org.metastringfoundation.healthheatmap.helpers.ReadCSVAsMap;
 import org.metastringfoundation.healthheatmap.logic.FileStore;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+@ApplicationScoped
 public class DimensionsManagerInMemory {
     private final FileStore fileStore;
     //         dimension    id          param   value
