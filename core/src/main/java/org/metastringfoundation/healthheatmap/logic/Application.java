@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
@@ -35,6 +36,7 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
 
     boolean getHealth() throws IOException;
 
+    List<VerificationResultField> verify(Dataset dataset);
     List<VerificationResultField> verify(Table table, List<TableDescription> tableDescriptions) throws DatasetIntegrityError;
     List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException;
 

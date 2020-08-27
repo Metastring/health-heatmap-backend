@@ -40,4 +40,6 @@ public interface FileStore {
     List<Path> getFiles(Path path) throws IOException;
 
     String getFileAsString(Path file);
+
+    List<Path> resolveInAllAncestors(String filename, Path startFile);
 }

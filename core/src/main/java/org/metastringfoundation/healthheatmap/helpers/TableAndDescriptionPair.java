@@ -17,45 +17,33 @@
 package org.metastringfoundation.healthheatmap.helpers;
 
 import org.jboss.logging.Logger;
-import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
-import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetMetadata;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
-import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
-
 public class TableAndDescriptionPair {
     private static final Logger LOG = Logger.getLogger(TableAndDescriptionPair.class);
-
     private final Table table;
     private final TableDescription tableDescription;
 
-    public TableAndDescriptionPair(Path tablePath) throws IOException, DatasetIntegrityError {
-        table = new CSVTable(tablePath);
+    public TableAndDescriptionPair(Table table, List<Path> metadataFilesApplicable) throws IOException {
+        this.table = table;
         LOG.debug("table is " + table.getTable().toString());
-
-        List<Path> metadataFilesApplicable = List.of(
-                guessRootMetadataPath(tablePath),
-                guessMetadataPath(tablePath)
-        );
-
         List<Path> metadataThatExists = FileManager.restrictToExistingFiles(metadataFilesApplicable);
 
         if (metadataThatExists.size() == 0) {
-            throw new IOException("There are no metadata files applicable for" + tablePath);
+            throw new IOException("There are no metadata files");
         }
         LOG.debug("Reading metadata files: ");
         metadataFilesApplicable.forEach(LOG::debug);
 
         tableDescription = calculateTableDescription(metadataThatExists);
         if (tableDescription == null) {
-            throw new IOException("Couldn't read any table metadata for " + tablePath);
+            throw new IOException("Couldn't read any table metadata");
         }
         LOG.debug("Metadata is " + tableDescription);
     }

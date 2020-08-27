@@ -19,6 +19,7 @@ package org.metastringfoundation.healthheatmap.storage.file;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
+import org.metastringfoundation.healthheatmap.helpers.PathManager;
 import org.metastringfoundation.healthheatmap.logic.FileStore;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -122,6 +124,23 @@ public class FileStoreManager implements FileStore {
     @Override
     public String getFileAsString(Path file) {
         return FileManager.readFileAsString(file);
+    }
+
+    @Override
+    public List<Path> resolveInAllAncestors(String filename, Path startFile) {
+        if (!PathManager.isInsideOrSameAsPath(startFile, dataDir)) {
+            throw new IllegalArgumentException(startFile + " is not inside " + dataDir);
+        }
+        List<Path> resolvedAncestors = new ArrayList<>();
+        while (true) {
+            Path parent = startFile.getParent();
+            if (PathManager.isInsideOrSameAsPath(parent, dataDir)) {
+                resolvedAncestors.add(parent.resolve(filename));
+            } else {
+                break;
+            }
+        }
+        return resolvedAncestors;
     }
 
     @Override

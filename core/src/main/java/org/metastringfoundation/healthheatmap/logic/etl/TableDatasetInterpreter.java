@@ -21,6 +21,7 @@ import org.metastringfoundation.data.DataPoint;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
+import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
@@ -28,10 +29,14 @@ import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
+import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
 
 /**
  * This is a utility that helps switch between table and dataset
@@ -80,19 +85,27 @@ public class TableDatasetInterpreter {
     public static void print(List<Path> dataFiles) throws IOException, DatasetIntegrityError {
         for (Path file : dataFiles) {
             LOG.info("File: " + file.toString());
-            printEachDataPoint(file);
+            printEachDataPoint(file, getMetadataFiles(file));
             System.out.println("\n\n\n");
         }
     }
 
+    @Nonnull
+    private static List<Path> getMetadataFiles(Path file) {
+        return List.of(
+                guessRootMetadataPath(file),
+                guessMetadataPath(file)
+        );
+    }
+
     public static void printConcise(List<Path> paths) throws IOException, DatasetIntegrityError {
         for (Path path : paths) {
-            printUniqueDimensionValuesOf(path);
+            printUniqueDimensionValuesOf(path, getMetadataFiles(path));
         }
     }
 
-    private static void printUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
-        Map<String, Set<String>> dimensionValues = getUniqueDimensionValuesOf(path);
+    private static void printUniqueDimensionValuesOf(Path path, List<Path> metadataFiles) throws IOException, DatasetIntegrityError {
+        Map<String, Set<String>> dimensionValues = getUniqueDimensionValuesOf(path, metadataFiles);
         dimensionValues.forEach((key, value) -> {
             System.out.println(key);
             value.forEach(System.out::println);
@@ -100,8 +113,8 @@ public class TableDatasetInterpreter {
         });
     }
 
-    private static Map<String, Set<String>> getUniqueDimensionValuesOf(Path path) throws IOException, DatasetIntegrityError {
-        Dataset dataset = getDataset(path);
+    private static Map<String, Set<String>> getUniqueDimensionValuesOf(Path path, List<Path> metadataFiles) throws IOException, DatasetIntegrityError {
+        Dataset dataset = getDataset(path, metadataFiles);
         return dataset.getData().stream()
                 .map(DataPoint::getAsMap)
                 .flatMap(m -> m.entrySet().stream())
@@ -111,16 +124,16 @@ public class TableDatasetInterpreter {
                 );
     }
 
-    private static void printEachDataPoint(Path path) throws IOException, DatasetIntegrityError {
-        Dataset dataset = getDataset(path);
+    private static void printEachDataPoint(Path path, List<Path> metadataFiles) throws IOException, DatasetIntegrityError {
+        Dataset dataset = getDataset(path, metadataFiles);
         System.out.println(path);
         for (DataPoint dataPoint : dataset.getData()) {
             System.out.println(dataPoint);
         }
     }
 
-    private static Dataset getDataset(Path path) throws DatasetIntegrityError, IOException {
-        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(path);
+    private static Dataset getDataset(Path path, List<Path> metadataFiles) throws DatasetIntegrityError, IOException {
+        TableAndDescriptionPair tableAndDescription = new TableAndDescriptionPair(new CSVTable(path), metadataFiles);
         return new TableToDatasetAdapter(
                 tableAndDescription.getTable(),
                 tableAndDescription.getTableDescription()

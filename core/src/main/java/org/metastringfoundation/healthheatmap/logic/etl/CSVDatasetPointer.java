@@ -18,7 +18,9 @@ package org.metastringfoundation.healthheatmap.logic.etl;
 
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
+import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
+import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetMetadata;
 import org.metastringfoundation.healthheatmap.beans.TransformerMeta;
 import org.metastringfoundation.healthheatmap.helpers.Jsonizer;
@@ -32,6 +34,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
+import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
+
 public class CSVDatasetPointer implements DatasetPointer {
     private final Path path;
     private final FileStore fileStore;
@@ -42,7 +47,16 @@ public class CSVDatasetPointer implements DatasetPointer {
         this.path = path;
         this.fileStore = fileStore;
         this.transformersManager = transformersManager;
-        this.tableAndDescriptionPair = new TableAndDescriptionPair(path);
+        this.tableAndDescriptionPair = calculateTableAndDescription();
+    }
+
+    private TableAndDescriptionPair calculateTableAndDescription() throws IOException, DatasetIntegrityError {
+        Table table = new CSVTable(this.path);
+        List<Path>  metadataFilesApplicable = List.of(
+                        guessRootMetadataPath(this.path),
+                        guessMetadataPath(this.path)
+                );
+        return new TableAndDescriptionPair(table, metadataFilesApplicable);
     }
 
     @Override

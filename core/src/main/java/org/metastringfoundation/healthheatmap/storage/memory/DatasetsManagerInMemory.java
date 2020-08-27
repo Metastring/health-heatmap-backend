@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.storage.memory;
 
+import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
 import org.metastringfoundation.healthheatmap.logic.DatasetsManager;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class DatasetsManagerInMemory implements DatasetsManager {
@@ -53,13 +55,25 @@ public class DatasetsManagerInMemory implements DatasetsManager {
         datasetPointerList = calculateDatasetPointerList();
     }
 
+    @Override
+    public Optional<Dataset> getDatasetByName(String filename) throws IOException, DatasetIntegrityError {
+        Optional<DatasetPointer> datasetPointer = datasetPointerList.stream()
+                .filter(pointer -> pointer.getName().equals(filename))
+                .findAny();
+        if (datasetPointer.isPresent()) {
+            return Optional.of(datasetPointer.get().getDataset());
+        } else {
+            return Optional.empty();
+        }
+    }
+
     private List<DatasetPointer> calculateDatasetPointerList() throws IOException, DatasetIntegrityError {
         List<DatasetPointer> result = new ArrayList<>();
         List<Path> csvPaths = fileStore.getFilesThatMatch(
                 fileStore.getDataFilesDirectory(),
                 p -> p.toString().endsWith(".csv")
         );
-        for (Path csv: csvPaths) {
+        for (Path csv : csvPaths) {
             result.add(getCSVDatasetPointer(csv));
         }
         return result;

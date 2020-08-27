@@ -37,4 +37,10 @@ public class PathManager {
         Path basedir = path.getParent();
         return basedir.resolve("metadata.json");
     }
+
+    public static Boolean isInsideOrSameAsPath(Path possibleChild, Path possibleParent) {
+        Path parent = possibleParent.normalize();
+        Path child = possibleChild.normalize();
+        return child.getNameCount() >= parent.getNameCount() && child.startsWith(parent);
+    }
 }

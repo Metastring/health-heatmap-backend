@@ -125,6 +125,11 @@ public class ApplicationDefault implements Application {
     @Override
     public List<VerificationResultField> verify(Table table, List<TableDescription> tableDescriptions) throws DatasetIntegrityError {
         Dataset dataset = TableToDatasetAdapter.of(table, tableDescriptions);
+        return verify(dataset);
+    }
+
+    @Override
+    public List<VerificationResultField> verify(Dataset dataset) {
         Map<String, Set<String>> fieldValues = new HashMap<>();
         for (DataPoint dataPoint : dataset.getData()) {
             dataPoint.forEach((key, value) -> fieldValues.computeIfAbsent(key, k -> new HashSet<>()).add(value));
@@ -136,8 +141,12 @@ public class ApplicationDefault implements Application {
 
     @Override
     public List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException {
-        TableAndDescriptionPair tableAndDescriptionPair = new TableAndDescriptionPair(fileStore.getAbsolutePath(Path.of(filename)));
-        return verify(tableAndDescriptionPair.getTable(), List.of(tableAndDescriptionPair.getTableDescription()));
+        Optional<Dataset> dataset = datasetsManager.getDatasetByName(filename);
+        if (dataset.isPresent()) {
+            return verify(dataset.get());
+        } else {
+            throw new IOException("No such file " + filename);
+        }
     }
 
     @Override

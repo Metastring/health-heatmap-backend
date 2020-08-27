@@ -16,12 +16,16 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface DatasetsManager {
     List<DatasetPointer> getAllDatasets();
     void refresh() throws IOException, DatasetIntegrityError;
+
+    Optional<Dataset> getDatasetByName(String filename) throws IOException, DatasetIntegrityError;
 }
