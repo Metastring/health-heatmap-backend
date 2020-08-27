@@ -24,6 +24,7 @@ import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
@@ -34,33 +35,33 @@ public class TableAndDescriptionPair {
     private final Table table;
     private final TableDescription tableDescription;
 
-    public TableAndDescriptionPair(Path path) throws IOException, DatasetIntegrityError {
-        this(path.toString());
-    }
-
-    public TableAndDescriptionPair(String tablePath) throws IOException, DatasetIntegrityError {
-        table = CSVTable.fromPath(tablePath);
+    public TableAndDescriptionPair(Path tablePath) throws IOException, DatasetIntegrityError {
+        table = new CSVTable(tablePath);
         LOG.debug("table is " + table.getTable().toString());
 
-        tableDescription = readIndividualTableDescription(tablePath);
-        addOptionalRootMetadataToTableDescription(tablePath);
+        List<Path> metadataFilesApplicable = List.of(
+                guessRootMetadataPath(tablePath),
+                guessMetadataPath(tablePath)
+        );
+
+        tableDescription = calculateTableDescription(metadataFilesApplicable);
+
+        if (tableDescription == null) {
+            throw new IOException("Couldn't read any table metadata");
+        }
         LOG.debug("Metadata is " + tableDescription);
     }
 
-    private TableDescription readIndividualTableDescription(String tablePath) throws IOException {
-        String metadataPath = guessMetadataPath(tablePath);
-        LOG.debug("Assuming metadata is at " + metadataPath);
-        return TableDescription.fromPath(metadataPath);
-    }
-
-    private void addOptionalRootMetadataToTableDescription(String tablePath) {
-        String rootMetadataPath = guessRootMetadataPath(tablePath);
-        try {
-            TableDescription rootMetadata = TableDescription.fromPath(rootMetadataPath);
-            tableDescription.getFieldDescriptionList().addAll(rootMetadata.getFieldDescriptionList());
-        } catch (IOException ex) {
-            LOG.debug("Ignoring optional rootMetadata's error");
+    private TableDescription calculateTableDescription(List<Path> metadataFilesApplicable) {
+        TableDescription tableDescription = null;
+        for (Path metadata: metadataFilesApplicable) {
+            try {
+                tableDescription = TableDescription.add(tableDescription, TableDescription.fromPath(metadata));
+            } catch (IOException e) {
+                LOG.debug("Error in description: " + metadata);
+            }
         }
+        return tableDescription;
     }
 
     public Table getTable() {

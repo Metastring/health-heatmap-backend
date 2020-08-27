@@ -25,24 +25,16 @@ import java.nio.file.Paths;
 public class PathManager {
     private static final Logger LOG = Logger.getLogger(PathManager.class);
 
-    public static String guessMetadataPath(Path path) {
+    public static Path guessMetadataPath(Path path) {
         Path basedir = path.getParent();
         LOG.debug("basedir is " + basedir);
         String fileName = path.getFileName().toString();
-        String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
-        return Paths.get(basedir.toString(), fileNameWithoutExtension + ".metadata.json").toString();
+        String fileNameWithoutExtension = FileManager.dropExtension(fileName);
+        return basedir.resolve(fileNameWithoutExtension + ".metadata.json");
     }
 
-    public static String guessMetadataPath(String path) {
-        return guessMetadataPath(Paths.get(path));
-    }
-
-    public static String guessRootMetadataPath(String path) {
-        return guessRootMetadataPath(Paths.get(path));
-    }
-
-    public static String guessRootMetadataPath(Path path) {
+    public static Path guessRootMetadataPath(Path path) {
         Path basedir = path.getParent();
-        return Paths.get(basedir.toString(), "metadata.json").toString();
+        return basedir.resolve("metadata.json");
     }
 }
