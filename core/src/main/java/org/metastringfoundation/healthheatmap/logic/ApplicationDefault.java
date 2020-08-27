@@ -159,9 +159,9 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
-    public List<String> getDataFiles(String path) throws IOException {
-        return fileStore.getDataFiles(Path.of(path)).stream()
-                .map(fileStore::getRelativeName)
+    public List<String> getDataFiles() {
+        return datasetsManager.getAllDatasets().stream()
+                .map(DatasetPointer::getName)
                 .collect(Collectors.toList());
     }
 

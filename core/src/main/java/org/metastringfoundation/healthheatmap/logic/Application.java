@@ -54,10 +54,7 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
 
     String getDataFilesDirectory();
 
-    List<String> getDataFiles(String path) throws IOException;
-    default List<String> getDataFiles() throws IOException {
-        return getDataFiles(getDataFilesDirectory());
-    }
+    List<String> getDataFiles() throws IOException;
 
     void refreshTransformers() throws IOException;
 }
