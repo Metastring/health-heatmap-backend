@@ -80,6 +80,6 @@ public class CSVDatasetPointer implements DatasetPointer {
 
     @Override
     public String getName() {
-        return fileStore.getRelativeName(path);
+        return fileStore.getRelativeName(path, fileStore.getDataFilesDirectory());
     }
 }

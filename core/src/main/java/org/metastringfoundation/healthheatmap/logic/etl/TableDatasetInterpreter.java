@@ -25,6 +25,7 @@ import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetWithTransformsApplied;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
@@ -61,10 +62,10 @@ public class TableDatasetInterpreter {
     }
 
     public static HealthDataset asHealthDataset(Dataset dataset, List<DataTransformer> transformers) {
-        return new HealthDatasetFromDataset(dataset, transformers);
+        return HealthDatasetWithTransformsApplied.from(new HealthDatasetFromDataset(dataset, transformers));
     }
 
-    public static HealthDatasetBatchRead getAsDatasets(List<DatasetPointer> datasetPointers) {
+    public static HealthDatasetBatchRead readHealthDatasetBatch(List<DatasetPointer> datasetPointers) {
         List<HealthDataset> result = new ArrayList<>();
         Map<String, Exception> errors = new HashMap<>();
         for (DatasetPointer datasetPointer: datasetPointers) {
@@ -79,7 +80,13 @@ public class TableDatasetInterpreter {
     }
 
     private static HealthDataset asHealthDataset(DatasetPointer datasetPointer) throws IOException, DatasetIntegrityError {
-        return asHealthDataset(datasetPointer.getDataset(), datasetPointer.getTransformers());
+        HealthDataset dataset = asHealthDataset(datasetPointer.getDataset(), datasetPointer.getTransformers());
+        return addSourceName(dataset, datasetPointer.getName());
+    }
+
+    private static HealthDataset addSourceName(HealthDataset dataset, String name) {
+        dataset.getData().forEach(d -> d.put("meta.datafile", name));
+        return dataset;
     }
 
     public static void print(List<Path> dataFiles) throws IOException, DatasetIntegrityError {
