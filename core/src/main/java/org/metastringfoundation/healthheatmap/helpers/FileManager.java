@@ -72,4 +72,10 @@ public class FileManager {
     public static String dropExtension(String nameWithExtension) {
         return FilenameUtils.removeExtension(nameWithExtension);
     }
+
+    public static List<Path> restrictToExistingFiles(List<Path> files) {
+        return files.stream()
+                .filter(Files::exists)
+                .collect(Collectors.toList());
+    }
 }

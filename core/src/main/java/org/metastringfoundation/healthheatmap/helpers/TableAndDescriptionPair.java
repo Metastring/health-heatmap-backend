@@ -44,10 +44,17 @@ public class TableAndDescriptionPair {
                 guessMetadataPath(tablePath)
         );
 
-        tableDescription = calculateTableDescription(metadataFilesApplicable);
+        List<Path> metadataThatExists = FileManager.restrictToExistingFiles(metadataFilesApplicable);
 
+        if (metadataThatExists.size() == 0) {
+            throw new IOException("There are no metadata files applicable for" + tablePath);
+        }
+        LOG.debug("Reading metadata files: ");
+        metadataFilesApplicable.forEach(LOG::debug);
+
+        tableDescription = calculateTableDescription(metadataThatExists);
         if (tableDescription == null) {
-            throw new IOException("Couldn't read any table metadata");
+            throw new IOException("Couldn't read any table metadata for " + tablePath);
         }
         LOG.debug("Metadata is " + tableDescription);
     }
@@ -58,7 +65,8 @@ public class TableAndDescriptionPair {
             try {
                 tableDescription = TableDescription.add(tableDescription, TableDescription.fromPath(metadata));
             } catch (IOException e) {
-                LOG.debug("Error in description: " + metadata);
+                LOG.error("Error in description: " + metadata);
+                e.printStackTrace();
             }
         }
         return tableDescription;
