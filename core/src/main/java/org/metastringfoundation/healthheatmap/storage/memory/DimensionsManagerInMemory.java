@@ -66,6 +66,32 @@ public class DimensionsManagerInMemory {
         return backingMap.get(dimension).keySet();
     }
     public Boolean idExists(String dimension, String id) {
-        return backingMap.get(dimension).containsKey(id);
+        return idExists(backingMap.get(dimension), id);
     }
+    private Boolean idExists(Map<String, Map<String, String>> dimensionMap, String id) {
+        return dimensionMap.containsKey(id);
+    }
+
+    public Boolean dimensionExists(String dimension) {
+        return backingMap.containsKey(dimension);
+    }
+
+    public void createDimension(String dimension) {
+        if (dimensionExists(dimension)) {
+            throw new IllegalArgumentException("Dimension " + dimension + " already exists");
+        } else {
+            backingMap.put(dimension, new HashMap<>());
+        }
+    }
+
+    public void addValuesToDimension(String dimension, Map<String, Map<String, String>> values) {
+        Map<String, Map<String, String>> thisDimension = backingMap.get(dimension);
+        values.keySet().forEach(id -> {
+            if (idExists(thisDimension, id)) {
+                throw new IllegalArgumentException("ID " + id + " already exists in dimension " + dimension);
+            }
+        });
+        thisDimension.putAll(values);
+    }
+
 }
