@@ -21,6 +21,7 @@ import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
+import org.metastringfoundation.healthheatmap.beans.HealthDatasetMetadata;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -63,13 +64,31 @@ public class TableAndDescriptionPair {
         TableDescription tableDescription = null;
         for (Path metadata: metadataFilesApplicable) {
             try {
-                tableDescription = TableDescription.add(tableDescription, TableDescription.fromPath(metadata));
+                tableDescription = TableDescription.add(tableDescription, TableDescription.fromPath(metadata), TableAndDescriptionPair::metadataAdder);
             } catch (IOException e) {
                 LOG.error("Error in description: " + metadata);
                 e.printStackTrace();
             }
         }
         return tableDescription;
+    }
+
+    private static Object metadataAdder(Object first, Object second) {
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
+        HealthDatasetMetadata firstMeta = Jsonizer.convert(first, HealthDatasetMetadata.class);
+        HealthDatasetMetadata secondMeta = Jsonizer.convert(second, HealthDatasetMetadata.class);
+        HealthDatasetMetadata sum = new HealthDatasetMetadata();
+        if (secondMeta.getTransformers() != null) {
+            sum.setTransformers(secondMeta.getTransformers());
+        } else {
+            sum.setTransformers(firstMeta.getTransformers());
+        }
+        return sum;
     }
 
     public Table getTable() {
