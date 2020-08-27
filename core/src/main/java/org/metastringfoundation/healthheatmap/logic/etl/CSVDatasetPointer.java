@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic.etl;
 
+import org.jboss.logging.Logger;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
@@ -35,9 +36,10 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessMetadataPath;
-import static org.metastringfoundation.healthheatmap.helpers.PathManager.guessRootMetadataPath;
 
 public class CSVDatasetPointer implements DatasetPointer {
+    private static final Logger LOG = Logger.getLogger(CSVDatasetPointer.class);
+
     private final Path path;
     private final FileStore fileStore;
     private final TransformersManager transformersManager;
@@ -52,10 +54,8 @@ public class CSVDatasetPointer implements DatasetPointer {
 
     private TableAndDescriptionPair calculateTableAndDescription() throws IOException, DatasetIntegrityError {
         Table table = new CSVTable(this.path);
-        List<Path>  metadataFilesApplicable = List.of(
-                        guessRootMetadataPath(this.path),
-                        guessMetadataPath(this.path)
-                );
+        List<Path> metadataFilesApplicable = fileStore.resolveInAllAncestors("metadata.json", this.path);
+        metadataFilesApplicable.add(guessMetadataPath(this.path));
         return new TableAndDescriptionPair(table, metadataFilesApplicable);
     }
 
@@ -71,7 +71,8 @@ public class CSVDatasetPointer implements DatasetPointer {
     public List<DataTransformer> getTransformers() {
         HealthDatasetMetadata metadata = Jsonizer.convert(tableAndDescriptionPair.getTableDescription().getMetadata(), HealthDatasetMetadata.class);
         if (metadata == null || metadata.getTransformers() == null) {
-            return transformersManager.getAll();
+            LOG.info("No transformers found in metadata");
+            return List.of();
         }
         List<TransformerMeta> transformerMetaList = metadata.getTransformers();
         return transformersManager.getThese(transformerMetaList);

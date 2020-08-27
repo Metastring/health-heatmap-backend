@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -132,14 +133,17 @@ public class FileStoreManager implements FileStore {
             throw new IllegalArgumentException(startFile + " is not inside " + dataDir);
         }
         List<Path> resolvedAncestors = new ArrayList<>();
+        Path currentFile = startFile;
         while (true) {
-            Path parent = startFile.getParent();
+            Path parent = currentFile.getParent();
             if (PathManager.isInsideOrSameAsPath(parent, dataDir)) {
                 resolvedAncestors.add(parent.resolve(filename));
+                currentFile = parent;
             } else {
                 break;
             }
         }
+        Collections.reverse(resolvedAncestors);
         return resolvedAncestors;
     }
 

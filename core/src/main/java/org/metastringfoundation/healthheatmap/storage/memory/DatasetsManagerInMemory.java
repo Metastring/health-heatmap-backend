@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.storage.memory;
 
+import org.jboss.logging.Logger;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
@@ -34,6 +35,7 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class DatasetsManagerInMemory implements DatasetsManager {
+    private static final Logger LOG = Logger.getLogger(DatasetsManagerInMemory.class);
     private final FileStore fileStore;
     private final TransformersManager transformersManager;
     private List<DatasetPointer> datasetPointerList;
@@ -74,6 +76,7 @@ public class DatasetsManagerInMemory implements DatasetsManager {
                 p -> p.toString().endsWith(".csv")
         );
         for (Path csv : csvPaths) {
+            LOG.debug("Reading " + csv);
             result.add(getCSVDatasetPointer(csv));
         }
         return result;

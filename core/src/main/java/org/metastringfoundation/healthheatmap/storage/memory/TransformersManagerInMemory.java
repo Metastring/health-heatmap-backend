@@ -51,13 +51,13 @@ public class TransformersManagerInMemory implements TransformersManager {
         result.put("sys/entity", new DataTransformerForEntityType());
         List<Path> files = fileStore.getFiles(fileStore.getTransformersDirectory());
         for (Path file : files) {
-            String name = fileStore.getRelativeName(file);
+            String name = fileStore.getRelativeName(file, fileStore.getTransformersDirectory());
             DataTransformer transformer = DataTransformerFromSpreadsheet.getDataTransformerCrashingOnError(
                     fileStore.getFileAsString(file)
             );
             result.put(name, transformer);
         }
-        result.put("zsys/date", new DataTransformerForDates());
+        result.put("sys/date", new DataTransformerForDates());
         return result;
     }
 
