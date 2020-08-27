@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 @ApplicationScoped
 public class DimensionsManagerInMemory {
@@ -45,8 +44,7 @@ public class DimensionsManagerInMemory {
 
     private Map<String, Map<String, Map<String, String>>> calculateDimensions() throws IOException {
         Map<String, Map<String, Map<String, String>>> allDimensions = new HashMap<>();
-        Predicate<Path> anyPath = p -> true;
-        List<Path> files = fileStore.getFilesThatMatch(fileStore.getDimensionsDirectory(), anyPath);
+        List<Path> files = fileStore.getFiles(fileStore.getDimensionsDirectory());
         for (Path file: files) {
             String nameWithExtension = fileStore.getRelativeName(file, fileStore.getDimensionsDirectory());
             String name = FileManager.dropExtension(nameWithExtension);

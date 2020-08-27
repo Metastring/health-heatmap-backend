@@ -17,7 +17,9 @@
 package org.metastringfoundation.healthheatmap.storage.memory;
 
 import org.metastringfoundation.healthheatmap.beans.TransformerMeta;
-import org.metastringfoundation.healthheatmap.logic.*;
+import org.metastringfoundation.healthheatmap.logic.DataTransformer;
+import org.metastringfoundation.healthheatmap.logic.FileStore;
+import org.metastringfoundation.healthheatmap.logic.TransformersManager;
 import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerForDates;
 import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerForEntityType;
 import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerFromSpreadsheet;
@@ -29,7 +31,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.comparingByKey;
@@ -48,8 +49,7 @@ public class TransformersManagerInMemory implements TransformersManager {
     private Map<String, DataTransformer> readTransformers() throws IOException {
         Map<String, DataTransformer> result = new HashMap<>();
         result.put("sys/entity", new DataTransformerForEntityType());
-        Predicate<Path> anyPath = p -> true;
-        List<Path> files = fileStore.getFilesThatMatch(fileStore.getTransformersDirectory(), anyPath);
+        List<Path> files = fileStore.getFiles(fileStore.getTransformersDirectory());
         for (Path file : files) {
             String name = fileStore.getRelativeName(file);
             DataTransformer transformer = DataTransformerFromSpreadsheet.getDataTransformerCrashingOnError(

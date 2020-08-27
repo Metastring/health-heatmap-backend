@@ -37,6 +37,7 @@ public interface FileStore {
     List<Path> getDataFiles(String path) throws IOException;
 
     List<Path> getFilesThatMatch(Path path, Predicate<Path> pathCondition) throws IOException;
+    List<Path> getFiles(Path path) throws IOException;
 
     String getFileAsString(Path file);
 }

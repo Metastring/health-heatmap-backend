@@ -113,6 +113,11 @@ public class FileStoreManager implements FileStore {
     }
 
     @Override
+    public List<Path> getFiles(Path path) throws IOException {
+        return FileManager.getAllFilesInDirectory(path);
+    }
+
+    @Override
     public String getFileAsString(Path file) {
         return FileManager.readFileAsString(file);
     }

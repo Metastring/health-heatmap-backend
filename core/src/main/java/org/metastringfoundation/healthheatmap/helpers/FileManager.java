@@ -35,19 +35,6 @@ import java.util.stream.Collectors;
 public class FileManager {
     private static final Logger LOG = Logger.getLogger(FileManager.class);
 
-    public static Reader getFileReader(Path nioPath) throws Exception {
-        String path = nioPath.toString();
-        return new FileReader(path);
-    }
-
-    public static Path getPathFromString(String path) {
-        return Paths.get(path);
-    }
-
-    public static String getFileContentsAsString(String path) throws IOException {
-        return IOUtils.toString(new FileInputStream(path), StandardCharsets.UTF_8);
-    }
-
     public static List<Path> getDataFilesInDirectory(Path startingDir) throws IOException {
         return Files.walk(startingDir)
                 .peek(file -> LOG.debug("Evaluating: " + file.toString()))
@@ -55,14 +42,6 @@ public class FileManager {
                 .peek(file -> LOG.debug("Regular file: " + file.toString()))
                 .filter(file -> file.toString().endsWith(".csv"))
                 .peek(file -> LOG.debug("Selected: " + file.toString()))
-                .map(Path::toAbsolutePath)
-                .sorted(Path::compareTo)
-                .collect(Collectors.toList());
-    }
-
-    public static List<Path> getFilesInDirectoryInOrder(Path startingDir) throws IOException {
-        return Files.walk(startingDir)
-                .filter(Files::isRegularFile)
                 .map(Path::toAbsolutePath)
                 .sorted(Path::compareTo)
                 .collect(Collectors.toList());
@@ -83,6 +62,11 @@ public class FileManager {
                 .map(Path::toAbsolutePath)
                 .sorted(Path::compareTo)
                 .collect(Collectors.toList());
+    }
+
+    public static List<Path> getAllFilesInDirectory(Path startingDir) throws IOException {
+        Predicate<Path> anyPath = p -> true;
+        return getFilesInDirectoryThatMatch(startingDir, anyPath);
     }
 
     public static String dropExtension(String nameWithExtension) {

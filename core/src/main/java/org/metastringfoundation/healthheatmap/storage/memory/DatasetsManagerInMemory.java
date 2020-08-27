@@ -17,7 +17,10 @@
 package org.metastringfoundation.healthheatmap.storage.memory;
 
 import org.metastringfoundation.data.DatasetIntegrityError;
-import org.metastringfoundation.healthheatmap.logic.*;
+import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
+import org.metastringfoundation.healthheatmap.logic.DatasetsManager;
+import org.metastringfoundation.healthheatmap.logic.FileStore;
+import org.metastringfoundation.healthheatmap.logic.TransformersManager;
 import org.metastringfoundation.healthheatmap.logic.etl.CSVDatasetPointer;
 
 import javax.enterprise.context.ApplicationScoped;
