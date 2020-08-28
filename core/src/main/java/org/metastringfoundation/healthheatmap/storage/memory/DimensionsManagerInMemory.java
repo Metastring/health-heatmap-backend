@@ -17,6 +17,8 @@
 package org.metastringfoundation.healthheatmap.storage.memory;
 
 import org.metastringfoundation.healthheatmap.helpers.FileManager;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetSimple;
 import org.metastringfoundation.healthheatmap.helpers.ReadCSVAsMap;
 import org.metastringfoundation.healthheatmap.logic.FileStore;
 
@@ -24,10 +26,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class DimensionsManagerInMemory {
@@ -45,7 +45,7 @@ public class DimensionsManagerInMemory {
     private Map<String, Map<String, Map<String, String>>> calculateDimensions() throws IOException {
         Map<String, Map<String, Map<String, String>>> allDimensions = new HashMap<>();
         List<Path> files = fileStore.getFiles(fileStore.getDimensionsDirectory());
-        for (Path file: files) {
+        for (Path file : files) {
             String nameWithExtension = fileStore.getRelativeName(file, fileStore.getDimensionsDirectory());
             String name = FileManager.dropExtension(nameWithExtension);
             Map<String, Map<String, String>> currentDimension = new HashMap<>();
@@ -65,9 +65,11 @@ public class DimensionsManagerInMemory {
     public Set<String> getValidIdsOf(String dimension) {
         return backingMap.get(dimension).keySet();
     }
+
     public Boolean idExists(String dimension, String id) {
         return idExists(backingMap.get(dimension), id);
     }
+
     private Boolean idExists(Map<String, Map<String, String>> dimensionMap, String id) {
         return dimensionMap.containsKey(id);
     }
@@ -94,4 +96,41 @@ public class DimensionsManagerInMemory {
         thisDimension.putAll(values);
     }
 
+    public List<HealthDataset> augmentDatasetsWithDimensionInfo(List<HealthDataset> datasets) {
+        return datasets.stream()
+                .map(this::augmentDatasetWithDimensionInfo)
+                .collect(Collectors.toList());
+    }
+
+    private HealthDataset augmentDatasetWithDimensionInfo(HealthDataset dataset) {
+        return new HealthDatasetSimple(
+                dataset.getData().stream()
+                        .map(this::augmentDataPointWithDimensionInfo)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private Map<String, String> augmentDataPointWithDimensionInfo(Map<String, String> datapoint) {
+        Map<String, String> augmentedPoint = datapoint.entrySet().stream()
+                .filter(entry -> entry.getKey().contains("."))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        datapoint.forEach((dimension, id) -> {
+            if (!dimension.contains(".")) {
+                getDimensionRecordIfExists(dimension, id).ifPresentOrElse(
+                        record ->
+                                record.forEach((prop, value) -> augmentedPoint.put(dimension + "." + prop, value)),
+                        () -> augmentedPoint.put(dimension, id)
+                );
+            }
+        });
+        return augmentedPoint;
+    }
+
+    private Optional<Map<String, String>> getDimensionRecordIfExists(String dimension, String id) {
+        if (dimensionExists(dimension) && idExists(dimension, id)) {
+            return Optional.of(backingMap.get(dimension).get(id));
+        } else {
+            return Optional.empty();
+        }
+    }
 }

@@ -16,9 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface HealthDataset {
-    Collection<? extends Map<String, String>> getData();
+    List<? extends Map<String, String>> getData();
 }

@@ -25,7 +25,7 @@ import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
-import org.metastringfoundation.healthheatmap.helpers.HealthDatasetWithTransformsApplied;
+import org.metastringfoundation.healthheatmap.helpers.HealthDatasetSimple;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
@@ -62,7 +62,7 @@ public class TableDatasetInterpreter {
     }
 
     public static HealthDataset asHealthDataset(Dataset dataset, List<DataTransformer> transformers) {
-        return HealthDatasetWithTransformsApplied.from(new HealthDatasetFromDataset(dataset, transformers));
+        return HealthDatasetSimple.from(new HealthDatasetFromDataset(dataset, transformers));
     }
 
     public static HealthDatasetBatchRead readHealthDatasetBatch(List<DatasetPointer> datasetPointers) {

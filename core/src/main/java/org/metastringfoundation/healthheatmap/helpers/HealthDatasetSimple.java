@@ -16,26 +16,26 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
-public class HealthDatasetWithTransformsApplied implements HealthDataset {
-    public static HealthDatasetWithTransformsApplied from(HealthDatasetFromDataset preTransformDataset) {
-        return new HealthDatasetWithTransformsApplied(preTransformDataset.getData());
-    }
+public class HealthDatasetSimple implements HealthDataset {
+    private List<? extends Map<String, String>> dataPoints;
 
-    public HealthDatasetWithTransformsApplied(Collection<? extends Map<String, String>> dataPoints) {
+    public HealthDatasetSimple(List<? extends Map<String, String>> dataPoints) {
         this.dataPoints = dataPoints;
     }
 
-    private Collection<? extends Map<String, String>> dataPoints;
+    public static HealthDatasetSimple from(HealthDatasetFromDataset preTransformDataset) {
+        return new HealthDatasetSimple(preTransformDataset.getData());
+    }
 
     @Override
-    public Collection<? extends Map<String, String>> getData() {
+    public List<? extends Map<String, String>> getData() {
         return dataPoints;
     }
 
-    public void setData(Collection<? extends Map<String, String>> dataPoints) {
+    public void setData(List<? extends Map<String, String>> dataPoints) {
         this.dataPoints = dataPoints;
     }
 }

@@ -21,7 +21,6 @@ import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +41,7 @@ public class HealthDatasetFromDataset implements HealthDataset {
     }
 
     @Override
-    public Collection<? extends Map<String, String>> getData() {
+    public List<? extends Map<String, String>> getData() {
         if (dataTransformers == null || dataTransformers.size() == 0) {
             return dataset.getData();
         } else {
@@ -50,7 +49,7 @@ public class HealthDatasetFromDataset implements HealthDataset {
         }
     }
 
-    private Collection<? extends Map<String, String>> dataAfterTransforms() {
+    private List<? extends Map<String, String>> dataAfterTransforms() {
         return dataset.getData().stream()
                 .map(this::applyTransform)
                 .flatMap(List::stream)

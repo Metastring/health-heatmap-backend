@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.storage.elastic;
 
+import com.google.common.collect.Lists;
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -32,13 +33,13 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.search.SearchHit;
 import org.jboss.logging.Logger;
 import org.metastringfoundation.datareader.helpers.Jsonizer;
+import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
+import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.logic.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.logic.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
-import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -84,11 +85,11 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
 
     @Override
     public void save(HealthDataset dataset) throws IOException {
-        BulkRequest request = new BulkRequest();
-        for (Map<String, String> dataPoint : dataset.getData()) {
-            request.add(new IndexRequest(dataIndex).source(dataPoint));
+        for (List<? extends Map<String, String>> dataPointsBatch : Lists.partition(dataset.getData(), 5000)) {
+            BulkRequest request = new BulkRequest();
+            dataPointsBatch.forEach(dataPoint -> request.add(new IndexRequest(dataIndex).source(dataPoint)));
+            elastic.bulk(request, RequestOptions.DEFAULT);
         }
-        elastic.bulk(request, RequestOptions.DEFAULT);
     }
 
     @Override

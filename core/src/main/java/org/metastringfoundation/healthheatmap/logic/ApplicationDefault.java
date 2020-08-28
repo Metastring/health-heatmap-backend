@@ -82,8 +82,11 @@ public class ApplicationDefault implements Application {
 
     @Override
     public void save(List<HealthDataset> healthDatasets) throws IOException {
+        int count = 0;
         for (HealthDataset healthDataset : healthDatasets) {
             save(healthDataset);
+            count += 1;
+            System.out.print("\r" + count);
         }
     }
 
@@ -196,8 +199,10 @@ public class ApplicationDefault implements Application {
     public void makeAvailableInAPI(String path) throws IOException {
         LOG.info("Uploading " + path + " to the dataset");
         HealthDatasetBatchRead healthDatasetsRead = TableDatasetInterpreter.readHealthDatasetBatch(datasetsManager.getAllDatasets());
-        LOG.info("Saving " + healthDatasetsRead.getDatasets().size() + " datasets. This might take a while");
-        save(healthDatasetsRead.getDatasets());
+        List<HealthDataset> datasets = healthDatasetsRead.getDatasets();
+        datasets = dimensionsManager.augmentDatasetsWithDimensionInfo(datasets);
+        LOG.info("Saving " + datasets.size() + " datasets. This might take a while");
+        save(datasets);
         LOG.info("Here are the datasets with errors");
         healthDatasetsRead.getErrors().forEach((filePath, error) -> LOG.error(filePath + " suffered an error: " + error.getMessage()));
         TableDatasetInterpreter.printTransformersReport(transformersManager.getAll());
