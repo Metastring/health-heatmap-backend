@@ -21,10 +21,10 @@ import org.elasticsearch.client.RequestOptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.datareader.dataset.map.MapDataset;
+import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.helpers.HealthDatasetFromDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -46,7 +46,8 @@ class ElasticIT {
         ELASTICSEARCH_CONTAINER = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:7.7.0");
         ELASTICSEARCH_CONTAINER.start();
     }
-    private static final ElasticManager elasticManager = new ElasticManager(ELASTICSEARCH_CONTAINER.getHost(), ELASTICSEARCH_CONTAINER.getFirstMappedPort());
+
+    private static final ElasticManager elasticManager = new ElasticManager(ELASTICSEARCH_CONTAINER.getHost(), ELASTICSEARCH_CONTAINER.getFirstMappedPort(), "data");
 
     private void refreshIndex() throws IOException {
         elasticManager.getElastic().indices().refresh(new RefreshRequest(elasticManager.getDataIndexName()), RequestOptions.DEFAULT);

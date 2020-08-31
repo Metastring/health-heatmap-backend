@@ -52,7 +52,7 @@ public class CommandUpload implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException, DatasetIntegrityError {
-        if (path == null || path.isEmpty() || name == null || name.isEmpty()) {
+        if (path == null || path.isEmpty() || name == null) {
             System.out.println("There can be no upload without passing in -p and -n");
             return 1;
         }

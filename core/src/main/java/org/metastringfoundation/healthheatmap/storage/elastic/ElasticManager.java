@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.storage.elastic;
 
 import com.google.common.collect.Lists;
 import org.apache.http.HttpHost;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -52,18 +53,20 @@ import static org.metastringfoundation.healthheatmap.storage.elastic.ElasticQuer
 public class ElasticManager implements DatasetStore {
     private static final Logger LOG = Logger.getLogger(ElasticManager.class);
     private final RestHighLevelClient elastic;
-    private final String dataIndex = "data";
+    private final String dataIndex;
 
-    public ElasticManager(String hostname, int port) {
+    public ElasticManager(String hostname, int port, String dataIndex) {
         LOG.debug("Creating new elasticmanager instance");
         elastic = new RestHighLevelClient(RestClient.builder(
                 new HttpHost(hostname, port, "http")
         ));
+        this.dataIndex = dataIndex;
     }
 
     @Inject
-    public ElasticManager(RestHighLevelClient elastic) {
+    public ElasticManager(RestHighLevelClient elastic, @ConfigProperty(name = "hhm.elastic.data.index", defaultValue = "data") String dataIndex) {
         this.elastic = elastic;
+        this.dataIndex = dataIndex;
     }
 
     public void shutdown() throws IOException {

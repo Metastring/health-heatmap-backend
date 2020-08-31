@@ -34,7 +34,7 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 ## Add data
 
 * Put data somewhere, say /home/metastring/healthheatmap-data
-* Run `java -jar cli/target/health-heatmap-cli-runner.jar upload --path /home/metastring/healthheatmap-data --name data`
+* Run `java -jar cli/target/health-heatmap-cli-runner.jar upload --path /home/metastring/healthheatmap-data`
 
 ## Run server
 
