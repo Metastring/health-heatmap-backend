@@ -16,6 +16,7 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
+import org.metastringfoundation.healthheatmap.beans.Filter;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
@@ -37,4 +38,6 @@ public interface DatasetStore {
     void factoryReset() throws IOException;
 
     boolean getHealth() throws IOException;
+
+    Map<String, List<String>> getDimensionsPossibleAt(List<String> dimensions, Filter filter) throws IOException;
 }

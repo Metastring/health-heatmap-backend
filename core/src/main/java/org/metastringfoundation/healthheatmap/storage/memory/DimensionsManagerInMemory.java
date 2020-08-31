@@ -223,4 +223,9 @@ public class DimensionsManagerInMemory implements DimensionsManager {
         });
         return result;
     }
+
+    @Override
+    public List<String> getKnownDimensions() {
+        return new ArrayList<>(backingMap.keySet());
+    }
 }

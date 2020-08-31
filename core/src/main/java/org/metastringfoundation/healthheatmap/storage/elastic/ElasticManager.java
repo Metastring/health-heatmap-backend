@@ -32,6 +32,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.search.SearchHit;
 import org.jboss.logging.Logger;
+import org.metastringfoundation.healthheatmap.beans.Filter;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.logic.DatasetStore;
@@ -42,6 +43,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -161,5 +163,25 @@ public class ElasticManager implements DatasetStore {
     @Override
     public boolean getHealth() throws IOException {
         return ElasticHealthCheck.indexes(elastic, dataIndex);
+    }
+
+    @Override
+    public Map<String, List<String>> getDimensionsPossibleAt(List<String> dimensions, Filter filter) {
+        return dimensions.stream()
+                .map(d -> getDimensionsPossibleAt(d, filter))
+                .flatMap(Collection::stream)
+                .flatMap(e -> e.entrySet().stream())
+                .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.mapping(e -> (String) e.getValue(), Collectors.toList())));
+    }
+
+    private List<Map<String, Object>> getDimensionsPossibleAt(String dimension, Filter filter) {
+        FilterAndSelectFields filterAndSelectFields = new FilterAndSelectFields();
+        filterAndSelectFields.setFilter(filter);
+        filterAndSelectFields.setFields(List.of(dimension + ".id"));
+        try {
+            return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, filterAndSelectFields);
+        } catch (IOException e) {
+            return List.of();
+        }
     }
 }

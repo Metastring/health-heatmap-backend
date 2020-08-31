@@ -16,14 +16,13 @@
 
 package org.metastringfoundation.healthheatmap.web.query;
 
+import org.metastringfoundation.healthheatmap.beans.Filter;
 import org.metastringfoundation.healthheatmap.logic.Application;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -40,5 +39,15 @@ public class FiltersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, List<String>> getFiltersForIndicator(@QueryParam("indicator") String indicator) {
         return app.getFieldsAssociatedWithIndicator(indicator);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, List<String>> getDimensionFiltersPossibleAt(Filter filter) throws IOException {
+        if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) {
+            throw new WebApplicationException("Must specify filter at which dimensions should be given out", 400);
+        }
+        return app.getFieldsPossibleAt(filter);
     }
 }

@@ -217,10 +217,22 @@ public class ApplicationDefault implements Application {
         transformersManager.refresh();
     }
 
-    @Override
     public Map<String, List<String>> getFieldsAssociatedWithIndicator(String indicatorId) {
         return dimensionsManager.fieldsAssociatedWithIndicator(indicatorId);
     }
+
+    @Override
+    public Map<String, List<String>> getFieldsPossibleAt(Filter filter) throws IOException {
+        List<String> knownDimensions = dimensionsManager.getKnownDimensions();
+        return getDimensionsPossibleAt(knownDimensions, filter);
+    }
+
+
+    @Override
+    public Map<String, List<String>> getDimensionsPossibleAt(List<String> knownDimensions, Filter filter) throws IOException {
+        return datasetStore.getDimensionsPossibleAt(knownDimensions, filter);
+    }
+
 
     @Override
     public HealthDatasetBatchRead getTheseDatasets(List<String> names) {

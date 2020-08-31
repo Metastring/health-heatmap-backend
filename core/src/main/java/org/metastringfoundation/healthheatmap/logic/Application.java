@@ -21,6 +21,7 @@ import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
+import org.metastringfoundation.healthheatmap.beans.Filter;
 import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
 import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
@@ -72,6 +73,8 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     Map<String, List<String>> getFieldsAssociatedWithIndicator(String indicatorId);
 
     void reloadMemoryStores() throws IOException;
+
+    Map<String, List<String>> getFieldsPossibleAt(Filter filter) throws IOException;
 
     HealthDatasetBatchRead getTheseDatasets(List<String> names);
 

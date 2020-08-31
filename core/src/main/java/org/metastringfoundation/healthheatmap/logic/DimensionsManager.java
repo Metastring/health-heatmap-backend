@@ -50,4 +50,6 @@ public interface DimensionsManager {
     List<String> getAllIndicatorsWithAssociations();
 
     List<ValuePointAssociation> getDimensionAssociationsOf(List<? extends Map<String, String>> data);
+
+    List<String> getKnownDimensions();
 }
