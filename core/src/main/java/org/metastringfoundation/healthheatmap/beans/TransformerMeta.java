@@ -17,6 +17,12 @@
 package org.metastringfoundation.healthheatmap.beans;
 
 public class TransformerMeta {
+    public static TransformerMeta of(String name) {
+        TransformerMeta meta = new TransformerMeta();
+        meta.setName(name);
+        return meta;
+    }
+
     private String name;
 
     public String getName() {

@@ -16,13 +16,26 @@
 
 package org.metastringfoundation.healthheatmap.beanconverters;
 
-import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.beans.DataResponse;
+import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+
+import java.util.List;
+import java.util.Map;
 
 public class DataQueryResultToDataResponse {
     public static DataResponse convert(DataQueryResult queryResult) {
         DataResponse dataResponse = new DataResponse();
-        dataResponse.setData(queryResult.getResult());
+        List<Map<String, String>> result = queryResult.getResult();
+        filter(result);
+        dataResponse.setData(result);
         return dataResponse;
+    }
+
+    private static void filter(List<Map<String, String>> result) {
+        result.forEach(m -> m.entrySet().removeIf(e -> unnecessary(e.getKey())));
+    }
+
+    private static boolean unnecessary(String k) {
+        return k.startsWith("meta.original") || k.startsWith("meta.transformed");
     }
 }

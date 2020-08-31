@@ -16,11 +16,13 @@
 
 package org.metastringfoundation.healthheatmap.web.query;
 
+import org.metastringfoundation.healthheatmap.beanconverters.FilterToDataQuery;
+import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
+import org.metastringfoundation.healthheatmap.helpers.ListAndMapUtils;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.logic.etl.KeyValuePairsToCSV;
-import org.metastringfoundation.healthheatmap.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
+import org.metastringfoundation.healthheatmap.web.utils.CSVDownload;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -30,6 +32,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Path("download")
 public class DownloadResource {
@@ -48,10 +52,28 @@ public class DownloadResource {
     ) throws IOException {
         DataQueryResult queryResult = app.query(FilterToDataQuery.convert(downloadRequest.getFilter()));
         app.logDownload(downloadRequest);
-        String resultCSV = KeyValuePairsToCSV.convertToCSVWithFirstElementKeysAsHeaders(queryResult.getResult());
-        return Response
-                .ok(resultCSV)
-                .header("Content-Disposition", "attachment; filename=\"download.csv\"")
-                .build();
+        List<Map<String, String>> resultsToSend = filterFieldsIfRequired(downloadRequest, queryResult);
+        return CSVDownload.getDownloadCSVResponse(resultsToSend);
+    }
+
+    @POST
+    @Path("display")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces("text/csv")
+    public String displayDownloadData(
+            DownloadRequest downloadRequest
+    ) throws IOException {
+        DataQueryResult queryResult = app.query(FilterToDataQuery.convert(downloadRequest.getFilter()));
+        app.logDownload(downloadRequest);
+        List<Map<String, String>> resultsToSend = filterFieldsIfRequired(downloadRequest, queryResult);
+        return KeyValuePairsToCSV.convertToCSVPreservingAllColumns(resultsToSend);
+    }
+
+    private List<Map<String, String>> filterFieldsIfRequired(DownloadRequest downloadRequest, DataQueryResult queryResult) {
+        if (downloadRequest.getFilter() != null) {
+            return ListAndMapUtils.filterKeys(queryResult.getResult(), downloadRequest.getFields());
+        } else {
+            return queryResult.getResult();
+        }
     }
 }

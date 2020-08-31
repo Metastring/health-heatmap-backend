@@ -22,7 +22,6 @@ import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DataTransformerForDates implements DataTransformer {
@@ -93,7 +92,17 @@ public class DataTransformerForDates implements DataTransformer {
     }
 
     @Override
-    public Set<Map<String, String>> getUnmatchedKeysFound() {
-        return Set.of();
+    public List<Map<String, String>> getUnmatchedKeysFound() {
+        return List.of();
+    }
+
+    @Override
+    public Map<String, String> getKeyApplicable(DataPoint data) {
+        return Map.of("duration.start", data.get("duration.start"), "duration.end", data.get("duration.end"));
+    }
+
+    @Override
+    public Map<Map<String, String>, List<Map<String, String>>> getRules() {
+        return Map.of();
     }
 }

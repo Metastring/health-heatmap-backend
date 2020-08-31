@@ -66,12 +66,12 @@ public class TableDatasetInterpreter {
     }
 
     public static HealthDatasetBatchRead readHealthDatasetBatch(List<DatasetPointer> datasetPointers) {
-        List<HealthDataset> result = new ArrayList<>();
+        Map<String, HealthDataset> result = new LinkedHashMap<>();
         Map<String, Exception> errors = new HashMap<>();
         for (DatasetPointer datasetPointer: datasetPointers) {
             LOG.info("Interpreting file: " + datasetPointer.getName());
             try {
-                result.add(asHealthDataset(datasetPointer));
+                result.put(datasetPointer.getName(), asHealthDataset(datasetPointer));
             } catch (DatasetIntegrityError | IOException exception) {
                 errors.put(datasetPointer.getName(), exception);
             }
@@ -154,13 +154,12 @@ public class TableDatasetInterpreter {
     }
 
     private static void printTransformerReport(DataTransformer transformer) {
-        Set<Map<String, String>> keyFailure = transformer.getUnmatchedKeysFound();
+        List<Map<String, String>> keyFailure = transformer.getUnmatchedKeysFound();
         String csv = tryConvert(keyFailure);
         LOG.info(csv);
     }
 
-    private static String tryConvert(Set<Map<String, String>> keyFailure) {
-        List<Map<String, String>> keyFailureRecords = new ArrayList<>(keyFailure);
+    private static String tryConvert(List<Map<String, String>> keyFailureRecords) {
         if (keyFailureRecords.size() < 1) {
             return "NO KEY FAILURES";
         }

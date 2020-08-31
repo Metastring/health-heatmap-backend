@@ -17,13 +17,17 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.metastringfoundation.data.DataPoint;
+import org.metastringfoundation.healthheatmap.helpers.UnknownValueException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface DataTransformer {
-    List<DataPoint> transform(DataPoint data);
+    List<DataPoint> transform(DataPoint data) throws UnknownValueException;
 
-    Set<Map<String, String>> getUnmatchedKeysFound();
+    List<Map<String, String>> getUnmatchedKeysFound();
+
+    Map<String, String> getKeyApplicable(DataPoint data);
+
+    Map<Map<String, String>, List<Map<String, String>>> getRules();
 }

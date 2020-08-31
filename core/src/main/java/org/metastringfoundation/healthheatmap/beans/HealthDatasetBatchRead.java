@@ -18,19 +18,18 @@ package org.metastringfoundation.healthheatmap.beans;
 
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 
-import java.util.List;
 import java.util.Map;
 
 public class HealthDatasetBatchRead {
-    private final List<HealthDataset> datasets;
+    private final Map<String, HealthDataset> datasets;
     private final Map<String, Exception> errors;
 
-    public HealthDatasetBatchRead(List<HealthDataset> datasets, Map<String, Exception> errors) {
+    public HealthDatasetBatchRead(Map<String, HealthDataset> datasets, Map<String, Exception> errors) {
         this.datasets = datasets;
         this.errors = errors;
     }
 
-    public List<HealthDataset> getDatasets() {
+    public Map<String, HealthDataset> getDatasets() {
         return datasets;
     }
 

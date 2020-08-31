@@ -22,6 +22,7 @@ import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.csv.CSVTable;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.web.preparation.beans.VerificationResult;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

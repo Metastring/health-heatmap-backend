@@ -23,17 +23,13 @@ import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.datareader.dataset.table.Table;
 import org.metastringfoundation.datareader.dataset.table.TableDescription;
 import org.metastringfoundation.datareader.dataset.table.TableToDatasetAdapter;
-import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
-import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
-import org.metastringfoundation.healthheatmap.beans.HealthDatasetBatchRead;
-import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
+import org.metastringfoundation.healthheatmap.beans.*;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.helpers.TableAndDescriptionPair;
 import org.metastringfoundation.healthheatmap.logic.etl.TableDatasetInterpreter;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticStore;
-import org.metastringfoundation.healthheatmap.storage.memory.DimensionsManagerInMemory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -54,23 +50,26 @@ public class ApplicationDefault implements Application {
     private final DatasetStore datasetStore;
     private final ApplicationMetadataStore metadataStore;
     private final FileStore fileStore;
-    private final DatasetsManager datasetsManager;
+    private final DatafilesManager datafilesManager;
+    private final HealthDatasetsManager healthDatasetsManager;
     private final TransformersManager transformersManager;
-    private final DimensionsManagerInMemory dimensionsManager;
+    private final DimensionsManager dimensionsManager;
 
     @Inject
     public ApplicationDefault(
             @ElasticStore DatasetStore datasetStore,
             @ElasticStore ApplicationMetadataStore metadataStore,
             FileStore fileStore,
-            DatasetsManager datasetsManager,
+            DatafilesManager datafilesManager,
+            HealthDatasetsManager healthDatasetsManager,
             TransformersManager transformersManager,
-            DimensionsManagerInMemory dimensionsManager
+            DimensionsManager dimensionsManager
     ) {
         this.datasetStore = datasetStore;
         this.metadataStore = metadataStore;
         this.fileStore = fileStore;
-        this.datasetsManager = datasetsManager;
+        this.datafilesManager = datafilesManager;
+        this.healthDatasetsManager = healthDatasetsManager;
         this.transformersManager = transformersManager;
         this.dimensionsManager = dimensionsManager;
     }
@@ -80,13 +79,13 @@ public class ApplicationDefault implements Application {
         datasetStore.save(dataset);
     }
 
-    @Override
-    public void save(List<HealthDataset> healthDatasets) throws IOException {
+
+    private void save(Map<String, HealthDataset> healthDatasets) throws IOException {
         int count = 0;
-        for (HealthDataset healthDataset : healthDatasets) {
-            save(healthDataset);
+        for (Map.Entry<String, HealthDataset> entry : healthDatasets.entrySet()) {
             count += 1;
-            System.out.print("\r" + count);
+            System.out.print("\rSaving " + count + "/" + healthDatasets.entrySet().size() + ": " + entry.getKey());
+            save(entry.getValue());
         }
     }
 
@@ -103,6 +102,7 @@ public class ApplicationDefault implements Application {
     @Override
     public void factoryReset() throws IOException {
         datasetStore.factoryReset();
+        metadataStore.factoryReset();
     }
 
     @Override
@@ -121,8 +121,18 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public void markDatafileAsSaved(String datafile) throws IOException {
+        metadataStore.markDatafileAsSaved(datafile);
+    }
+
+    @Override
     public boolean getHealth() throws IOException {
         return datasetStore.getHealth();
+    }
+
+    @Override
+    public List<String> getSavedDataFiles() throws IOException {
+        return metadataStore.getSavedDataFiles();
     }
 
     @Override
@@ -143,12 +153,36 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public List<VerificationResultField> verify(HealthDataset dataset) {
+        Map<String, Set<String>> fieldValues = new LinkedHashMap<>();
+        for (Map<String, String> dataPoint : dataset.getData()) {
+            dataPoint.forEach((key, value) -> fieldValues.computeIfAbsent(key, k -> new HashSet<>()).add(value));
+        }
+        return fieldValues.entrySet().stream()
+                .map(entry -> new VerificationResultField(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(VerificationResultField::getName)).collect(Collectors.toList());
+    }
+
+    @Override
     public List<VerificationResultField> verify(String filename) throws DatasetIntegrityError, IOException {
-        Optional<Dataset> dataset = datasetsManager.getDatasetByName(filename);
+        Optional<Dataset> dataset = datafilesManager.getDatasetByName(filename);
         if (dataset.isPresent()) {
             return verify(dataset.get());
         } else {
             throw new IOException("No such file " + filename);
+        }
+    }
+
+    @Override
+    public List<VerificationResultField> verifyAugmented(List<String> filenames) throws IOException {
+        HealthDatasetBatchRead datasetBatchRead = getTheseDatasets(filenames);
+        // TODO: Multiple datasets should work
+        if (datasetBatchRead.getDatasets().size() > 0) {
+            HealthDataset dataset = datasetBatchRead.getDatasets().get(filenames.get(0));
+            dataset = dimensionsManager.augmentDatasetsWithDimensionInfo(List.of(dataset)).get(0);
+            return verify(dataset);
+        } else {
+            throw new IOException("Couldn't read such file  " + filenames.get(0));
         }
     }
 
@@ -172,7 +206,7 @@ public class ApplicationDefault implements Application {
 
     @Override
     public List<String> getDataFiles() {
-        return datasetsManager.getAllDatasets().stream()
+        return datafilesManager.getAllDatasets().stream()
                 .map(DatasetPointer::getName)
                 .collect(Collectors.toList());
     }
@@ -184,9 +218,46 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public Map<String, List<String>> getFieldsAssociatedWithIndicator(String indicatorId) {
+        return dimensionsManager.fieldsAssociatedWithIndicator(indicatorId);
+    }
+
+    @Override
+    public HealthDatasetBatchRead getTheseDatasets(List<String> names) {
+        List<DatasetPointer> datasetPointers = datafilesManager.getTheseDatasets(names);
+        return TableDatasetInterpreter.readHealthDatasetBatch(datasetPointers);
+    }
+
+
+    @Override
+    public List<String> getAllIndicatorsWithAssociations() {
+        return dimensionsManager.getAllIndicatorsWithAssociations();
+    }
+
+    @Override
+    public Map<Map<String, String>, List<Map<String, String>>> getTransformerRules(String transformerName) {
+        return transformersManager.getThese(List.of(TransformerMeta.of(transformerName))).get(0).getRules();
+    }
+
+    @Override
+    public List<Map<String, String>> getTransformerFailures(String transformerName) {
+        return transformersManager.getThese(List.of(TransformerMeta.of(transformerName))).get(0).getUnmatchedKeysFound();
+    }
+
+    @Override
+    public List<String> getListOfTransformers() {
+        return transformersManager.getAllNames();
+    }
+
+    @Override
+    public Map<DataPoint, Map<String, String>> getErrorsOfDatafile(String filename) {
+        return healthDatasetsManager.getDatasetsUnderNameWithAugmentation(filename).get(filename).getDataPointsWithError();
+    }
+
+    @Override
     public void refreshDatasets() throws IOException, DatasetIntegrityError {
         LOG.info("Refreshing datasets");
-        datasetsManager.refresh();
+        datafilesManager.refresh();
     }
 
     @Override
@@ -196,15 +267,24 @@ public class ApplicationDefault implements Application {
     }
 
     @Override
+    public void reloadMemoryStores() throws IOException {
+        LOG.info("Reading already saved datasets");
+        List<String> datasetsUploaded = metadataStore.getSavedDataFiles();
+        LOG.info("Found about " + datasetsUploaded.size() + " datasets.");
+        Map<String, HealthDataset> datasetsReloaded = healthDatasetsManager.getDatasetsWithAugmentation(datasetsUploaded);
+        dimensionsManager.persistAssociationWithIndicator(datasetsReloaded.values());
+    }
+
+    @Override
     public void makeAvailableInAPI(String path) throws IOException {
-        LOG.info("Uploading " + path + " to the dataset");
-        HealthDatasetBatchRead healthDatasetsRead = TableDatasetInterpreter.readHealthDatasetBatch(datasetsManager.getAllDatasets());
-        List<HealthDataset> datasets = healthDatasetsRead.getDatasets();
-        datasets = dimensionsManager.augmentDatasetsWithDimensionInfo(datasets);
-        LOG.info("Saving " + datasets.size() + " datasets. This might take a while");
-        save(datasets);
+        Map<String, HealthDataset> datasetsAtPath = healthDatasetsManager.getDatasetsUnderNameWithAugmentation(path);
+        LOG.info("Saving " + datasetsAtPath.keySet().size() + " datasets. This might take a while");
+        save(datasetsAtPath);
+        dimensionsManager.persistAssociationWithIndicator(datasetsAtPath.values());
+        for (String file : datasetsAtPath.keySet()) {
+            markDatafileAsSaved(file);
+        }
         LOG.info("Here are the datasets with errors");
-        healthDatasetsRead.getErrors().forEach((filePath, error) -> LOG.error(filePath + " suffered an error: " + error.getMessage()));
         TableDatasetInterpreter.printTransformersReport(transformersManager.getAll());
     }
 

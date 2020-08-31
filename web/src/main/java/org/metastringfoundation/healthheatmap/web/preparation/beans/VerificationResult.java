@@ -14,36 +14,28 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.beans;
+package org.metastringfoundation.healthheatmap.web.preparation.beans;
+
+import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
 
 import java.util.List;
 
-public class DownloadRequest {
-    private Filter filter;
-    private List<String> fields;
-    private UserInfo userinfo;
-
-    public Filter getFilter() {
-        return filter;
+public class VerificationResult {
+    public static VerificationResult of(List<VerificationResultField> fields) {
+        return new VerificationResult(fields);
     }
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
+    private List<VerificationResultField> fields;
 
-    public List<String> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<String> fields) {
+    public VerificationResult(List<VerificationResultField> fields) {
         this.fields = fields;
     }
 
-    public UserInfo getUserinfo() {
-        return userinfo;
+    public List<VerificationResultField> getFields() {
+        return fields;
     }
 
-    public void setUserinfo(UserInfo userinfo) {
-        this.userinfo = userinfo;
+    public void setFields(List<VerificationResultField> fields) {
+        this.fields = fields;
     }
 }

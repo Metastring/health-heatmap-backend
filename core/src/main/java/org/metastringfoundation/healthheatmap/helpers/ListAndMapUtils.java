@@ -16,6 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,5 +36,60 @@ public class ListAndMapUtils {
         return inputMaps.stream()
                 .map(ListAndMapUtils::getStringOnlyMap)
                 .collect(Collectors.toList());
+    }
+
+    public static List<Map<String, String>> filterKeys(List<Map<String, String>> result, List<String> required) {
+        return result.stream()
+                .map(unfiltered -> filterKeys(unfiltered, required))
+                .collect(Collectors.toList());
+    }
+
+    public static Map<String, String> filterKeys(Map<String, String> unfiltered, List<String> required) {
+        if (required == null || required.size() == 0) {
+            return unfiltered;
+        }
+        return unfiltered.entrySet().stream()
+                .filter(entry -> required.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public static List<Map<String, String>> reshapeCast(List<Map<String, String>> result, String dimensionToTranspose) {
+        Map<Map<String, String>, Map<String, String>> pivotalMap = new HashMap<>();
+        for (Map<String, String> record : result) {
+            String value = record.remove("value");
+            String dimension = record.remove(dimensionToTranspose);
+            pivotalMap.computeIfAbsent(record, whatever -> new StrictHashMap<>()).put(dimension, value);
+        }
+        // merge key and value maps into key
+        pivotalMap.forEach(Map::putAll);
+        return new ArrayList<>(pivotalMap.keySet());
+    }
+
+    public static List<Map<String, String>> reshapeCast(List<Map<String, String>> result, String dimensionToTranspose, List<String> thirdDimension) {
+        // 3rd dimension params                         transposed values
+        Map<Map<String, String>, Map<Map<String, String>, Map<String, String>>> pivotalMap = new HashMap<>();
+        for (Map<String, String> record : result) {
+            String value = record.remove("value");
+            String dimension = record.remove(dimensionToTranspose);
+            Map<String, String> thirdDimensionParams = thirdDimension.stream()
+                    .collect(
+                            HashMap::new,
+                            (map, param) -> map.put(param, record.get(param)),
+                            HashMap::putAll
+                    );
+            thirdDimension.forEach(record::remove);
+            pivotalMap.computeIfAbsent(thirdDimensionParams, whatever -> new StrictHashMap<>()).computeIfAbsent(record, whatever -> new StrictHashMap<>()).put(dimension, value);
+        }
+        // merge key and value maps into one
+        List<Map<String, String>> cast = new ArrayList<>();
+        for (Map.Entry<Map<String, String>, Map<Map<String, String>, Map<String, String>>> entry : pivotalMap.entrySet()) {
+            for (Map.Entry<Map<String, String>, Map<String, String>> inside : entry.getValue().entrySet()) {
+                Map<String, String> firstDimension = inside.getKey();
+                firstDimension.putAll(inside.getValue());
+                firstDimension.putAll(entry.getKey());
+                cast.add(firstDimension);
+            }
+        }
+        return cast;
     }
 }

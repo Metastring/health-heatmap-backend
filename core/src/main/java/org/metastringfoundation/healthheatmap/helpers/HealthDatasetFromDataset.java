@@ -21,14 +21,13 @@ import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HealthDatasetFromDataset implements HealthDataset {
     private final Dataset dataset;
     private final List<DataTransformer> dataTransformers;
+    private final Map<DataPoint, Map<String, String>> errors = new HashMap<>();
 
     public HealthDatasetFromDataset(Dataset dataset) {
         this.dataset = dataset;
@@ -49,20 +48,44 @@ public class HealthDatasetFromDataset implements HealthDataset {
         }
     }
 
+    @Override
+    public Map<DataPoint, Map<String, String>> getDataPointsWithError() {
+        return errors;
+    }
+
     private List<? extends Map<String, String>> dataAfterTransforms() {
         return dataset.getData().stream()
+                .map(this::storeOriginalInMetaField)
                 .map(this::applyTransform)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
+    private DataPoint storeOriginalInMetaField(DataPoint dataPoint) {
+        DataPoint dataPointWithOriginal = DataPoint.from(dataPoint);
+        dataPointWithOriginal.putAll(
+                dataPoint.entrySet().stream()
+                        .collect(Collectors.toMap(e -> "meta.original." + e.getKey(), Map.Entry::getValue))
+        );
+        return dataPointWithOriginal;
+    }
+
     private List<DataPoint> applyTransform(DataPoint data) {
         List<DataPoint> expandingList = List.of(data);
         for (DataTransformer dataTransformer : dataTransformers) {
-            expandingList = expandingList.stream()
-                    .map(dataTransformer::transform)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
+            List<DataPoint> list = new ArrayList<>();
+            for (DataPoint dataPoint : expandingList) {
+                try {
+                    List<DataPoint> transform = dataTransformer.transform(dataPoint);
+                    list.addAll(transform);
+                } catch (UnknownValueException e) {
+                    list.add(dataPoint);
+                    Map<String, String> erringFields = dataTransformer.getKeyApplicable(dataPoint);
+                    errors.put(dataPoint, erringFields);
+                }
+
+            }
+            expandingList = list;
         }
         return expandingList;
     }

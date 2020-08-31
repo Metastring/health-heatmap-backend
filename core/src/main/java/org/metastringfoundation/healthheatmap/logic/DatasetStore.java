@@ -16,11 +16,10 @@
 
 package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.data.Dataset;
+import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
-import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 
 import java.io.IOException;
 import java.util.List;

@@ -27,4 +27,6 @@ public interface TransformersManager {
     List<DataTransformer> getThese(List<TransformerMeta> transformerMetaList);
 
     List<DataTransformer> getAll();
+
+    List<String> getAllNames();
 }

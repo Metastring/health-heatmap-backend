@@ -14,19 +14,17 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.helpers;
+package org.metastringfoundation.healthheatmap.web.preparation.beans;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+import java.util.List;
+import java.util.Map;
 
-public class Jsonizer {
-    private static final Jsonb jsonb = JsonbBuilder.create();
+public class TransformersInfoBean {
+    public Map<Map<String, String>, List<Map<String, String>>> rules;
+    public List<Map<String, String>> failures;
 
-    public static <T> T convert(Object from, Class<T> clazz) {
-        return jsonb.fromJson(jsonb.toJson(from), clazz);
-    }
-
-    public static String asJSON(Object anything) {
-        return jsonb.toJson(anything);
+    public TransformersInfoBean(Map<Map<String, String>, List<Map<String, String>>> rules, List<Map<String, String>> failures) {
+        this.rules = rules;
+        this.failures = failures;
     }
 }

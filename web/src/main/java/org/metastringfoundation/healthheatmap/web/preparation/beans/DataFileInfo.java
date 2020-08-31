@@ -14,15 +14,22 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.helpers;
+package org.metastringfoundation.healthheatmap.web.preparation.beans;
 
 import org.metastringfoundation.data.DataPoint;
 
-import java.util.List;
 import java.util.Map;
 
-public interface HealthDataset {
-    List<? extends Map<String, String>> getData();
+public class DataFileInfo {
+    public VerificationResult verificationResult;
+    public Map<DataPoint, Map<String, String>> transformErrors;
 
-    Map<DataPoint, Map<String, String>> getDataPointsWithError();
+    private DataFileInfo(VerificationResult verificationResult, Map<DataPoint, Map<String, String>> transformErrors) {
+        this.verificationResult = verificationResult;
+        this.transformErrors = transformErrors;
+    }
+
+    public static DataFileInfo of(VerificationResult verificationResult, Map<DataPoint, Map<String, String>> transformErrors) {
+        return new DataFileInfo(verificationResult, transformErrors);
+    }
 }

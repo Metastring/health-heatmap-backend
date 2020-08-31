@@ -14,40 +14,37 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.preparation;
+package org.metastringfoundation.healthheatmap.web.admin;
 
-import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.web.preparation.beans.DataFileInfo;
-import org.metastringfoundation.healthheatmap.web.preparation.beans.VerificationResult;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 
-@Path("datafile")
-public class DataFilesResource {
-    @Inject
-    Application app;
+@Path("reload")
+public class CommandsResource {
+    private final Application app;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<String> listAllDataFiles() throws IOException {
-        return app.getDataFiles();
+    @Inject
+    public CommandsResource(Application app) {
+        this.app = app;
     }
 
-    @GET
-    @Path("details")
+    @POST
+    @Path("dimensions")
+    public void reloadDimensionAssociations() throws IOException {
+        app.reloadMemoryStores();
+    }
+
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public DataFileInfo listResultOfDataFile(@QueryParam("name") String filename) throws IOException, DatasetIntegrityError {
-        return DataFileInfo.of(
-                VerificationResult.of(app.verifyAugmented(List.of(filename))),
-                app.getErrorsOfDatafile(filename)
-        );
+    @Path("debug/getAssociations")
+    public List<String> getAllAssociations() {
+        return app.getAllIndicatorsWithAssociations();
     }
 }

@@ -20,6 +20,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.metastringfoundation.data.DataPoint;
+import org.metastringfoundation.healthheatmap.helpers.UnknownValueException;
 import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
     private final List<String> keyRawHeaders;
     private final List<String> keyHeaders;
     private final List<String> valueHeaders;
-    private final Set<Map<String, String>> lookupFailureKeys = new HashSet<>();
+    private final Set<Map<String, String>> lookupFailureKeys = new LinkedHashSet<>();
 
     public DataTransformerFromSpreadsheet(String spreadsheet) throws IOException {
         CSVParser csvParser = CSVParser.parse(spreadsheet, CSVFormat.DEFAULT.withFirstRecordAsHeader());
@@ -97,7 +98,7 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
     }
 
     @Override
-    public List<DataPoint> transform(DataPoint data) {
+    public List<DataPoint> transform(DataPoint data) throws UnknownValueException {
         Map<String, String> lookupKey = lookupKeyExtract(data);
         Optional<List<Map<String, String>>> lookupValue = rulesLookup(lookupKey);
         if (lookupValue.isPresent()) {
@@ -110,14 +111,23 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
                     .collect(Collectors.toList());
         } else {
             lookupFailureKeys.add(lookupKey);
-            DataPoint clone = DataPoint.from(data);
-            return List.of(clone);
+            throw new UnknownValueException("Cannot find key");
         }
     }
 
     @Override
-    public Set<Map<String, String>> getUnmatchedKeysFound() {
-        return lookupFailureKeys;
+    public List<Map<String, String>> getUnmatchedKeysFound() {
+        return new ArrayList<>(lookupFailureKeys);
+    }
+
+    @Override
+    public Map<String, String> getKeyApplicable(DataPoint data) {
+        return lookupKeyExtract(data);
+    }
+
+    @Override
+    public Map<Map<String, String>, List<Map<String, String>>> getRules() {
+        return rules;
     }
 
     private Optional<List<Map<String, String>>> rulesLookup(Map<String, String> key) {

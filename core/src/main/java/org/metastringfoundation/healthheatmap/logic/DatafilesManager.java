@@ -23,9 +23,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public interface DatasetsManager {
+public interface DatafilesManager {
     List<DatasetPointer> getAllDatasets();
+
+    List<DatasetPointer> getTheseDatasets(List<String> filenames);
+
+    default DatasetPointer getThisDataset(String filename) {
+        return getTheseDatasets(List.of(filename)).get(0);
+    }
+
     void refresh() throws IOException, DatasetIntegrityError;
 
     Optional<Dataset> getDatasetByName(String filename) throws IOException, DatasetIntegrityError;
+
+    List<String> getDatasetsAtName(String name);
 }

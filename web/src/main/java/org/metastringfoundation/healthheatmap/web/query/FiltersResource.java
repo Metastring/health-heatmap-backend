@@ -14,12 +14,9 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.preparation;
+package org.metastringfoundation.healthheatmap.web.query;
 
-import org.metastringfoundation.data.DatasetIntegrityError;
 import org.metastringfoundation.healthheatmap.logic.Application;
-import org.metastringfoundation.healthheatmap.web.preparation.beans.DataFileInfo;
-import org.metastringfoundation.healthheatmap.web.preparation.beans.VerificationResult;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -27,27 +24,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-@Path("datafile")
-public class DataFilesResource {
+@Path("filters")
+public class FiltersResource {
+    private final Application app;
+
     @Inject
-    Application app;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<String> listAllDataFiles() throws IOException {
-        return app.getDataFiles();
+    public FiltersResource(Application app) {
+        this.app = app;
     }
 
     @GET
-    @Path("details")
     @Produces(MediaType.APPLICATION_JSON)
-    public DataFileInfo listResultOfDataFile(@QueryParam("name") String filename) throws IOException, DatasetIntegrityError {
-        return DataFileInfo.of(
-                VerificationResult.of(app.verifyAugmented(List.of(filename))),
-                app.getErrorsOfDatafile(filename)
-        );
+    public Map<String, List<String>> getFiltersForIndicator(@QueryParam("indicator") String indicator) {
+        return app.getFieldsAssociatedWithIndicator(indicator);
     }
 }

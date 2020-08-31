@@ -16,11 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import org.apache.commons.io.FilenameUtils;
 import org.jboss.logging.Logger;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class PathManager {
     private static final Logger LOG = Logger.getLogger(PathManager.class);

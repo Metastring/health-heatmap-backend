@@ -14,28 +14,15 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.preparation;
+package org.metastringfoundation.healthheatmap.logic;
 
-import org.metastringfoundation.healthheatmap.beans.VerificationResultField;
+import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
 
 import java.util.List;
+import java.util.Map;
 
-public class VerificationResult {
-    public static VerificationResult of(List<VerificationResultField> fields) {
-        return new VerificationResult(fields);
-    }
+public interface HealthDatasetsManager {
+    Map<String, HealthDataset> getDatasetsUnderNameWithAugmentation(String path);
 
-    private List<VerificationResultField> fields;
-
-    public VerificationResult(List<VerificationResultField> fields) {
-        this.fields = fields;
-    }
-
-    public List<VerificationResultField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<VerificationResultField> fields) {
-        this.fields = fields;
-    }
+    Map<String, HealthDataset> getDatasetsWithAugmentation(List<String> datasetNames);
 }

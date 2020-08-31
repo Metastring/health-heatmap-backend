@@ -53,33 +53,33 @@ public class IndicatorResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Map<String, Object>> getAllIndicators() throws IOException {
         return getFromDimensions(resourceContext, List.of(
-                "source",
-                "indicator_universal_name",
-                "indicator_category",
-                "indicator_subcategory",
-                "indicator_positive_negative"
+                "source.id",
+                "indicator.id",
+                "indicator.Name",
+                "indicator.Category",
+                "indicator.Sub-Category",
+                "indicator.Positive/Negative"
         ));
     }
 
     @GET
-    @Path("/{indicator_universal_name}")
+    @Path("/{indicator.id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> getOneIndicator(@PathParam("indicator_universal_name") String name) throws IOException {
+    public Map<String, Object> getOneIndicator(@PathParam("indicator.id") String name) throws IOException {
         Filter indicatorFilter = new Filter();
-        indicatorFilter.setTerms(Map.of("indicator_universal_name", List.of(name)));
+        indicatorFilter.setTerms(Map.of("indicator.id", List.of(name)));
         FilterAndSelectFields filter = new FilterAndSelectFields();
         filter.setFilter(indicatorFilter);
         filter.setFields(List.of(
-                "source",
-                "indicator_universal_name",
-                "indicator_category",
-                "indicator_subcategory",
-                "indicator_positive_negative",
-                "indicator_type",
-                "indicator_definition",
-                "indicator_methodOfEstimation",
-                "License",
-                "License URL"
+                "source.id",
+                "indicator.id",
+                "indicator.Name",
+                "indicator.Category",
+                "indicator.Sub-Category",
+                "indicator.Positive/Negative",
+                "indicator.Definition",
+                "upstream.License",
+                "upstream.License URL"
         ));
         List<Map<String, Object>> result = getFromDimensions(resourceContext, filter);
         return resultToSingleMap(result);
@@ -90,32 +90,28 @@ public class IndicatorResource {
         Map<String, Map<String, Object>> sourceSpecific = new HashMap<>();
 
         Set<String> commonFields = Set.of(
-                "indicator_universal_name",
-                "indicator_category",
-                "indicator_subcategory",
-                "indicator_positive_negative",
-                "indicator_type",
-                "indicator_definition"
+                "indicator.id",
+                "indicator.Name",
+                "indicator.Category",
+                "indicator.Sub-Category",
+                "indicator.Positive/Negative",
+                "indicator.Definition"
         );
 
         Set<String> sourceSpecificFields = Set.of(
-                "indicator_methodOfEstimation",
-                "License",
-                "License URL"
+                "upstream.License",
+                "upstream.License URL"
         );
 
         input.forEach(indicatorData -> {
             Map<String, Object> thisSourceSpecific = new HashMap<>();
             commonFields.forEach(field -> result.put(field, indicatorData.get(field)));
             sourceSpecificFields.forEach(field -> thisSourceSpecific.put(field, indicatorData.get(field)));
-            String source = (String) indicatorData.get("source");
+            String source = (String) indicatorData.get("source.id");
             sourceSpecific.put(source, thisSourceSpecific);
         });
-
         result.put("source_specific", sourceSpecific);
-
         return result;
-
     }
 
 }

@@ -16,17 +16,8 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-
-public class Jsonizer {
-    private static final Jsonb jsonb = JsonbBuilder.create();
-
-    public static <T> T convert(Object from, Class<T> clazz) {
-        return jsonb.fromJson(jsonb.toJson(from), clazz);
-    }
-
-    public static String asJSON(Object anything) {
-        return jsonb.toJson(anything);
+public class UnknownValueException extends Exception {
+    public UnknownValueException(String message) {
+        super(message);
     }
 }

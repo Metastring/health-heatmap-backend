@@ -17,19 +17,23 @@
 package org.metastringfoundation.healthheatmap.web.query;
 
 import org.jboss.logging.Logger;
-import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.beanconverters.DataQueryResultToDataResponse;
 import org.metastringfoundation.healthheatmap.beanconverters.FilterToDataQuery;
 import org.metastringfoundation.healthheatmap.beans.DataResponse;
 import org.metastringfoundation.healthheatmap.beans.Filter;
+import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
+import org.metastringfoundation.healthheatmap.helpers.ListAndMapUtils;
+import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.web.utils.CSVDownload;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Path("data")
 public class DataResource {
@@ -51,5 +55,71 @@ public class DataResource {
         LOG.debug(filter);
         var result = app.query(FilterToDataQuery.convert(filter));
         return DataQueryResultToDataResponse.convert(result);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("transpose")
+    public List<Map<String, String>> transposeData(@QueryParam("dimension") String dimension, FilterAndSelectFields filtersAndFields) throws IOException {
+        List<Map<String, String>> filtered = getDataForDownload(filtersAndFields);
+        return ListAndMapUtils.reshapeCast(filtered, dimension);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces("text/csv")
+    @Path("transpose/download")
+    public Response downloadTransposedData(@QueryParam("dimension") String dimension, FilterAndSelectFields filtersAndFields) throws IOException {
+        List<Map<String, String>> filtered = getDataForDownload(filtersAndFields);
+        List<Map<String, String>> input = ListAndMapUtils.reshapeCast(filtered, dimension);
+        return CSVDownload.getDownloadCSVResponse(input);
+    }
+
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces("text/csv")
+    @Path("transpose3d/download")
+    public Response downloadData3D(@QueryParam("dimension") String dimension, @QueryParam("3d") List<String> thirdDimension, FilterAndSelectFields filtersAndFields) throws IOException {
+        List<Map<String, String>> filtered = getDataForDownload(filtersAndFields);
+        List<Map<String, String>> input = ListAndMapUtils.reshapeCast(filtered, dimension, thirdDimension);
+        return CSVDownload.getDownloadCSVResponse(input);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("transpose3d")
+    public List<Map<String, String>> getData3D(@QueryParam("dimension") String dimension, @QueryParam("3d") List<String> thirdDimension, FilterAndSelectFields filtersAndFields) throws IOException {
+        List<Map<String, String>> filtered = getDataForDownload(filtersAndFields);
+        return ListAndMapUtils.reshapeCast(filtered, dimension, thirdDimension);
+    }
+
+    private List<Map<String, String>> getDataForDownload(FilterAndSelectFields filtersAndFields) throws IOException {
+        verifyAndFixFiltersCrashingIfInappropriate(filtersAndFields);
+        if (filtersAndFields.getFilter().isPresent()) {
+            DataQueryResult queryResult = app.query(FilterToDataQuery.convert(filtersAndFields.getFilter().get()));
+            List<Map<String, String>> filtered;
+            if (filtersAndFields.getFields() != null) {
+                filtered = ListAndMapUtils.filterKeys(queryResult.getResult(), filtersAndFields.getFields());
+            } else {
+                filtered = queryResult.getResult();
+            }
+            return filtered;
+        }
+        throw new WebApplicationException("The query without filters can lead to extremely large results. Aborting.");
+    }
+
+    private void verifyAndFixFiltersCrashingIfInappropriate(FilterAndSelectFields filtersAndFields) {
+        if (filtersAndFields.getFilter().isEmpty()) {
+            throw new WebApplicationException("Should give filters");
+        }
+        if (filtersAndFields.getFields() != null && !filtersAndFields.getFields().contains("value")) {
+            filtersAndFields.getFields().add("value");
+        }
+        if (filtersAndFields.getFilter().isEmpty()) {
+            throw new WebApplicationException("The query without filters can lead to extremely large results. Aborting.");
+        }
     }
 }

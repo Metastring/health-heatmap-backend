@@ -29,14 +29,10 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.search.SearchHit;
 import org.jboss.logging.Logger;
-import org.metastringfoundation.datareader.helpers.Jsonizer;
-import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
 import org.metastringfoundation.healthheatmap.beans.FilterAndSelectFields;
 import org.metastringfoundation.healthheatmap.helpers.HealthDataset;
-import org.metastringfoundation.healthheatmap.logic.ApplicationMetadataStore;
 import org.metastringfoundation.healthheatmap.logic.DatasetStore;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
@@ -53,11 +49,10 @@ import static org.metastringfoundation.healthheatmap.storage.elastic.ElasticQuer
 
 @ElasticStore
 @ApplicationScoped
-public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
+public class ElasticManager implements DatasetStore {
     private static final Logger LOG = Logger.getLogger(ElasticManager.class);
     private final RestHighLevelClient elastic;
     private final String dataIndex = "data";
-    private final String downloadsIndex = "downloads";
 
     public ElasticManager(String hostname, int port) {
         LOG.debug("Creating new elasticmanager instance");
@@ -159,16 +154,9 @@ public class ElasticManager implements DatasetStore, ApplicationMetadataStore {
         return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, filterAndFields);
     }
 
-    @Override
-    public void logDownload(DownloadRequest downloadRequest) throws IOException {
-        IndexRequest request = new IndexRequest(downloadsIndex);
-        String jsonData = Jsonizer.asJSON(downloadRequest);
-        request.source(jsonData, XContentType.JSON);
-        elastic.index(request, RequestOptions.DEFAULT);
-    }
 
     @Override
     public boolean getHealth() throws IOException {
-        return ElasticHealthCheck.indexes(elastic, dataIndex, downloadsIndex);
+        return ElasticHealthCheck.indexes(elastic, dataIndex);
     }
 }

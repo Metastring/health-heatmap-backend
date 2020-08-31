@@ -17,12 +17,14 @@
 package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
-import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticManager;
+import org.metastringfoundation.healthheatmap.storage.elastic.ElasticMetadataManager;
 import org.metastringfoundation.healthheatmap.storage.file.FileStoreManager;
-import org.metastringfoundation.healthheatmap.storage.memory.DatasetsManagerInMemory;
+import org.metastringfoundation.healthheatmap.storage.memory.DatafilesManagerInMemory;
 import org.metastringfoundation.healthheatmap.storage.memory.DimensionsManagerInMemory;
+import org.metastringfoundation.healthheatmap.storage.memory.HealthDatasetsManagerInMemory;
 import org.metastringfoundation.healthheatmap.storage.memory.TransformersManagerInMemory;
 
 import java.io.IOException;
@@ -32,9 +34,10 @@ import static org.mockito.Mockito.*;
 
 public class ApplicationDefaultTest {
     private final DatasetStore mockDatasetStore = mock(ElasticManager.class);
-    private final ApplicationMetadataStore mockApplicationMetadataStore = mock(ElasticManager.class);
+    private final ApplicationMetadataStore mockApplicationMetadataStore = mock(ElasticMetadataManager.class);
     private final FileStore mockFileStore = mock(FileStoreManager.class);
-    private final DatasetsManager mockDatasetsManager = mock(DatasetsManagerInMemory.class);
+    private final DatafilesManager mockDatafilesManager = mock(DatafilesManagerInMemory.class);
+    private final HealthDatasetsManager mockHealthDatasetsManager = mock(HealthDatasetsManagerInMemory.class);
     private final TransformersManager mockTransformersManager = mock(TransformersManagerInMemory.class);
     private final DimensionsManagerInMemory mockDimensionsManager = mock(DimensionsManagerInMemory.class);
 
@@ -42,7 +45,8 @@ public class ApplicationDefaultTest {
             mockDatasetStore,
             mockApplicationMetadataStore,
             mockFileStore,
-            mockDatasetsManager,
+            mockDatafilesManager,
+            mockHealthDatasetsManager,
             mockTransformersManager,
             mockDimensionsManager
     );

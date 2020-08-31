@@ -28,6 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,5 +81,10 @@ public class TransformersManagerInMemory implements TransformersManager {
                 .sorted(comparingByKey())
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getAllNames() {
+        return new ArrayList<>(transformers.keySet());
     }
 }

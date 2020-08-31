@@ -19,8 +19,8 @@ package org.metastringfoundation.healthheatmap.storage.memory;
 import org.jboss.logging.Logger;
 import org.metastringfoundation.data.Dataset;
 import org.metastringfoundation.data.DatasetIntegrityError;
+import org.metastringfoundation.healthheatmap.logic.DatafilesManager;
 import org.metastringfoundation.healthheatmap.logic.DatasetPointer;
-import org.metastringfoundation.healthheatmap.logic.DatasetsManager;
 import org.metastringfoundation.healthheatmap.logic.FileStore;
 import org.metastringfoundation.healthheatmap.logic.TransformersManager;
 import org.metastringfoundation.healthheatmap.logic.etl.CSVDatasetPointer;
@@ -32,24 +32,33 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class DatasetsManagerInMemory implements DatasetsManager {
-    private static final Logger LOG = Logger.getLogger(DatasetsManagerInMemory.class);
+public class DatafilesManagerInMemory implements DatafilesManager {
+    private static final Logger LOG = Logger.getLogger(DatafilesManagerInMemory.class);
     private final FileStore fileStore;
     private final TransformersManager transformersManager;
     private List<DatasetPointer> datasetPointerList;
 
     @Inject
-    public DatasetsManagerInMemory(FileStore fileStore, TransformersManager transformersManager) throws IOException, DatasetIntegrityError {
+    public DatafilesManagerInMemory(FileStore fileStore, TransformersManager transformersManager) throws IOException, DatasetIntegrityError {
         this.fileStore = fileStore;
         this.transformersManager = transformersManager;
         this.datasetPointerList = calculateDatasetPointerList();
+        LOG.info(datasetPointerList.size() + " datasets loaded to manager");
     }
 
     @Override
     public List<DatasetPointer> getAllDatasets() {
         return datasetPointerList;
+    }
+
+    @Override
+    public List<DatasetPointer> getTheseDatasets(List<String> filenames) {
+        return datasetPointerList.stream()
+                .filter(datasetPointer -> filenames.contains(datasetPointer.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -66,6 +75,20 @@ public class DatasetsManagerInMemory implements DatasetsManager {
             return Optional.of(datasetPointer.get().getDataset());
         } else {
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<String> getDatasetsAtName(String name) {
+        if (name == null || name.equals("")) {
+            return datasetPointerList.stream()
+                    .map(DatasetPointer::getName)
+                    .collect(Collectors.toList());
+        } else {
+            return datasetPointerList.stream()
+                    .map(DatasetPointer::getName)
+                    .filter(ds -> ds.equals(name) || ds.startsWith(name + "/") || (name.endsWith("/") && ds.startsWith(name))) // NOPMD - improved readability of operator precedence
+                    .collect(Collectors.toList());
         }
     }
 

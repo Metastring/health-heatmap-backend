@@ -16,17 +16,15 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+import java.util.HashMap;
 
-public class Jsonizer {
-    private static final Jsonb jsonb = JsonbBuilder.create();
-
-    public static <T> T convert(Object from, Class<T> clazz) {
-        return jsonb.fromJson(jsonb.toJson(from), clazz);
-    }
-
-    public static String asJSON(Object anything) {
-        return jsonb.toJson(anything);
+public class StrictHashMap<K, V> extends HashMap<K, V> {
+    @Override
+    public V put(K key, V value) {
+        if (this.containsKey(key)) {
+            throw new IllegalArgumentException("Key already exists: " + key);
+        } else {
+            return super.put(key, value);
+        }
     }
 }

@@ -16,7 +16,9 @@
 
 package org.metastringfoundation.healthheatmap.logic.etl;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Table;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.metastringfoundation.healthheatmap.helpers.ListAndMapUtils;
@@ -70,5 +72,23 @@ public class KeyValuePairsToCSV {
         return new KeyValuePairsToCSV(stringOnlyMaps, headers).getCSV();
     }
 
+    public static String convertToCSVPreservingAllColumns(List<Map<String, String>> inputMaps) throws IOException {
+        if (inputMaps == null || inputMaps.size() == 0) {
+            throw new IllegalArgumentException("At least one item must be present in the input to convert to CSV");
+        }
+        List<String> headers = inputMaps.stream()
+                .flatMap(map -> map.keySet().stream())
+                .distinct()
+                .collect(Collectors.toList());
+        return new KeyValuePairsToCSV(inputMaps, headers).getCSV();
+    }
 
+    public static Table<Integer, String, String> convertListOfMapsToTable(List<Map<String, String>> inputMaps) {
+        Table<Integer, String, String> table = HashBasedTable.create();
+        for (int i = 0; i < inputMaps.size(); i++) {
+            int finalI = i; // variable used in lambda must be effectively final
+            inputMaps.get(i).forEach((key, value) -> table.put(finalI, key, value));
+        }
+        return table;
+    }
 }

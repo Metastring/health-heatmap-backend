@@ -16,23 +16,32 @@
 
 package org.metastringfoundation.healthheatmap.helpers;
 
+import org.metastringfoundation.data.DataPoint;
+
 import java.util.List;
 import java.util.Map;
 
 public class HealthDatasetSimple implements HealthDataset {
+    private final Map<DataPoint, Map<String, String>> dataPointsWithError;
     private List<? extends Map<String, String>> dataPoints;
 
-    public HealthDatasetSimple(List<? extends Map<String, String>> dataPoints) {
+    public HealthDatasetSimple(List<? extends Map<String, String>> dataPoints, Map<DataPoint, Map<String, String>> dataPointsWithError) {
         this.dataPoints = dataPoints;
+        this.dataPointsWithError = dataPointsWithError;
     }
 
     public static HealthDatasetSimple from(HealthDatasetFromDataset preTransformDataset) {
-        return new HealthDatasetSimple(preTransformDataset.getData());
+        return new HealthDatasetSimple(preTransformDataset.getData(), preTransformDataset.getDataPointsWithError());
     }
 
     @Override
     public List<? extends Map<String, String>> getData() {
         return dataPoints;
+    }
+
+    @Override
+    public Map<DataPoint, Map<String, String>> getDataPointsWithError() {
+        return dataPointsWithError;
     }
 
     public void setData(List<? extends Map<String, String>> dataPoints) {

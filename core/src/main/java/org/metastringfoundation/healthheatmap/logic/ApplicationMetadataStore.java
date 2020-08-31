@@ -19,8 +19,16 @@ package org.metastringfoundation.healthheatmap.logic;
 import org.metastringfoundation.healthheatmap.beans.DownloadRequest;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface ApplicationMetadataStore {
-
     void logDownload(DownloadRequest downloadRequest) throws IOException;
+
+    void markDatafileAsSaved(String datafile) throws IOException;
+
+    void factoryReset() throws IOException;
+
+    boolean getHealth() throws IOException;
+
+    List<String> getSavedDataFiles() throws IOException;
 }

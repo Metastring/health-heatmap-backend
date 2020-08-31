@@ -21,7 +21,6 @@ import org.metastringfoundation.healthheatmap.logic.DataTransformer;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class DataTransformerForEntityType implements DataTransformer {
     @Override
@@ -46,7 +45,17 @@ public class DataTransformerForEntityType implements DataTransformer {
     }
 
     @Override
-    public Set<Map<String, String>> getUnmatchedKeysFound() {
-        return Set.of();
+    public List<Map<String, String>> getUnmatchedKeysFound() {
+        return List.of();
+    }
+
+    @Override
+    public Map<String, String> getKeyApplicable(DataPoint data) {
+        return Map.of("entity.district", data.getOrDefault("entity.district", ""), "entity.state", data.getOrDefault("entity.state", ""));
+    }
+
+    @Override
+    public Map<Map<String, String>, List<Map<String, String>>> getRules() {
+        return Map.of();
     }
 }

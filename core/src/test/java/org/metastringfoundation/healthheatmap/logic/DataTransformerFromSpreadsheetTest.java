@@ -18,19 +18,19 @@ package org.metastringfoundation.healthheatmap.logic;
 
 import org.junit.jupiter.api.Test;
 import org.metastringfoundation.data.DataPoint;
+import org.metastringfoundation.healthheatmap.helpers.UnknownValueException;
 import org.metastringfoundation.healthheatmap.logic.etl.DataTransformerFromSpreadsheet;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DataTransformerFromSpreadsheetTest {
 
     @Test
-    public void shouldTransformCorrectly() throws IOException {
+    public void shouldTransformCorrectly() throws IOException, UnknownValueException {
         String spreadsheet = "match source,match indicator,newSource,newIndicator\nNFHS4,MMRate,NFHS-4,MMR\nNFHS4,MMRate,NFHS-4,MMRatio\n";
         DataTransformer transformer = new DataTransformerFromSpreadsheet(spreadsheet);
         Map<String, String> data = Map.of("source", "NFHS4", "indicator", "MMRate");
@@ -59,11 +59,17 @@ class DataTransformerFromSpreadsheetTest {
                 DataPoint.from(Map.of("source", "NFHS4", "indicator", "MMRate")),
                 DataPoint.from(Map.of("source", "NFHS-4", "indicator", "MMRate"))
         );
-        var expected = Set.of(Map.of(
+        var expected = List.of(Map.of(
                 "source", "NFHS-4",
                 "indicator", "MMRate"
         ));
-        data.forEach((transformer::transform));
+        for (DataPoint datum : data) {
+            try {
+                transformer.transform(datum);
+            } catch (UnknownValueException ee) {
+                // expected exception
+            }
+        }
         var actual = transformer.getUnmatchedKeysFound();
         assertEquals(expected, actual);
     }
