@@ -80,7 +80,7 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
 
     private Map<String, String> getRuleKey(CSVRecord record) {
         return keyRawHeaders.stream()
-                .collect(Collectors.toMap(this::removeMatchPrefix, record::get));
+                .collect(Collectors.toMap(this::removeMatchPrefix, r -> record.get(r).toLowerCase()));
     }
 
     private String removeMatchPrefix(String source) {
@@ -136,6 +136,6 @@ public class DataTransformerFromSpreadsheet implements DataTransformer {
 
     private <T extends Map<String, String>> Map<String, String> lookupKeyExtract(T data) {
         return keyHeaders.stream()
-                .collect(Collectors.toMap(k -> k, k -> data.getOrDefault(k, "")));
+                .collect(Collectors.toMap(k -> k, k -> data.getOrDefault(k, "").toLowerCase().strip()));
     }
 }

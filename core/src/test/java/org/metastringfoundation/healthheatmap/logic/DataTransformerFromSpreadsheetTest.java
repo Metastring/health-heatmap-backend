@@ -60,8 +60,8 @@ class DataTransformerFromSpreadsheetTest {
                 DataPoint.from(Map.of("source", "NFHS-4", "indicator", "MMRate"))
         );
         var expected = List.of(Map.of(
-                "source", "NFHS-4",
-                "indicator", "MMRate"
+                "source", "nfhs-4",
+                "indicator", "mmrate"
         ));
         for (DataPoint datum : data) {
             try {
