@@ -223,14 +223,14 @@ public class ApplicationDefault implements Application {
 
     @Override
     public Map<String, List<String>> getFieldsPossibleAt(Filter filter) throws IOException {
-        List<String> knownDimensions = dimensionsManager.getKnownDimensions();
+        List<String> knownDimensions = dimensionsManager.getKnownDimensions().stream().map(d -> d + ".id").collect(Collectors.toList());
         return getDimensionsPossibleAt(knownDimensions, filter);
     }
 
 
     @Override
-    public Map<String, List<String>> getDimensionsPossibleAt(List<String> knownDimensions, Filter filter) throws IOException {
-        return datasetStore.getDimensionsPossibleAt(knownDimensions, filter);
+    public Map<String, List<String>> getDimensionsPossibleAt(List<String> dimensions, Filter filter) throws IOException {
+        return datasetStore.getDimensionsPossibleAt(dimensions, filter);
     }
 
 
@@ -264,6 +264,11 @@ public class ApplicationDefault implements Application {
     @Override
     public Map<DataPoint, Map<String, String>> getErrorsOfDatafile(String filename) {
         return healthDatasetsManager.getDatasetsUnderNameWithAugmentation(filename).get(filename).getDataPointsWithError();
+    }
+
+    @Override
+    public List<Map<String, String>> getScores(Filter filter, String dimension, List<String> dimensions) {
+        return null;
     }
 
     @Override

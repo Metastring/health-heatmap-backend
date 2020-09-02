@@ -177,7 +177,7 @@ public class ElasticManager implements DatasetStore {
     private List<Map<String, Object>> getDimensionsPossibleAt(String dimension, Filter filter) {
         FilterAndSelectFields filterAndSelectFields = new FilterAndSelectFields();
         filterAndSelectFields.setFilter(filter);
-        filterAndSelectFields.setFields(List.of(dimension + ".id"));
+        filterAndSelectFields.setFields(List.of(dimension));
         try {
             return ElasticQueryHelpers.getAllTermsOfFields(elastic, dataIndex, filterAndSelectFields);
         } catch (IOException e) {

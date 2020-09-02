@@ -52,12 +52,12 @@ public class DimensionsManagerInMemory implements DimensionsManager {
     }
 
     private Map<String, Map<String, Map<String, String>>> calculateDimensions() throws IOException {
-        Map<String, Map<String, Map<String, String>>> allDimensions = new HashMap<>();
+        Map<String, Map<String, Map<String, String>>> allDimensions = new LinkedHashMap<>();
         List<Path> files = fileStore.getFiles(fileStore.getDimensionsDirectory());
         for (Path file : files) {
             String nameWithExtension = fileStore.getRelativeName(file, fileStore.getDimensionsDirectory());
             String name = FileManager.dropExtension(nameWithExtension);
-            Map<String, Map<String, String>> currentDimension = new HashMap<>();
+            Map<String, Map<String, String>> currentDimension = new LinkedHashMap<>();
             allDimensions.put(name, currentDimension);
             ReadCSVAsMap.get(file).forEach(rec -> {
                 String id = rec.get("id");
@@ -96,7 +96,7 @@ public class DimensionsManagerInMemory implements DimensionsManager {
         if (dimensionExists(dimension)) {
             throw new IllegalArgumentException("Dimension " + dimension + " already exists");
         } else {
-            backingMap.put(dimension, new HashMap<>());
+            backingMap.put(dimension, new LinkedHashMap<>());
         }
     }
 
@@ -133,7 +133,11 @@ public class DimensionsManagerInMemory implements DimensionsManager {
             if (dimension.startsWith("meta.")) {
                 augmentedPoint.put(dimension, value);
             } else {
-                augmentedPoint.put("meta.transformed." + dimension, value);
+                if (dimension.contains(".")) {
+                    augmentedPoint.put("meta.transformed." + dimension, value);
+                } else {
+                    augmentedPoint.put("meta.transformed." + dimension + ".id", value);
+                }
                 if (dimensionExists(dimension)) {
                     getDimensionRecordIfExists(dimension, value).ifPresentOrElse(
                             record -> record.forEach((prop, propValue) -> augmentedPoint.put(dimension + "." + prop, propValue)),

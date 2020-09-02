@@ -87,4 +87,6 @@ public interface Application extends DatasetStore, ApplicationMetadataStore {
     List<String> getListOfTransformers();
 
     Map<DataPoint, Map<String, String>> getErrorsOfDatafile(String filename) throws IOException, DatasetIntegrityError;
+
+    List<Map<String, String>> getScores(Filter filter, String dimension, List<String> dimensions);
 }

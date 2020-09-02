@@ -46,7 +46,7 @@ public class FiltersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, List<String>> getDimensionFiltersPossibleAt(Filter filter) throws IOException {
-        if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) {
+        if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) { // NOPMD readability
             throw new WebApplicationException(ErrorCreator.getPublicViewableError("Must specify filter at which dimensions should be given out"));
         }
         return app.getFieldsPossibleAt(filter);

@@ -14,19 +14,14 @@
  *    limitations under the License.
  */
 
-package org.metastringfoundation.healthheatmap.web.utils;
+package org.metastringfoundation.healthheatmap.web.query.beans;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import org.metastringfoundation.healthheatmap.beans.Filter;
+
 import java.util.List;
-import java.util.Map;
 
-public class ErrorCreator {
-    public static Response getPublicViewableError(String message) {
-        return Response.status(422).entity(Map.of("errors", List.of(message))).build();
-    }
-
-    public static WebApplicationException getErrorFor(String message) {
-        return new WebApplicationException(getPublicViewableError(message));
-    }
+public class ScoringRequest {
+    public Filter filter;
+    public String dimension = "indicator.id";
+    public List<String> dimensions;
 }
