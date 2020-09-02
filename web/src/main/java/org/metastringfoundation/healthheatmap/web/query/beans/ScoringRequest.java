@@ -18,10 +18,7 @@ package org.metastringfoundation.healthheatmap.web.query.beans;
 
 import org.metastringfoundation.healthheatmap.beans.Filter;
 
-import java.util.List;
-
 public class ScoringRequest {
     public Filter filter;
     public String dimension = "indicator.id";
-    public List<String> dimensions;
 }
