@@ -18,6 +18,7 @@ package org.metastringfoundation.healthheatmap.web.query;
 
 import org.metastringfoundation.healthheatmap.beans.Filter;
 import org.metastringfoundation.healthheatmap.logic.Application;
+import org.metastringfoundation.healthheatmap.web.utils.ErrorCreator;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -46,7 +47,7 @@ public class FiltersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, List<String>> getDimensionFiltersPossibleAt(Filter filter) throws IOException {
         if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) {
-            throw new WebApplicationException("Must specify filter at which dimensions should be given out", 400);
+            throw new WebApplicationException(ErrorCreator.getPublicViewableError("Must specify filter at which dimensions should be given out"));
         }
         return app.getFieldsPossibleAt(filter);
     }

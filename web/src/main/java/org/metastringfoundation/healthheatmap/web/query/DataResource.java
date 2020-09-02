@@ -26,6 +26,7 @@ import org.metastringfoundation.healthheatmap.helpers.ListAndMapUtils;
 import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 import org.metastringfoundation.healthheatmap.web.utils.CSVDownload;
+import org.metastringfoundation.healthheatmap.web.utils.ErrorCreator;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -108,18 +109,18 @@ public class DataResource {
             }
             return filtered;
         }
-        throw new WebApplicationException("The query without filters can lead to extremely large results. Aborting.");
+        throw new WebApplicationException(ErrorCreator.getPublicViewableError("The query without filters can lead to extremely large results. Aborting."));
     }
 
     private void verifyAndFixFiltersCrashingIfInappropriate(FilterAndSelectFields filtersAndFields) {
         if (filtersAndFields.getFilter().isEmpty()) {
-            throw new WebApplicationException("Should give filters");
+            throw new WebApplicationException(ErrorCreator.getPublicViewableError("Should give filters"));
         }
         if (filtersAndFields.getFields() != null && !filtersAndFields.getFields().contains("value")) {
             filtersAndFields.getFields().add("value");
         }
         if (filtersAndFields.getFilter().isEmpty()) {
-            throw new WebApplicationException("The query without filters can lead to extremely large results. Aborting.");
+            throw new WebApplicationException(ErrorCreator.getPublicViewableError("The query without filters can lead to extremely large results. Aborting."));
         }
     }
 }
