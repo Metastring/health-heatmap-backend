@@ -224,6 +224,7 @@ public class ApplicationDefault implements Application {
     @Override
     public Map<String, List<String>> getFieldsPossibleAt(Filter filter) throws IOException {
         List<String> knownDimensions = dimensionsManager.getKnownDimensions().stream().map(d -> d + ".id").collect(Collectors.toList());
+        knownDimensions.add("entity.type");
         return getDimensionsPossibleAt(knownDimensions, filter);
     }
 

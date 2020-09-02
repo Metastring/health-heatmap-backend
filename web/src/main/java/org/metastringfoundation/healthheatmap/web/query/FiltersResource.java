@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Path("filters")
 public class FiltersResource {
@@ -49,6 +50,8 @@ public class FiltersResource {
         if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) { // NOPMD readability
             throw new WebApplicationException(ErrorCreator.getPublicViewableError("Must specify filter at which dimensions should be given out"));
         }
-        return app.getFieldsPossibleAt(filter);
+        return app.getFieldsPossibleAt(filter).entrySet().stream()
+                .filter(e -> !e.getKey().equals("entity.id"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

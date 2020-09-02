@@ -20,8 +20,11 @@ import org.metastringfoundation.healthheatmap.web.query.beans.ScoringRequest;
 import org.metastringfoundation.healthheatmap.web.utils.AppInteraction;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,9 @@ public class AnalyticalResource {
         this.app = app;
     }
 
-    @GET
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("scoring")
     public List<Map<String, String>> getScores(ScoringRequest request) throws IOException {
         return app.getScores(request.filter, request.dimension, request.dimensions);

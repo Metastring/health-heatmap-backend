@@ -77,6 +77,7 @@ public class AppInteraction {
             throw ErrorCreator.getErrorFor("Dimensions probably end with .id");
         }
         possibleDimensions.remove(dimension);
+        possibleDimensions.remove("entity.id");
         for (Map.Entry<String, List<String>> entry : possibleDimensions.entrySet()) {
             if (entry.getValue().size() > 1) {
                 throw ErrorCreator.getErrorFor("Please filter a single value for " + entry.getKey() + " from "
