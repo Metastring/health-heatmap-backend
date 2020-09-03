@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.metastringfoundation.healthheatmap.beans.Filter;
 import org.metastringfoundation.healthheatmap.storage.elastic.ElasticQueryHelpers;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -32,8 +32,8 @@ class ElasticQueryHelpersTest {
     void getsElasticQueryWhenTermsAndRangesSpecified() {
         Filter filter = Filter.FilterBuilder.aFilter()
                 .withTerms(Map.of(
-                        "field1", List.of("value1", "value2"),
-                        "field2", List.of("value3", "value4")
+                        "field1", Arrays.asList("value1", "value2"),
+                        "field2", Arrays.asList("value3", "value4")
                 ))
                 .withRanges(Map.of(
                         "field1", Map.of("gt", "vgt", "lt", "vlt"),
@@ -98,8 +98,8 @@ class ElasticQueryHelpersTest {
     void getsElasticQueryWhenOnlyTermsGiven() {
         Filter filter = Filter.FilterBuilder.aFilter()
                 .withTerms(Map.of(
-                        "field1", List.of("value1", "value2"),
-                        "field2", List.of("value3", "value4")
+                        "field1", Arrays.asList("value1", "value2"),
+                        "field2", Arrays.asList("value3", "value4")
                 ))
                 .build();
         QueryBuilder query = ElasticQueryHelpers.getElasticQuery(filter);
