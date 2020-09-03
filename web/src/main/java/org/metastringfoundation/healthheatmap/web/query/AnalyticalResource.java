@@ -43,6 +43,6 @@ public class AnalyticalResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("scoring")
     public List<Map<String, String>> getScores(ScoringRequest request) throws IOException {
-        return app.getScores(request.filter, request.dimension);
+        return app.getScores(request.filter);
     }
 }

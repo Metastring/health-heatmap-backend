@@ -20,5 +20,4 @@ import org.metastringfoundation.healthheatmap.beans.Filter;
 
 public class ScoringRequest {
     public Filter filter;
-    public String dimension = "indicator.id";
 }

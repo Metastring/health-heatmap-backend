@@ -29,10 +29,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -88,13 +85,17 @@ public class AppInteraction {
         }
     }
 
-    public List<Map<String, String>> getScores(Filter filter, String dimension) throws IOException {
+    public List<Map<String, String>> getScores(Filter filter) throws IOException {
         Map<String, List<String>> possibleDimensions = app.getFieldsPossibleAt(filter);
-        if (!dimension.endsWith(".id")) {
-            throw ErrorCreator.getErrorFor("Dimensions probably end with .id");
-        }
+        String dimension = "indicator.id";
         possibleDimensions.remove(dimension);
         possibleDimensions.remove("entity.id");
+        if (filter.getTerms() == null) {
+            throw ErrorCreator.getErrorFor("Please specify a filter");
+        }
+        filter.getTerms().computeIfAbsent("indicator.Positive/Negative", whatever -> new ArrayList<>()).addAll(List.of(
+                "POSITIVE", "NEGATIVE"
+        ));
         for (Map.Entry<String, List<String>> entry : possibleDimensions.entrySet()) {
             if (entry.getValue().size() > 1) {
                 throw ErrorCreator.getErrorFor("Please filter a single value for " + entry.getKey() + " from "
@@ -103,7 +104,7 @@ public class AppInteraction {
         }
         FilterAndSelectFields filterAndSelectFields = new FilterAndSelectFields();
         filterAndSelectFields.setFilter(filter);
-        filterAndSelectFields.setFields(List.of("entity.id", dimension, "value"));
+        filterAndSelectFields.setFields(List.of("entity.id", "indicator.Positive/Negative", dimension, "value"));
         List<Map<String, String>> data = getDataForDownload(filterAndSelectFields);
         Map<String, List<Map<String, String>>> groupedByDimension = data.stream()
                 .collect(Collectors.groupingBy(m -> m.get(dimension)));
@@ -131,7 +132,7 @@ public class AppInteraction {
             String dimension
     ) {
         List<Double> scores = entry.getValue().stream()
-                .map(dp -> getScoreFor(dp.get("value"), minimums.get(dp.get(dimension)), maximums.get(dp.get(dimension))))
+                .map(dp -> getScoreFor(dp.get("value"), minimums.get(dp.get(dimension)), maximums.get(dp.get(dimension)), dp.get("indicator.Positive/Negative")))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -148,8 +149,14 @@ public class AppInteraction {
         return result;
     }
 
-    private Optional<Double> getScoreFor(String valueString, Double minimum, Double maximum) {
-        return getDoubleOptionally(valueString).map(value -> (maximum - value) / (maximum - minimum));
+    private Optional<Double> getScoreFor(String valueString, Double minimum, Double maximum, String type) {
+        return getDoubleOptionally(valueString).map(value -> (maximum - value) / (maximum - minimum)).map(d -> {
+            if (type.equals("NEGATIVE")) {
+                return 1 - d;
+            } else {
+                return d;
+            }
+        });
     }
 
     private List<String> getValues(List<Map<String, String>> dataPoints) {
