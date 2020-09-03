@@ -25,6 +25,7 @@ import org.metastringfoundation.healthheatmap.logic.Application;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import org.metastringfoundation.healthheatmap.storage.beans.DataQueryResult;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
@@ -86,53 +87,83 @@ public class AppInteraction {
     }
 
     public List<Map<String, String>> getScores(Filter filter) throws IOException {
-        Map<String, List<String>> possibleDimensions = app.getFieldsPossibleAt(filter);
-        String dimension = "indicator.id";
-        possibleDimensions.remove(dimension);
-        possibleDimensions.remove("entity.id");
-        if (filter.getTerms() == null) {
-            throw ErrorCreator.getErrorFor("Please specify a filter");
+        ensureFilterIsGood(filter);
+        ensureOnlySingleValueForEntityIndicatorCombination(filter);
+        List<Map<String, String>> data = getDataWithAppropriateSelections(filter);
+        Map<String, List<Map<String, String>>> groupedByDimension = groupByIndicatorForFindingMinMaxOfIndicator(data);
+        Map<String, Double> minimums = findMinimumOfEachIndicator(groupedByDimension);
+        Map<String, Double> maximums = findMaximumOfEachIndicator(groupedByDimension);
+        failIfMinMaxCalculationHasFailures(minimums, maximums);
+
+        return data.stream()
+                .collect(Collectors.groupingBy(e -> e.get("entity.id"), Collectors.mapping(Function.identity(), Collectors.toList())))
+                .entrySet().stream()
+                .map(entry -> computeCompositeAndCollapse(entry, minimums, maximums))
+                .collect(Collectors.toList());
+    }
+
+    private void failIfMinMaxCalculationHasFailures(Map<String, Double> minimums, Map<String, Double> maximums) {
+        if (minimums.containsValue(Double.NEGATIVE_INFINITY) || maximums.containsValue(Double.POSITIVE_INFINITY)) {
+            throw ErrorCreator.getErrorFor("Finding minimum/maximum failed");
         }
-        filter.getTerms().computeIfAbsent("indicator.Positive/Negative", whatever -> new ArrayList<>()).addAll(List.of(
-                "POSITIVE", "NEGATIVE"
-        ));
+    }
+
+    @Nonnull
+    private Map<String, Double> findMaximumOfEachIndicator(Map<String, List<Map<String, String>>> groupedByDimension) {
+        // we use positive infinity and negative infinity (in the other method) to denote that there is no meaningful maximum (or minimum)
+        return groupedByDimension.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getMaximumOf(getValues(entry.getValue())).orElse(Double.POSITIVE_INFINITY)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Nonnull
+    private Map<String, Double> findMinimumOfEachIndicator(Map<String, List<Map<String, String>>> groupedByDimension) {
+        return groupedByDimension.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getMinimumOf(getValues(entry.getValue())).orElse(Double.NEGATIVE_INFINITY)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private Map<String, List<Map<String, String>>> groupByIndicatorForFindingMinMaxOfIndicator(List<Map<String, String>> data) {
+        return data.stream()
+                .collect(Collectors.groupingBy(m -> m.get("indicator.id")));
+    }
+
+    private List<Map<String, String>> getDataWithAppropriateSelections(Filter filter) throws IOException {
+        FilterAndSelectFields filterAndSelectFields = new FilterAndSelectFields();
+        filterAndSelectFields.setFilter(filter);
+        filterAndSelectFields.setFields(List.of("entity.id", "indicator.Positive/Negative", "indicator.id", "value"));
+        return getDataForDownload(filterAndSelectFields);
+    }
+
+    private void ensureOnlySingleValueForEntityIndicatorCombination(Filter filter) throws IOException {
+        // We want to ensure that there won't be two values for any indicator-entity combination
+        Map<String, List<String>> possibleDimensions = app.getFieldsPossibleAt(filter);
+        possibleDimensions.remove("indicator.id");
+        possibleDimensions.remove("entity.id"); // these are expected to be multiple values possible
         for (Map.Entry<String, List<String>> entry : possibleDimensions.entrySet()) {
             if (entry.getValue().size() > 1) {
                 throw ErrorCreator.getErrorFor("Please filter a single value for " + entry.getKey() + " from "
                         + String.join(", ", entry.getValue()));
             }
         }
-        FilterAndSelectFields filterAndSelectFields = new FilterAndSelectFields();
-        filterAndSelectFields.setFilter(filter);
-        filterAndSelectFields.setFields(List.of("entity.id", "indicator.Positive/Negative", dimension, "value"));
-        List<Map<String, String>> data = getDataForDownload(filterAndSelectFields);
-        Map<String, List<Map<String, String>>> groupedByDimension = data.stream()
-                .collect(Collectors.groupingBy(m -> m.get(dimension)));
-        Map<String, Double> minimums = groupedByDimension.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), getMinimumOf(getValues(entry.getValue())).orElse(Double.NEGATIVE_INFINITY)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Map<String, Double> maximums = groupedByDimension.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), getMaximumOf(getValues(entry.getValue())).orElse(Double.POSITIVE_INFINITY)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        if (minimums.containsValue(Double.NEGATIVE_INFINITY) || maximums.containsValue(Double.POSITIVE_INFINITY)) {
-            throw ErrorCreator.getErrorFor("Finding minimum/maximum failed");
-        }
+    }
 
-        return data.stream()
-                .collect(Collectors.groupingBy(e -> e.get("entity.id"), Collectors.mapping(Function.identity(), Collectors.toList())))
-                .entrySet().stream()
-                .map(entry -> computeCompositeAndCollapse(entry, minimums, maximums, dimension))
-                .collect(Collectors.toList());
+    private void ensureFilterIsGood(Filter filter) {
+        if (filter.getTerms() == null) {
+            throw ErrorCreator.getErrorFor("Please specify a filter");
+        }
+        filter.getTerms().computeIfAbsent("indicator.Positive/Negative", whatever -> new ArrayList<>()).addAll(List.of(
+                "POSITIVE", "NEGATIVE"
+        ));
     }
 
     private Map<String, String> computeCompositeAndCollapse(
             Map.Entry<String, List<Map<String, String>>> entry,
             Map<String, Double> minimums,
-            Map<String, Double> maximums,
-            String dimension
+            Map<String, Double> maximums
     ) {
         List<Double> scores = entry.getValue().stream()
-                .map(dp -> getScoreFor(dp.get("value"), minimums.get(dp.get(dimension)), maximums.get(dp.get(dimension)), dp.get("indicator.Positive/Negative")))
+                .map(dp -> getScoreFor(dp.get("value"), minimums.get(dp.get("indicator.id")), maximums.get(dp.get("indicator.id")), dp.get("indicator.Positive/Negative")))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -140,11 +171,11 @@ public class AppInteraction {
         try {
             compositeScore = String.valueOf(scores.stream().reduce((double) 0, Double::sum) / scores.size());
         } catch (ArithmeticException e) {
-            LOG.trace("Arithmetic exception occurred for dimension " + dimension);
+            LOG.trace("Arithmetic exception occurred for dimension " + "indicator.id");
         }
         Map<String, String> result = new LinkedHashMap<>();
         result.put("entity.id", entry.getKey());
-        entry.getValue().forEach(m -> result.put(m.get(dimension), m.get("value")));
+        entry.getValue().forEach(m -> result.put(m.get("indicator.id"), m.get("value")));
         result.put("Composite Score", compositeScore);
         return result;
     }
