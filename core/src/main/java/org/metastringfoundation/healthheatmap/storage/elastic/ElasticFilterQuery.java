@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -32,11 +33,25 @@ public class ElasticFilterQuery {
 
     private final @Nullable
     Map<String, List<String>> terms;
+
+    private final @Nullable
+    List<String> nullTerms;
+
     private final @Nullable
     Map<String, Map<String, String>> ranges;
 
     private ElasticFilterQuery(@Nullable Map<String, List<String>> terms, @Nullable Map<String, Map<String, String>> ranges) {
-        this.terms = terms;
+        if (terms != null) {
+            this.nullTerms = terms.entrySet().stream()
+                    .filter(e -> e.getValue().contains(null))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+            this.terms = terms;
+            this.nullTerms.forEach(this.terms::remove);
+        } else {
+            this.nullTerms = null;
+            this.terms = null;
+        }
         this.ranges = ranges;
         calculateQuery();
     }
@@ -47,8 +62,15 @@ public class ElasticFilterQuery {
     }
 
     private void calculateQuery() {
+        addNullTermsQuery();
         addTermsQuery();
         addRangesQuery();
+    }
+
+    private void addNullTermsQuery() {
+        if (nullTerms != null) {
+            nullTerms.forEach(term -> query.mustNot(existsQuery(term)));
+        }
     }
 
     private void addTermsQuery() {
