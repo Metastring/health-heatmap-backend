@@ -139,7 +139,6 @@ public class ElasticManager implements DatasetStore {
     public DataQueryResult query(DataQuery dataQuery) throws IOException {
         DataQueryResult searchResult = new DataQueryResult();
         SearchResponse searchResponse = doSearch(elastic, dataQuery, dataIndex);
-        LOG.debug(searchResponse.toString());
         searchResult.setResult(Arrays.stream(searchResponse.getHits().getHits())
                 .map(this::getHitAsMapWithId)
                 .map(ElasticQueryHelpers::convertToStringOnlyMap)

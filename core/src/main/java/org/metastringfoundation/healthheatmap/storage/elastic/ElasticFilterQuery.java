@@ -24,6 +24,7 @@ import org.metastringfoundation.healthheatmap.storage.beans.DataQuery;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -35,23 +36,10 @@ public class ElasticFilterQuery {
     Map<String, List<String>> terms;
 
     private final @Nullable
-    List<String> nullTerms;
-
-    private final @Nullable
     Map<String, Map<String, String>> ranges;
 
     private ElasticFilterQuery(@Nullable Map<String, List<String>> terms, @Nullable Map<String, Map<String, String>> ranges) {
-        if (terms != null) {
-            this.nullTerms = terms.entrySet().stream()
-                    .filter(e -> e.getValue().contains(null))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-            this.terms = terms;
-            this.nullTerms.forEach(this.terms::remove);
-        } else {
-            this.nullTerms = null;
-            this.terms = null;
-        }
+        this.terms = terms;
         this.ranges = ranges;
         calculateQuery();
     }
@@ -62,21 +50,20 @@ public class ElasticFilterQuery {
     }
 
     private void calculateQuery() {
-        addNullTermsQuery();
         addTermsQuery();
         addRangesQuery();
-    }
-
-    private void addNullTermsQuery() {
-        if (nullTerms != null) {
-            nullTerms.forEach(term -> query.mustNot(existsQuery(term)));
-        }
     }
 
     private void addTermsQuery() {
         if (terms != null) {
             for (Map.Entry<String, List<String>> mustMatchTerm : terms.entrySet()) {
-                query.filter(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
+                String field = mustMatchTerm.getKey();
+                if (mustMatchTerm.getValue().contains(null)) {
+                    List<String> nonNullTerms = mustMatchTerm.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList());
+                    query.filter(boolQuery().should(termsQuery(field, nonNullTerms)).should(boolQuery().mustNot(existsQuery(field))).minimumShouldMatch(1));
+                } else {
+                    query.filter(termsQuery(mustMatchTerm.getKey(), mustMatchTerm.getValue()));
+                }
             }
         }
     }
