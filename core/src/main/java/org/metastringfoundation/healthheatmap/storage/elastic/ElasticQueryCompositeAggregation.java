@@ -108,7 +108,7 @@ public class ElasticQueryCompositeAggregation {
     }
 
     private TermsValuesSourceBuilder buildTermsSource(String fieldName) {
-        return new TermsValuesSourceBuilder(fieldName).field(fieldName).order("asc");
+        return new TermsValuesSourceBuilder(fieldName).field(fieldName).order("asc").missingBucket(true);
     }
 
     private static Collection<CompositeAggregation.Bucket> getCompositeAggregationBuckets(

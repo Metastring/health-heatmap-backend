@@ -26,10 +26,19 @@ public class ListAndMapUtils {
 
     public static <T> Map<String, String> getStringOnlyMap(Map<String, T> input) {
         return input.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), sanitized(entry.getValue())))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> (String) entry.getValue()
+                        Map.Entry::getValue
                 ));
+    }
+
+    private static <T> String sanitized(T value) {
+        if (value == null) {
+            return "";
+        } else {
+            return (String) value;
+        }
     }
 
     public static <T> List<Map<String, String>> getListOfStringOnlyMaps(List<Map<String, T>> inputMaps) {
