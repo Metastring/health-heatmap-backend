@@ -55,6 +55,11 @@ public class ElasticFilterQuery {
     }
 
     private void addTermsQuery() {
+        // We could have done a simple terms: ["term1", "term2"] if all we had to do was that.
+        // But, we also want to enable the end user to specify a special term called "null"
+        // When null is passed as a term we want to match data that doesn't have that field at all
+        // And this can be accomplished only through a "must_not: exists: field" query
+        // Which means we now have a condition like field: terms: ["some", "term"] OR must_not: exists: field
         if (terms != null) {
             for (Map.Entry<String, List<String>> mustMatchTerm : terms.entrySet()) {
                 String field = mustMatchTerm.getKey();

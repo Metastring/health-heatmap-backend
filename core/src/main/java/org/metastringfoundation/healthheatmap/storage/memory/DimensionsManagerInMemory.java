@@ -159,6 +159,7 @@ public class DimensionsManagerInMemory implements DimensionsManager {
     }
 
     private Boolean dimensionAllowed(String dimension) {
+        // although you can't find these "dimensions" in the dimension manager, these are dimensions that should end up in datapoint
         return dimension.equals("value") || dimension.startsWith("duration.");
     }
 
