@@ -139,16 +139,23 @@ public class DimensionsManagerInMemory implements DimensionsManager {
                     augmentedPoint.put("meta.transformed." + dimension + ".id", value);
                 }
                 if (dimensionExists(dimension)) {
-                    getDimensionRecordIfExists(dimension, value).ifPresentOrElse(
-                            record -> record.forEach((prop, propValue) -> augmentedPoint.put(dimension + "." + prop, propValue)),
-                            () -> augmentedPoint.put(dimension + ".id", "UNKNOWN")
-                    );
+                    augmentWithExistingDimensionInfo(augmentedPoint, dimension, value);
                 } else if (dimensionAllowed(dimension)) {
                     augmentedPoint.put(dimension, value);
                 }
             }
         });
         return augmentedPoint;
+    }
+
+    private void augmentWithExistingDimensionInfo(Map<String, String> augmentedPoint, String dimension, String value) {
+        if (!value.equals("NULL")) {
+            getDimensionRecordIfExists(dimension, value).ifPresentOrElse(
+                    record -> record.forEach((prop, propValue) -> augmentedPoint.put(dimension + "." + prop, propValue)),
+                    () -> augmentedPoint.put(dimension + ".id", "UNKNOWN")
+            );
+        } // else, which means the dimension id is "NULL", we just drop the dimension because the dimension shouldn't exist
+        // and its existence is an anomaly of data representation in upstream
     }
 
     private Boolean dimensionAllowed(String dimension) {
