@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Path("filters")
@@ -47,6 +48,21 @@ public class FiltersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, List<String>> getDimensionFiltersPossibleAt(Filter filter) throws IOException {
+        if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) { // NOPMD readability
+            throw new WebApplicationException(ErrorCreator.getPublicViewableError("Must specify filter at which dimensions should be given out"));
+        }
+        return app.getFieldsPossibleAt(filter).entrySet().stream()
+                .filter(e -> !e.getKey().equals("entity.id"))
+                .map(e -> Map.entry(e.getKey(), e.getValue().stream().filter(Objects::isNull).collect(Collectors.toList())))
+                .filter(e -> e.getValue().size() > 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @POST
+    @Path("withNull")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, List<String>> getDimensionFiltersPossibleAtWithNull(Filter filter) throws IOException {
         if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) { // NOPMD readability
             throw new WebApplicationException(ErrorCreator.getPublicViewableError("Must specify filter at which dimensions should be given out"));
         }

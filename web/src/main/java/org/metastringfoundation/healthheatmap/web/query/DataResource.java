@@ -57,6 +57,19 @@ public class DataResource {
     }
 
     @POST
+    @Path("autoFiltered")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public DataResponse getDataFilteredAutomatically(
+            Filter filter
+    ) throws IOException {
+        Map<String, List<String>> dimensionsPossible = app.getFieldsPossibleAtExcludingUsefulFields(filter);
+        Filter filterFull = app.autoPopulateFilter(filter, dimensionsPossible);
+        var result = app.query(FilterToDataQuery.convert(filterFull));
+        return DataQueryResultToDataResponse.convert(result);
+    }
+
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("transpose")

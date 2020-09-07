@@ -209,4 +209,31 @@ public class AppInteraction {
                 .map(Optional::get)
                 .max(Double::compare);
     }
+
+    public Filter autoPopulateFilter(Filter filter, Map<String, List<String>> dimensionsPossible) {
+        if (filter.getTerms() == null) {
+            return filter;
+        }
+        for (String dimension : dimensionsPossible.keySet()) {
+            if (!filter.getTerms().containsKey(dimension)) {
+                String bestValue;
+                if (dimensionsPossible.get(dimension).contains(null)) {
+                    bestValue = null;
+                } else {
+                    bestValue = dimensionsPossible.get(dimension).get(0);
+                }
+                filter.getTerms().put(dimension, Collections.singletonList(bestValue));
+            }
+        }
+        return filter;
+    }
+
+    public Map<String, List<String>> getFieldsPossibleAtExcludingUsefulFields(Filter filter) throws IOException {
+        if (filter == null || (filter.getTerms() == null && filter.getRanges() == null)) { // NOPMD readability
+            throw new WebApplicationException(ErrorCreator.getPublicViewableError("Must specify filter at which dimensions should be given out"));
+        }
+        return app.getFieldsPossibleAt(filter).entrySet().stream()
+                .filter(e -> !e.getKey().equals("entity.id"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 }
