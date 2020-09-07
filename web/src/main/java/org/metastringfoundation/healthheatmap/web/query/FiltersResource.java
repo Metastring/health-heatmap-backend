@@ -53,7 +53,7 @@ public class FiltersResource {
         }
         return app.getFieldsPossibleAt(filter).entrySet().stream()
                 .filter(e -> !e.getKey().equals("entity.id"))
-                .map(e -> Map.entry(e.getKey(), e.getValue().stream().filter(Objects::isNull).collect(Collectors.toList())))
+                .map(e -> Map.entry(e.getKey(), e.getValue().stream().filter(v -> !Objects.isNull(v)).collect(Collectors.toList())))
                 .filter(e -> e.getValue().size() > 0)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
