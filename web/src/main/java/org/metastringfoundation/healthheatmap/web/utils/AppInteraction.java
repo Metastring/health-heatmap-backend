@@ -214,6 +214,7 @@ public class AppInteraction {
         if (filter.getTerms() == null) {
             return filter;
         }
+        dimensionsPossible.remove("entity.type");
         for (String dimension : dimensionsPossible.keySet()) {
             if (!filter.getTerms().containsKey(dimension)) {
                 String bestValue;
