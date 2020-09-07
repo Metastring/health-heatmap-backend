@@ -23,19 +23,27 @@ import java.util.List;
 import java.util.Map;
 
 public class DataQueryResultToDataResponse {
-    public static DataResponse convert(DataQueryResult queryResult) {
+    public static DataResponse convert(DataQueryResult queryResult, List<String> mustInclude) {
+        if (mustInclude == null) {
+            mustInclude = List.of();
+        }
         DataResponse dataResponse = new DataResponse();
         List<Map<String, String>> result = queryResult.getResult();
-        filter(result);
+        filter(result, mustInclude);
         dataResponse.setData(result);
         return dataResponse;
     }
 
-    private static void filter(List<Map<String, String>> result) {
-        result.forEach(m -> m.entrySet().removeIf(e -> unnecessary(e.getKey())));
+    private static void filter(List<Map<String, String>> result, List<String> mustInclude) {
+        result.forEach(m -> m.entrySet().removeIf(e -> unnecessary(e.getKey(), mustInclude)));
     }
 
-    private static boolean unnecessary(String k) {
+    private static boolean unnecessary(String k, List<String> mustInclude) {
+        for (String include : mustInclude) {
+            if (k.startsWith(include)) {
+                return true;
+            }
+        }
         return k.startsWith("meta.original") || k.startsWith("meta.transformed");
     }
 }

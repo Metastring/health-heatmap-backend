@@ -49,11 +49,12 @@ public class DataResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public DataResponse getData(
+            @QueryParam("include") List<String> mustInclude,
             Filter filter
     ) throws IOException {
         LOG.debug(filter);
         var result = app.query(FilterToDataQuery.convert(filter));
-        return DataQueryResultToDataResponse.convert(result);
+        return DataQueryResultToDataResponse.convert(result, mustInclude);
     }
 
     @POST
@@ -61,12 +62,13 @@ public class DataResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public DataResponse getDataFilteredAutomatically(
+            @QueryParam("include") List<String> mustInclude,
             Filter filter
     ) throws IOException {
         Map<String, List<String>> dimensionsPossible = app.getFieldsPossibleAtExcludingUsefulFields(filter);
         Filter filterFull = app.autoPopulateFilter(filter, dimensionsPossible);
         var result = app.query(FilterToDataQuery.convert(filterFull));
-        DataResponse dataResponse = DataQueryResultToDataResponse.convert(result);
+        DataResponse dataResponse = DataQueryResultToDataResponse.convert(result, mustInclude);
         dataResponse.setFilter(filterFull);
         return dataResponse;
     }
