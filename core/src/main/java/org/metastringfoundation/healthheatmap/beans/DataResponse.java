@@ -21,6 +21,15 @@ import java.util.Map;
 
 public class DataResponse {
     private List<Map<String, String>> data;
+    private Filter filter;
+
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Filter filter) {
+        this.filter = filter;
+    }
 
     public List<Map<String, String>> getData() {
         return data;

@@ -66,7 +66,9 @@ public class DataResource {
         Map<String, List<String>> dimensionsPossible = app.getFieldsPossibleAtExcludingUsefulFields(filter);
         Filter filterFull = app.autoPopulateFilter(filter, dimensionsPossible);
         var result = app.query(FilterToDataQuery.convert(filterFull));
-        return DataQueryResultToDataResponse.convert(result);
+        DataResponse dataResponse = DataQueryResultToDataResponse.convert(result);
+        dataResponse.setFilter(filterFull);
+        return dataResponse;
     }
 
     @POST
