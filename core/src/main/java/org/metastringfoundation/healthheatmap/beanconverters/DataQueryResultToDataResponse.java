@@ -41,7 +41,7 @@ public class DataQueryResultToDataResponse {
     private static boolean unnecessary(String k, List<String> mustInclude) {
         for (String include : mustInclude) {
             if (k.startsWith(include)) {
-                return true;
+                return false;
             }
         }
         return k.startsWith("meta.original") || k.startsWith("meta.transformed");
