@@ -27,10 +27,7 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Path("indicators")
 public class IndicatorResource {
@@ -52,7 +49,7 @@ public class IndicatorResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Map<String, Object>> getAllIndicators() throws IOException {
-        return getFromDimensions(resourceContext, List.of(
+        return getFromDimensions(resourceContext, Arrays.asList(
                 "source.id",
                 "indicator.id",
                 "indicator.Name",
@@ -67,10 +64,10 @@ public class IndicatorResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Object> getOneIndicator(@PathParam("indicator.id") String name) throws IOException {
         Filter indicatorFilter = new Filter();
-        indicatorFilter.setTerms(Map.of("indicator.id", List.of(name)));
+        indicatorFilter.setTerms(Map.of("indicator.id", Collections.singletonList(name)));
         FilterAndSelectFields filter = new FilterAndSelectFields();
         filter.setFilter(indicatorFilter);
-        filter.setFields(List.of(
+        filter.setFields(Arrays.asList(
                 "source.id",
                 "indicator.id",
                 "indicator.Name",
