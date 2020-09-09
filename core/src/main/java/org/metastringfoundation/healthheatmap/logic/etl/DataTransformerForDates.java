@@ -71,7 +71,7 @@ public class DataTransformerForDates implements DataTransformer {
             String day;
             String month;
             String year;
-            List<String> split = Arrays.asList(s.split("[-.]"));
+            List<String> split = Arrays.asList(s.split("[-./]"));
             if (split.get(2).length() == 2 && split.get(0).length() < 3) {
                 year = "20" + split.get(2);
                 day = split.get(0);
