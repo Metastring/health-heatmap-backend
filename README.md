@@ -34,7 +34,9 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 ## Add data
 
 * Put data somewhere, say /home/metastring/healthheatmap-data
-* Run `java -jar cli/target/health-heatmap-cli-runner.jar upload --path /home/metastring/healthheatmap-data`
+* Run `java -jar cli/target/health-heatmap-cli-runner.jar upload --path /home/metastring/healthheatmap-data` -n ''
+
+(Add `-z` flag to delete the pre-existing index in elasticsearch)
 
 ## Run server
 
@@ -44,3 +46,4 @@ Data sourced from public datasets is curated, annotated, and organized. This is 
 ## Development
 
 * You can do `./mvnw -pl web quarkus:dev` to run a development server with automatic reloads
+
