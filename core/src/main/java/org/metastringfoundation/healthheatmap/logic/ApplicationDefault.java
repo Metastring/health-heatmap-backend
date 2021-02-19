@@ -289,8 +289,9 @@ public class ApplicationDefault implements Application {
         LOG.info("Reading already saved datasets");
         List<String> datasetsUploaded = metadataStore.getSavedDataFiles();
         LOG.info("Found about " + datasetsUploaded.size() + " datasets.");
-        Map<String, HealthDataset> datasetsReloaded = healthDatasetsManager.getDatasetsWithAugmentation(datasetsUploaded);
-        dimensionsManager.persistAssociationWithIndicator(datasetsReloaded.values());
+//        Map<String, HealthDataset> datasetsReloaded = healthDatasetsManager.getDatasetsWithAugmentation(datasetsUploaded);
+        // performance penalty for in memory associations manager
+//        dimensionsManager.persistAssociationWithIndicator(datasetsReloaded.values());
     }
 
     @Override
@@ -298,7 +299,8 @@ public class ApplicationDefault implements Application {
         Map<String, HealthDataset> datasetsAtPath = healthDatasetsManager.getDatasetsUnderNameWithAugmentation(path);
         LOG.info("Saving " + datasetsAtPath.keySet().size() + " datasets. This might take a while");
         save(datasetsAtPath);
-        dimensionsManager.persistAssociationWithIndicator(datasetsAtPath.values());
+        // in memory association manager has performance issues
+//        dimensionsManager.persistAssociationWithIndicator(datasetsAtPath.values());
         for (String file : datasetsAtPath.keySet()) {
             markDatafileAsSaved(file);
         }

@@ -16,9 +16,6 @@
 
 package org.metastringfoundation.healthheatmap.web.admin;
 
-import org.metastringfoundation.healthheatmap.logic.Application;
-
-import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -28,23 +25,21 @@ import java.util.List;
 
 @Path("reload")
 public class CommandsResource {
-    private final Application app;
-
-    @Inject
-    public CommandsResource(Application app) {
-        this.app = app;
-    }
 
     @POST
     @Path("dimensions")
     public void reloadDimensionAssociations() throws IOException {
-        app.reloadMemoryStores();
+        // enabling this has performance issues
+        // to be re-enabled when using graph database
+        //app.reloadMemoryStores();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("debug/getAssociations")
     public List<String> getAllAssociations() {
-        return app.getAllIndicatorsWithAssociations();
+        return null;
+        // see comment above
+        // return app.getAllIndicatorsWithAssociations();
     }
 }
