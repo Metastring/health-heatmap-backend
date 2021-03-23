@@ -8,6 +8,10 @@ This software can handle multitudes of spreadsheets and upload into a multi-dime
 
 This software can be conceptually divided into two equally important halves. The first half is an Extract-Transform-Load (ETL) pipeline, and the second half is a web API to query data.
 
+### Framework
+
+It uses Quarkus for wiring things together. Read [guides](https://quarkus.io/guides/) for most of the extension.
+
 ### Data
 
 Data sourced from public datasets is curated, annotated, and organized. This is in a form which can be directly ingested by the software.
