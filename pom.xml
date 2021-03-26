@@ -137,7 +137,7 @@
     <repositories>
         <repository>
             <id>metastringfoundation</id>
-            <url>http://jenkins.optimus.metastringfoundation.free.gen.in/plugin/repository/everything/</url>
+            <url>http://jenkins.staging.metastringfoundation.org/plugin/repository/everything/</url>
         </repository>
     </repositories>
 
